@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartArguments>/depDb:"Server=.\SQL2008R2;database=unt0BIMetaData;Integrated Security=SSPI;" /r+ /b- /skipSSIS- /skipSQL+ /matchDBOnly- /skipAS+ /skipRS+ /rpt:"http://localhost:8008/reportserver_sql2008r2?/" /asCon:"Provider=msolap;Data Source=localhost\sql2008r2;Initial Catalog=Adventure Works DW 2008R2" /f:"D:\Test"</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PublishUrlHistory />
+    <InstallUrlHistory />
+    <SupportUrlHistory />
+    <UpdateUrlHistory />
+    <BootstrapperUrlHistory />
+    <ErrorReportUrlHistory />
+    <FallbackCulture>en-US</FallbackCulture>
+    <VerifyUploadedFiles>false</VerifyUploadedFiles>
+    <ProjectView>ProjectFiles</ProjectView>
+  </PropertyGroup>
+</Project>

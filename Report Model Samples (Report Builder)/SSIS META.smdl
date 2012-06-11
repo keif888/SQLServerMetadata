@@ -1,0 +1,850 @@
+﻿<SemanticModel ID="G4ef5bd83-7233-4ee7-92d7-31c2e365660a" xmlns="http://schemas.microsoft.com/sqlserver/2004/10/semanticmodeling" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Culture>en-US</Culture>
+  <Entities>
+    <Entity ID="Ga76ef903-6284-40b2-a5a2-1ce55972219a">
+      <Name>Connections Mapping</Name>
+      <CollectionName>Connections Mappings</CollectionName>
+      <IdentifyingAttributes>
+        <AttributeReference>
+          <Path>
+            <RolePathItem>
+              <!--Source Connection-->
+              <RoleID>G3eb4736b-4615-46cc-ae3e-000481f733f4</RoleID>
+            </RolePathItem>
+          </Path>
+          <!--Connection Name-->
+          <AttributeID>G5b0f3ee1-dca1-4295-9488-afeac9ac28b6</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <Path>
+            <RolePathItem>
+              <!--Target Connection-->
+              <RoleID>G8b45d4ee-830c-4d7d-90da-56b494be172d</RoleID>
+            </RolePathItem>
+          </Path>
+          <!--Connection Name-->
+          <AttributeID>Gb6e16d19-a67e-477b-b815-b8378a8173d2</AttributeID>
+        </AttributeReference>
+      </IdentifyingAttributes>
+      <DefaultDetailAttributes>
+        <AttributeReference>
+          <Path>
+            <RolePathItem>
+              <!--Source Connection-->
+              <RoleID>G3eb4736b-4615-46cc-ae3e-000481f733f4</RoleID>
+            </RolePathItem>
+          </Path>
+          <!--Connection Name-->
+          <AttributeID>G5b0f3ee1-dca1-4295-9488-afeac9ac28b6</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <Path>
+            <RolePathItem>
+              <!--Target Connection-->
+              <RoleID>G8b45d4ee-830c-4d7d-90da-56b494be172d</RoleID>
+            </RolePathItem>
+          </Path>
+          <!--Connection Name-->
+          <AttributeID>Gb6e16d19-a67e-477b-b815-b8378a8173d2</AttributeID>
+        </AttributeReference>
+      </DefaultDetailAttributes>
+      <DefaultAggregateAttributes>
+        <AttributeReference>
+          <!--#Connections Mappings-->
+          <AttributeID>Gef36f71c-80b1-4d4b-9158-786d6685b12a</AttributeID>
+        </AttributeReference>
+      </DefaultAggregateAttributes>
+      <InstanceSelection>Dropdown</InstanceSelection>
+      <Fields>
+        <Attribute ID="Gef36f71c-80b1-4d4b-9158-786d6685b12a">
+          <Name>#Connections Mappings</Name>
+          <DataType>Integer</DataType>
+          <Expression>
+            <Function>
+              <FunctionName>Count</FunctionName>
+              <Arguments>
+                <Expression>
+                  <EntityRef>
+                    <!--Connections Mapping-->
+                    <EntityID>Ga76ef903-6284-40b2-a5a2-1ce55972219a</EntityID>
+                  </EntityRef>
+                </Expression>
+              </Arguments>
+            </Function>
+          </Expression>
+          <IsAggregate>true</IsAggregate>
+          <SortDirection>Descending</SortDirection>
+          <Format>n0</Format>
+          <EnableDrillthrough>true</EnableDrillthrough>
+        </Attribute>
+        <Role ID="G3eb4736b-4615-46cc-ae3e-000481f733f4">
+          <!--Connections Mappings-->
+          <RelatedRoleID>G6da4e467-0981-4b17-9e53-f4338cfa054c</RelatedRoleID>
+          <Cardinality>OptionalOne</Cardinality>
+          <Relation Name="ConnectionsMapping-SourceConnections" RelationEnd="Target" />
+        </Role>
+        <Role ID="G8b45d4ee-830c-4d7d-90da-56b494be172d">
+          <Name>Target Connection</Name>
+          <!--Connections Mappings-->
+          <RelatedRoleID>G53164ad5-2f97-4922-acb7-573ea6ef05a3</RelatedRoleID>
+          <Cardinality>OptionalOne</Cardinality>
+          <Relation Name="ConnectionsMapping-DestinationConnections" RelationEnd="Target" />
+        </Role>
+      </Fields>
+      <Table Name="ConnectionsMapping" />
+    </Entity>
+    <Entity ID="G96c59b95-f2d1-48c7-a916-869982e1ebca">
+      <Name>Data Flow</Name>
+      <CollectionName>Data Flows</CollectionName>
+      <IdentifyingAttributes>
+        <AttributeReference>
+          <!--Object Name-->
+          <AttributeID>G226e4369-465a-47dc-8aa4-2b179961ae84</AttributeID>
+        </AttributeReference>
+      </IdentifyingAttributes>
+      <DefaultDetailAttributes>
+        <AttributeReference>
+          <!--Object Name-->
+          <AttributeID>G226e4369-465a-47dc-8aa4-2b179961ae84</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <Path>
+            <RolePathItem>
+              <!--Package-->
+              <RoleID>G18ba1bbe-0a32-4090-87bb-76539b87568f</RoleID>
+            </RolePathItem>
+          </Path>
+          <!--Package Name-->
+          <AttributeID>G8e24447a-27a5-442d-a92d-313ffb8cb377</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <!--Object Key-->
+          <AttributeID>G357314f0-a13a-4300-9ea0-6b280b3832b2</AttributeID>
+        </AttributeReference>
+      </DefaultDetailAttributes>
+      <DefaultAggregateAttributes>
+        <AttributeReference>
+          <!--#Data Flows-->
+          <AttributeID>G4033a4be-d84e-4705-82e8-14a32951b4a9</AttributeID>
+        </AttributeReference>
+      </DefaultAggregateAttributes>
+      <InstanceSelection>Dropdown</InstanceSelection>
+      <Fields>
+        <Attribute ID="G4033a4be-d84e-4705-82e8-14a32951b4a9">
+          <Name>#Data Flows</Name>
+          <DataType>Integer</DataType>
+          <Expression>
+            <Function>
+              <FunctionName>Count</FunctionName>
+              <Arguments>
+                <Expression>
+                  <EntityRef>
+                    <!--Data Flow-->
+                    <EntityID>G96c59b95-f2d1-48c7-a916-869982e1ebca</EntityID>
+                  </EntityRef>
+                </Expression>
+              </Arguments>
+            </Function>
+          </Expression>
+          <IsAggregate>true</IsAggregate>
+          <SortDirection>Descending</SortDirection>
+          <Format>n0</Format>
+          <EnableDrillthrough>true</EnableDrillthrough>
+        </Attribute>
+        <Attribute ID="G357314f0-a13a-4300-9ea0-6b280b3832b2">
+          <Name>Object Key</Name>
+          <DataType>Integer</DataType>
+          <SortDirection>Descending</SortDirection>
+          <Width>3</Width>
+          <Format>g</Format>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ObjectKey" />
+        </Attribute>
+        <Attribute ID="G226e4369-465a-47dc-8aa4-2b179961ae84">
+          <Name>Object Name</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>39</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <EnableDrillthrough>true</EnableDrillthrough>
+          <ContextualName>Merge</ContextualName>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ObjectName" />
+        </Attribute>
+        <Attribute ID="G9ee19d16-ac21-43f5-9e39-f353c1daf220">
+          <Name>Object Desc</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>14</Width>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ObjectDesc" />
+        </Attribute>
+        <Role ID="G18ba1bbe-0a32-4090-87bb-76539b87568f">
+          <!--Data Flows-->
+          <RelatedRoleID>Gdb13107e-d859-4794-9cf7-90a6a3d21f35</RelatedRoleID>
+          <Cardinality>OptionalOne</Cardinality>
+          <Relation Name="DataFlows-Packages" RelationEnd="Target" />
+        </Role>
+        <Role ID="Gac82153a-0fe0-4783-a3d5-191ad8dd44f6">
+          <!--Data Flow-->
+          <RelatedRoleID>Ge0955b8e-c2ab-40e1-b30c-cb40a56d917c</RelatedRoleID>
+          <Cardinality>OptionalMany</Cardinality>
+          <Relation Name="SourceTables-DataFlows" RelationEnd="Source" />
+        </Role>
+        <Role ID="G975aef7b-ac1c-48e7-97ef-4ca3310ed832">
+          <!--Data Flow-->
+          <RelatedRoleID>G1521a1a7-3bbc-4345-9aa0-1e71f9c30e8e</RelatedRoleID>
+          <Cardinality>OptionalMany</Cardinality>
+          <Relation Name="TargetTables-DataFlows" RelationEnd="Source" />
+        </Role>
+      </Fields>
+      <Table Name="dbo_DataFlows" />
+    </Entity>
+    <Entity ID="Gacb02826-8c9f-4ee8-abb9-58caf0140932">
+      <Name>Destination Connection</Name>
+      <CollectionName>Destination Connections</CollectionName>
+      <IdentifyingAttributes>
+        <AttributeReference>
+          <!--Connection Name-->
+          <AttributeID>Gb6e16d19-a67e-477b-b815-b8378a8173d2</AttributeID>
+        </AttributeReference>
+      </IdentifyingAttributes>
+      <DefaultDetailAttributes>
+        <AttributeReference>
+          <!--Connection Name-->
+          <AttributeID>Gb6e16d19-a67e-477b-b815-b8378a8173d2</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <!--Connection String-->
+          <AttributeID>Gcdfdd9d8-6e4a-461c-bca3-d6e1cb365f20</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <!--Database-->
+          <AttributeID>G0e3096ba-76c5-4422-8e29-fda87c4b4cb5</AttributeID>
+        </AttributeReference>
+      </DefaultDetailAttributes>
+      <DefaultAggregateAttributes>
+        <AttributeReference>
+          <!--#Destination Connections-->
+          <AttributeID>Gca02d146-9c03-442e-88fe-cb4cec5af380</AttributeID>
+        </AttributeReference>
+      </DefaultAggregateAttributes>
+      <InstanceSelection>Dropdown</InstanceSelection>
+      <Fields>
+        <Attribute ID="Gca02d146-9c03-442e-88fe-cb4cec5af380">
+          <Name>#Destination Connections</Name>
+          <DataType>Integer</DataType>
+          <Expression>
+            <Function>
+              <FunctionName>Count</FunctionName>
+              <Arguments>
+                <Expression>
+                  <EntityRef>
+                    <!--Destination Connection-->
+                    <EntityID>Gacb02826-8c9f-4ee8-abb9-58caf0140932</EntityID>
+                  </EntityRef>
+                </Expression>
+              </Arguments>
+            </Function>
+          </Expression>
+          <IsAggregate>true</IsAggregate>
+          <SortDirection>Descending</SortDirection>
+          <Format>n0</Format>
+          <EnableDrillthrough>true</EnableDrillthrough>
+        </Attribute>
+        <Attribute ID="Ge46b4d7f-4e75-4834-b80b-690f73081350">
+          <Name>Connection ID</Name>
+          <DataType>Integer</DataType>
+          <SortDirection>Descending</SortDirection>
+          <Width>3</Width>
+          <Format>g</Format>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ConnectionID" />
+        </Attribute>
+        <Attribute ID="Gb6e16d19-a67e-477b-b815-b8378a8173d2">
+          <Name>Connection Name</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>26</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <EnableDrillthrough>true</EnableDrillthrough>
+          <ContextualName>Merge</ContextualName>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ConnectionName" />
+        </Attribute>
+        <Attribute ID="Gcce718f0-cd27-457d-b2ca-8808cb6702c8">
+          <Name>Connection Desc</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ConnectionDesc" />
+        </Attribute>
+        <Attribute ID="Gcdfdd9d8-6e4a-461c-bca3-d6e1cb365f20">
+          <Name>Connection String</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>120</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ConnectionString" />
+        </Attribute>
+        <Attribute ID="Gb10eaf6b-9db7-4112-b45f-e9054c1edc97">
+          <Name>Server</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>9</Width>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="Server" />
+        </Attribute>
+        <Attribute ID="G0e3096ba-76c5-4422-8e29-fda87c4b4cb5">
+          <Name>Database</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>16</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="Database" />
+        </Attribute>
+        <Role ID="G53164ad5-2f97-4922-acb7-573ea6ef05a3">
+          <!--Target Connection-->
+          <RelatedRoleID>G8b45d4ee-830c-4d7d-90da-56b494be172d</RelatedRoleID>
+          <Cardinality>OptionalMany</Cardinality>
+          <Relation Name="ConnectionsMapping-DestinationConnections" RelationEnd="Source" />
+        </Role>
+        <Role ID="G400c610f-7708-4986-94b8-030f05397584">
+          <!--Destination Connection-->
+          <RelatedRoleID>G1763a3b8-40df-46c3-9c05-fcd8598672d3</RelatedRoleID>
+          <Cardinality>OptionalMany</Cardinality>
+          <Relation Name="TargetTables-DestinationConnections" RelationEnd="Source" />
+        </Role>
+      </Fields>
+      <Table Name="DestinationConnections" />
+    </Entity>
+    <Entity ID="G1e4060ef-89cc-4316-a9cf-236bf9f9a3b7">
+      <Name>Package</Name>
+      <CollectionName>Packages</CollectionName>
+      <IdentifyingAttributes>
+        <AttributeReference>
+          <!--Package Name-->
+          <AttributeID>G8e24447a-27a5-442d-a92d-313ffb8cb377</AttributeID>
+        </AttributeReference>
+      </IdentifyingAttributes>
+      <DefaultDetailAttributes>
+        <AttributeReference>
+          <!--Package Name-->
+          <AttributeID>G8e24447a-27a5-442d-a92d-313ffb8cb377</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <!--Package Location-->
+          <AttributeID>Ga83bceee-6e79-4337-9bac-6ac341bed482</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <!--Package GUID-->
+          <AttributeID>Ga1c000aa-55c0-4dd6-88e5-d884d7b84403</AttributeID>
+        </AttributeReference>
+      </DefaultDetailAttributes>
+      <DefaultAggregateAttributes>
+        <AttributeReference>
+          <!--#Packages-->
+          <AttributeID>G1914e4f8-f547-4f69-a2dd-4dc0371db37d</AttributeID>
+        </AttributeReference>
+      </DefaultAggregateAttributes>
+      <InstanceSelection>Dropdown</InstanceSelection>
+      <Fields>
+        <Attribute ID="G1914e4f8-f547-4f69-a2dd-4dc0371db37d">
+          <Name>#Packages</Name>
+          <DataType>Integer</DataType>
+          <Expression>
+            <Function>
+              <FunctionName>Count</FunctionName>
+              <Arguments>
+                <Expression>
+                  <EntityRef>
+                    <!--Package-->
+                    <EntityID>G1e4060ef-89cc-4316-a9cf-236bf9f9a3b7</EntityID>
+                  </EntityRef>
+                </Expression>
+              </Arguments>
+            </Function>
+          </Expression>
+          <IsAggregate>true</IsAggregate>
+          <SortDirection>Descending</SortDirection>
+          <Format>n0</Format>
+          <EnableDrillthrough>true</EnableDrillthrough>
+        </Attribute>
+        <Attribute ID="Gde03194a-c3c6-47f4-90c7-50fdaca209bb">
+          <Name>Package ID</Name>
+          <DataType>Integer</DataType>
+          <SortDirection>Descending</SortDirection>
+          <Width>3</Width>
+          <Format>g</Format>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="PackageID" />
+        </Attribute>
+        <Attribute ID="G8e24447a-27a5-442d-a92d-313ffb8cb377">
+          <Name>Package Name</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>20</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <EnableDrillthrough>true</EnableDrillthrough>
+          <ContextualName>Merge</ContextualName>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="PackageName" />
+        </Attribute>
+        <Attribute ID="G1bb26cd6-bb1c-4d71-86c0-5e3979a1846d">
+          <Name>Package Desc</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="PackageDesc" />
+        </Attribute>
+        <Attribute ID="Ga83bceee-6e79-4337-9bac-6ac341bed482">
+          <Name>Package Location</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>78</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="PackageLocation" />
+        </Attribute>
+        <Attribute ID="Ga1c000aa-55c0-4dd6-88e5-d884d7b84403">
+          <Name>Package GUID</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>38</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="PackageGUID" />
+        </Attribute>
+        <Role ID="Gdb13107e-d859-4794-9cf7-90a6a3d21f35">
+          <!--Package-->
+          <RelatedRoleID>G18ba1bbe-0a32-4090-87bb-76539b87568f</RelatedRoleID>
+          <Cardinality>OptionalMany</Cardinality>
+          <Relation Name="DataFlows-Packages" RelationEnd="Source" />
+        </Role>
+      </Fields>
+      <Table Name="Packages" />
+    </Entity>
+    <Entity ID="G470fc6c6-f02b-468f-a830-08851286f425">
+      <Name>Source Connection</Name>
+      <CollectionName>Source Connections</CollectionName>
+      <IdentifyingAttributes>
+        <AttributeReference>
+          <!--Connection Name-->
+          <AttributeID>G5b0f3ee1-dca1-4295-9488-afeac9ac28b6</AttributeID>
+        </AttributeReference>
+      </IdentifyingAttributes>
+      <DefaultDetailAttributes>
+        <AttributeReference>
+          <!--Connection Name-->
+          <AttributeID>G5b0f3ee1-dca1-4295-9488-afeac9ac28b6</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <!--Connection String-->
+          <AttributeID>G06693653-b0fc-4600-8c54-b749d67a658a</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <!--Database-->
+          <AttributeID>G087feea9-a472-42bd-a2d9-d027c4c78f2f</AttributeID>
+        </AttributeReference>
+      </DefaultDetailAttributes>
+      <DefaultAggregateAttributes>
+        <AttributeReference>
+          <!--#Source Connections-->
+          <AttributeID>Gb0636ee3-3422-4db3-955c-c5cc15655e8d</AttributeID>
+        </AttributeReference>
+      </DefaultAggregateAttributes>
+      <InstanceSelection>Dropdown</InstanceSelection>
+      <Fields>
+        <Attribute ID="Gb0636ee3-3422-4db3-955c-c5cc15655e8d">
+          <Name>#Source Connections</Name>
+          <DataType>Integer</DataType>
+          <Expression>
+            <Function>
+              <FunctionName>Count</FunctionName>
+              <Arguments>
+                <Expression>
+                  <EntityRef>
+                    <!--Source Connection-->
+                    <EntityID>G470fc6c6-f02b-468f-a830-08851286f425</EntityID>
+                  </EntityRef>
+                </Expression>
+              </Arguments>
+            </Function>
+          </Expression>
+          <IsAggregate>true</IsAggregate>
+          <SortDirection>Descending</SortDirection>
+          <Format>n0</Format>
+          <EnableDrillthrough>true</EnableDrillthrough>
+        </Attribute>
+        <Attribute ID="G20375751-a8b3-4009-b87b-d575264c91d1">
+          <Name>Connection ID</Name>
+          <DataType>Integer</DataType>
+          <SortDirection>Descending</SortDirection>
+          <Width>3</Width>
+          <Format>g</Format>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ConnectionID" />
+        </Attribute>
+        <Attribute ID="G5b0f3ee1-dca1-4295-9488-afeac9ac28b6">
+          <Name>Connection Name</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>26</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <EnableDrillthrough>true</EnableDrillthrough>
+          <ContextualName>Merge</ContextualName>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ConnectionName" />
+        </Attribute>
+        <Attribute ID="G5f2ea0f8-e443-496a-af70-3feb7b768ebf">
+          <Name>Connection Desc</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ConnectionDesc" />
+        </Attribute>
+        <Attribute ID="G06693653-b0fc-4600-8c54-b749d67a658a">
+          <Name>Connection String</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>120</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ConnectionString" />
+        </Attribute>
+        <Attribute ID="G2abd0e77-73c5-482b-aa6c-df8f555d2cf4">
+          <Name>Server</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>9</Width>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="Server" />
+        </Attribute>
+        <Attribute ID="G087feea9-a472-42bd-a2d9-d027c4c78f2f">
+          <Name>Database</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>16</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="Database" />
+        </Attribute>
+        <Role ID="G7ab285a1-db46-41a7-954d-6db9d904d0a5">
+          <!--Source Connection-->
+          <RelatedRoleID>G63841bdb-3b40-4259-8bcf-3f350486aaea</RelatedRoleID>
+          <Cardinality>OptionalMany</Cardinality>
+          <Relation Name="SourceTables-SourceConnections" RelationEnd="Source" />
+        </Role>
+        <Role ID="G6da4e467-0981-4b17-9e53-f4338cfa054c">
+          <!--Source Connection-->
+          <RelatedRoleID>G3eb4736b-4615-46cc-ae3e-000481f733f4</RelatedRoleID>
+          <Cardinality>OptionalMany</Cardinality>
+          <Relation Name="ConnectionsMapping-SourceConnections" RelationEnd="Source" />
+        </Role>
+      </Fields>
+      <Table Name="SourceConnections" />
+    </Entity>
+    <Entity ID="Gfc176b22-8980-4b0b-9a4c-42a87e120d94">
+      <Name>Source Table</Name>
+      <CollectionName>Source Tables</CollectionName>
+      <IdentifyingAttributes>
+        <AttributeReference>
+          <!--Object Name-->
+          <AttributeID>G39392eeb-4821-4664-a84c-e7504600c0f7</AttributeID>
+        </AttributeReference>
+      </IdentifyingAttributes>
+      <DefaultDetailAttributes>
+        <AttributeReference>
+          <!--Object Name-->
+          <AttributeID>G39392eeb-4821-4664-a84c-e7504600c0f7</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <!--Source Component Name-->
+          <AttributeID>G6ae813cb-eac4-4741-a9bb-c4230a29025c</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <Path>
+            <RolePathItem>
+              <!--Data Flow-->
+              <RoleID>Ge0955b8e-c2ab-40e1-b30c-cb40a56d917c</RoleID>
+            </RolePathItem>
+          </Path>
+          <!--Object Name-->
+          <AttributeID>G226e4369-465a-47dc-8aa4-2b179961ae84</AttributeID>
+        </AttributeReference>
+      </DefaultDetailAttributes>
+      <DefaultAggregateAttributes>
+        <AttributeReference>
+          <!--#Source Tables-->
+          <AttributeID>G4faaf14e-93b6-45cb-adda-0ce0edff5043</AttributeID>
+        </AttributeReference>
+      </DefaultAggregateAttributes>
+      <InstanceSelection>Dropdown</InstanceSelection>
+      <Fields>
+        <Attribute ID="G4faaf14e-93b6-45cb-adda-0ce0edff5043">
+          <Name>#Source Tables</Name>
+          <DataType>Integer</DataType>
+          <Expression>
+            <Function>
+              <FunctionName>Count</FunctionName>
+              <Arguments>
+                <Expression>
+                  <EntityRef>
+                    <!--Source Table-->
+                    <EntityID>Gfc176b22-8980-4b0b-9a4c-42a87e120d94</EntityID>
+                  </EntityRef>
+                </Expression>
+              </Arguments>
+            </Function>
+          </Expression>
+          <IsAggregate>true</IsAggregate>
+          <SortDirection>Descending</SortDirection>
+          <Format>n0</Format>
+          <EnableDrillthrough>true</EnableDrillthrough>
+        </Attribute>
+        <Attribute ID="G3bcd2113-6e5a-4821-930e-32a02302270c">
+          <Name>Object Key</Name>
+          <DataType>Integer</DataType>
+          <SortDirection>Descending</SortDirection>
+          <Width>2</Width>
+          <Format>g</Format>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ObjectKey" />
+        </Attribute>
+        <Attribute ID="G39392eeb-4821-4664-a84c-e7504600c0f7">
+          <Name>Object Name</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>26</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <EnableDrillthrough>true</EnableDrillthrough>
+          <ContextualName>Merge</ContextualName>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ObjectName" />
+        </Attribute>
+        <Attribute ID="Ga6b7fa10-fc4c-4a10-9626-c96e63126d5e">
+          <Name>Object Type Name</Name>
+          <DataType>String</DataType>
+          <SortDirection>Ascending</SortDirection>
+          <Width>5</Width>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ObjectTypeName" />
+        </Attribute>
+        <Attribute ID="Gdfe7ea13-715e-46e0-bba8-ca130f03e05c">
+          <Name>Object Desc</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ObjectDesc" />
+        </Attribute>
+        <Attribute ID="Ga59f8669-923f-4c5f-b426-cf6c96ac235d">
+          <Name>Src Component Key</Name>
+          <DataType>Integer</DataType>
+          <SortDirection>Descending</SortDirection>
+          <Width>3</Width>
+          <Format>g</Format>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="SrcComponentKey" />
+        </Attribute>
+        <Attribute ID="G6ae813cb-eac4-4741-a9bb-c4230a29025c">
+          <Name>Source Component Name</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>18</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="SourceComponentName" />
+        </Attribute>
+        <Attribute ID="Ga55c4871-8db1-474f-b6a5-dd0ee9625059">
+          <Name>Source Component Desc</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>13</Width>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="SourceComponentDesc" />
+        </Attribute>
+        <Role ID="Ge0955b8e-c2ab-40e1-b30c-cb40a56d917c">
+          <!--Source Tables-->
+          <RelatedRoleID>Gac82153a-0fe0-4783-a3d5-191ad8dd44f6</RelatedRoleID>
+          <Cardinality>OptionalOne</Cardinality>
+          <Relation Name="SourceTables-DataFlows" RelationEnd="Target" />
+        </Role>
+        <Role ID="G63841bdb-3b40-4259-8bcf-3f350486aaea">
+          <!--Source Tables-->
+          <RelatedRoleID>G7ab285a1-db46-41a7-954d-6db9d904d0a5</RelatedRoleID>
+          <Cardinality>OptionalOne</Cardinality>
+          <Relation Name="SourceTables-SourceConnections" RelationEnd="Target" />
+        </Role>
+      </Fields>
+      <Table Name="dbo_SourceTables" />
+    </Entity>
+    <Entity ID="G3bae1e52-8d6a-4d5e-b5f7-431da17b1bde">
+      <Name>Target Table</Name>
+      <CollectionName>Target Tables</CollectionName>
+      <IdentifyingAttributes>
+        <AttributeReference>
+          <!--Object Name-->
+          <AttributeID>G8b93bb16-d837-4979-a821-3f8ed394c38e</AttributeID>
+        </AttributeReference>
+      </IdentifyingAttributes>
+      <DefaultDetailAttributes>
+        <AttributeReference>
+          <!--Object Name-->
+          <AttributeID>G8b93bb16-d837-4979-a821-3f8ed394c38e</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <!--Target Component Name-->
+          <AttributeID>G03033f3b-5ff7-45f8-b150-fddf709876dc</AttributeID>
+        </AttributeReference>
+        <AttributeReference>
+          <Path>
+            <RolePathItem>
+              <!--Data Flow-->
+              <RoleID>G1521a1a7-3bbc-4345-9aa0-1e71f9c30e8e</RoleID>
+            </RolePathItem>
+          </Path>
+          <!--Object Name-->
+          <AttributeID>G226e4369-465a-47dc-8aa4-2b179961ae84</AttributeID>
+        </AttributeReference>
+      </DefaultDetailAttributes>
+      <DefaultAggregateAttributes>
+        <AttributeReference>
+          <!--#Target Tables-->
+          <AttributeID>G3a02089b-176f-40de-88fd-0d2772c9b393</AttributeID>
+        </AttributeReference>
+      </DefaultAggregateAttributes>
+      <InstanceSelection>Dropdown</InstanceSelection>
+      <Fields>
+        <Attribute ID="G3a02089b-176f-40de-88fd-0d2772c9b393">
+          <Name>#Target Tables</Name>
+          <DataType>Integer</DataType>
+          <Expression>
+            <Function>
+              <FunctionName>Count</FunctionName>
+              <Arguments>
+                <Expression>
+                  <EntityRef>
+                    <!--Target Table-->
+                    <EntityID>G3bae1e52-8d6a-4d5e-b5f7-431da17b1bde</EntityID>
+                  </EntityRef>
+                </Expression>
+              </Arguments>
+            </Function>
+          </Expression>
+          <IsAggregate>true</IsAggregate>
+          <SortDirection>Descending</SortDirection>
+          <Format>n0</Format>
+          <EnableDrillthrough>true</EnableDrillthrough>
+        </Attribute>
+        <Attribute ID="G707c0053-04e1-4104-8a42-06777bd3b582">
+          <Name>Dependency Type</Name>
+          <DataType>String</DataType>
+          <SortDirection>Ascending</SortDirection>
+          <Width>3</Width>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="DependencyType" />
+        </Attribute>
+        <Attribute ID="G6eaef9a6-27ee-402c-a945-0c346523d85c">
+          <Name>Object Key</Name>
+          <DataType>Integer</DataType>
+          <SortDirection>Descending</SortDirection>
+          <Width>3</Width>
+          <Format>g</Format>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ObjectKey" />
+        </Attribute>
+        <Attribute ID="G8b93bb16-d837-4979-a821-3f8ed394c38e">
+          <Name>Object Name</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>30</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <EnableDrillthrough>true</EnableDrillthrough>
+          <ContextualName>Merge</ContextualName>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ObjectName" />
+        </Attribute>
+        <Attribute ID="G72727854-5a48-4db0-b7b7-997fd565c5d2">
+          <Name>Object Desc</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="ObjectDesc" />
+        </Attribute>
+        <Attribute ID="G7bd9a534-80ca-4907-b721-ffa35082a8a8">
+          <Name>Tgt Component Key</Name>
+          <DataType>Integer</DataType>
+          <SortDirection>Descending</SortDirection>
+          <Width>3</Width>
+          <Format>g</Format>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="TgtComponentKey" />
+        </Attribute>
+        <Attribute ID="G03033f3b-5ff7-45f8-b150-fddf709876dc">
+          <Name>Target Component Name</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>22</Width>
+          <DiscourageGrouping>true</DiscourageGrouping>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="TargetComponentName" />
+        </Attribute>
+        <Attribute ID="G43b9457f-b7be-4aac-a14a-45c0a1f8b799">
+          <Name>Target Component Desc</Name>
+          <DataType>String</DataType>
+          <Nullable>true</Nullable>
+          <SortDirection>Ascending</SortDirection>
+          <Width>18</Width>
+          <ValueSelection>Dropdown</ValueSelection>
+          <Column Name="TargetComponentDesc" />
+        </Attribute>
+        <Role ID="G1521a1a7-3bbc-4345-9aa0-1e71f9c30e8e">
+          <!--Target Tables-->
+          <RelatedRoleID>G975aef7b-ac1c-48e7-97ef-4ca3310ed832</RelatedRoleID>
+          <Cardinality>OptionalOne</Cardinality>
+          <Relation Name="TargetTables-DataFlows" RelationEnd="Target" />
+        </Role>
+        <Role ID="G1763a3b8-40df-46c3-9c05-fcd8598672d3">
+          <!--Target Tables-->
+          <RelatedRoleID>G400c610f-7708-4986-94b8-030f05397584</RelatedRoleID>
+          <Cardinality>OptionalOne</Cardinality>
+          <Relation Name="TargetTables-DestinationConnections" RelationEnd="Target" />
+        </Role>
+      </Fields>
+      <Table Name="dbo_TargetTables" />
+    </Entity>
+  </Entities>
+</SemanticModel>
