@@ -62,7 +62,7 @@
     <Compile Include="SqlStatementTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CodePlexBIMetaData\TSQLParser\TSQLParser.csproj">
+    <ProjectReference Include="..\TSQLParser\TSQLParser.csproj">
       <Project>{CA0FDA81-289A-4A09-973F-4D7DAC7455AA}</Project>
       <Name>TSQLParser</Name>
     </ProjectReference>

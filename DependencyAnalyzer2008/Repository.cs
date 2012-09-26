@@ -1379,7 +1379,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
             row["TgtObjectKey"] = to;
             row["DependencyType"] = type;
 
-            objectDependenciesTable.Rows.Add(row);
+            if (!DoesDependencyExist(from, to, type))
+            {
+                objectDependenciesTable.Rows.Add(row);
+            }
         }
 
         /// <summary>
@@ -1403,7 +1406,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// <returns></returns>
         public bool DoesDependencyExist(int from, int to, string dependencyType)
         {
-            DataRow[] rows = objectDependenciesTable.Select(string.Format("SrcObjectKey = '{0}' AND TgtObjectKey = '{1}' AND DependencyType = '{2}'", from, to, dependencyType));
+            DataRow[] rows = objectDependenciesTable.Select(string.Format("RunKey = '{0}' AND SrcObjectKey = '{1}' AND TgtObjectKey = '{2}' AND DependencyType = '{3}'", this.RunKeyValue, from, to, dependencyType));
 
             return (rows.Length > 0);
         }

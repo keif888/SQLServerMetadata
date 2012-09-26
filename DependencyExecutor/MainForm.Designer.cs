@@ -112,6 +112,7 @@
             this.tbCommandLine = new System.Windows.Forms.TextBox();
             this.toolTipControl = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
+            this.btAnalyze2012 = new System.Windows.Forms.Button();
             this.tcMain.SuspendLayout();
             this.tbRepository.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -142,7 +143,7 @@
             this.tcMain.Location = new System.Drawing.Point(0, 0);
             this.tcMain.Name = "tcMain";
             this.tcMain.SelectedIndex = 0;
-            this.tcMain.Size = new System.Drawing.Size(619, 390);
+            this.tcMain.Size = new System.Drawing.Size(719, 390);
             this.tcMain.TabIndex = 0;
             // 
             // tbRepository
@@ -159,7 +160,7 @@
             this.tbRepository.Location = new System.Drawing.Point(4, 22);
             this.tbRepository.Name = "tbRepository";
             this.tbRepository.Padding = new System.Windows.Forms.Padding(3);
-            this.tbRepository.Size = new System.Drawing.Size(611, 364);
+            this.tbRepository.Size = new System.Drawing.Size(711, 364);
             this.tbRepository.TabIndex = 0;
             this.tbRepository.Text = "Repository";
             this.tbRepository.UseVisualStyleBackColor = true;
@@ -985,6 +986,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btAnalyze2012);
             this.panel1.Controls.Add(this.tbCommandLine);
             this.panel1.Controls.Add(this.btAnalyze2008);
             this.panel1.Controls.Add(this.btView);
@@ -992,7 +994,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 390);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(619, 60);
+            this.panel1.Size = new System.Drawing.Size(719, 60);
             this.panel1.TabIndex = 1;
             // 
             // tbCommandLine
@@ -1000,7 +1002,7 @@
             this.tbCommandLine.Location = new System.Drawing.Point(4, 32);
             this.tbCommandLine.Name = "tbCommandLine";
             this.tbCommandLine.ReadOnly = true;
-            this.tbCommandLine.Size = new System.Drawing.Size(611, 20);
+            this.tbCommandLine.Size = new System.Drawing.Size(711, 20);
             this.tbCommandLine.TabIndex = 12;
             // 
             // toolTipControl
@@ -1012,17 +1014,28 @@
             this.folderBrowser.Description = "Browse for suitable folders";
             this.folderBrowser.ShowNewFolderButton = false;
             // 
+            // btAnalyze2012
+            // 
+            this.btAnalyze2012.Location = new System.Drawing.Point(534, 3);
+            this.btAnalyze2012.Name = "btAnalyze2012";
+            this.btAnalyze2012.Size = new System.Drawing.Size(171, 23);
+            this.btAnalyze2012.TabIndex = 13;
+            this.btAnalyze2012.Text = "Analyse 2012";
+            this.btAnalyze2012.UseVisualStyleBackColor = true;
+            this.btAnalyze2012.Click += new System.EventHandler(this.btAnalyze2012_Click);
+            this.btAnalyze2012.MouseHover += new System.EventHandler(this.btAnalyze2012_MouseHover);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(619, 450);
+            this.ClientSize = new System.Drawing.Size(719, 450);
             this.Controls.Add(this.tcMain);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(635, 488);
-            this.MinimumSize = new System.Drawing.Size(635, 488);
+            this.MaximumSize = new System.Drawing.Size(735, 488);
+            this.MinimumSize = new System.Drawing.Size(735, 488);
             this.Name = "MainForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Dependency Executor";
@@ -1139,6 +1152,7 @@
         private System.Windows.Forms.Button btDeleteReport;
         private System.Windows.Forms.Button btAddReport;
         private System.Windows.Forms.ListBox lbReportServer;
+        private System.Windows.Forms.Button btAnalyze2012;
     }
 }
 
