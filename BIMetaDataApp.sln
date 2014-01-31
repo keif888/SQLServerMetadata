@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{35DBA334-573E-4327-8489-644F6B335126}"
 	ProjectSection(SolutionItems) = preProject
 		BIMetaDataApp.vsmdi = BIMetaDataApp.vsmdi
@@ -34,9 +36,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTSQLParser", "TestTSQLP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyAnalyzer2012", "DependencyAnalyzer2012\DependencyAnalyzer2012.csproj", "{977DF49F-9D2B-4671-94E4-E483CC03D933}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drawing", "DrawingAndGraphViewerGdi\Drawing\Drawing.csproj", "{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphViewerGDI", "DrawingAndGraphViewerGdi\GraphViewerGdi\GraphViewerGDI.csproj", "{5A0DA990-F31C-463E-B58F-1E6BF1996234}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 10
+		SccNumberOfProjects = 12
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs04
 		SccLocalPath0 = .
@@ -67,9 +73,12 @@ Global
 		SccProjectUniqueName9 = DependencyAnalyzer2012\\DependencyAnalyzer2012.csproj
 		SccProjectName9 = DependencyAnalyzer2012
 		SccLocalPath9 = DependencyAnalyzer2012
-	EndGlobalSection
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = BIMetaDataApp.vsmdi
+		SccProjectUniqueName10 = DrawingAndGraphViewerGdi\\Drawing\\Drawing.csproj
+		SccProjectName10 = DrawingAndGraphViewerGdi/Drawing
+		SccLocalPath10 = DrawingAndGraphViewerGdi\\Drawing
+		SccProjectUniqueName11 = DrawingAndGraphViewerGdi\\GraphViewerGdi\\GraphViewerGDI.csproj
+		SccProjectName11 = DrawingAndGraphViewerGdi/GraphViewerGdi
+		SccLocalPath11 = DrawingAndGraphViewerGdi\\GraphViewerGdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -266,11 +275,54 @@ Global
 		{977DF49F-9D2B-4671-94E4-E483CC03D933}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{977DF49F-9D2B-4671-94E4-E483CC03D933}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{977DF49F-9D2B-4671-94E4-E483CC03D933}.Release|x86.ActiveCfg = Release|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.DebugLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.DebugLocal|Any CPU.Build.0 = Debug|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.DebugLocal|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.DebugLocal|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.DebugLocal|x86.ActiveCfg = Debug|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Production|Any CPU.ActiveCfg = Release|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Production|Any CPU.Build.0 = Release|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Production|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Production|Mixed Platforms.Build.0 = Release|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Production|x86.ActiveCfg = Release|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C205AC5B-1FF7-434F-9DD7-E40C16EABCC3}.Release|x86.ActiveCfg = Release|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.DebugLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.DebugLocal|Any CPU.Build.0 = Debug|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.DebugLocal|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.DebugLocal|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.DebugLocal|x86.ActiveCfg = Debug|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Production|Any CPU.ActiveCfg = Release|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Production|Any CPU.Build.0 = Release|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Production|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Production|Mixed Platforms.Build.0 = Release|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Production|x86.ActiveCfg = Release|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5A0DA990-F31C-463E-B58F-1E6BF1996234}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		BuildVersion_BuildAction = ReBuild
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = BIMetaDataApp.vsmdi
 	EndGlobalSection
 EndGlobal
