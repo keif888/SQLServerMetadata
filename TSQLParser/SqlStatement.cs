@@ -84,7 +84,7 @@ namespace TSQLParser
                     {
                         sb.AppendLine(error.Message);
                         sb.AppendLine("offset " + error.Offset.ToString());
-                        if (error.Number == 0010)  // What is TSP0010 now?
+                        if (error.Number == 46010)  // What is TSP0010 now?
                         {
                             if (sqlString.Substring(error.Offset + offsetIncrement, 1) == "?")
                             {
@@ -252,341 +252,282 @@ namespace TSQLParser
 
         private void findIdentifiers(TSqlStatement sqlStatement)
         {
-            // ToDo: Finish handling of the different TSqlStatements below.  And do the drill through.
-            switch (sqlStatement.GetType().FullName)
+            if (sqlStatement is Microsoft.SqlServer.TransactSql.ScriptDom.StatementWithCtesAndXmlNamespaces)
             {
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AddSignatureStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterApplicationRoleStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterAssemblyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterAsymmetricKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterAuthorizationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterBrokerPriorityStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterCertificateStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterCertificateStatementKind":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterCreateEndpointStatementBase":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterCreateServiceStatementBase":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterCredentialStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterCryptographicProviderStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseAddFileGroupStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseAddFileStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseAuditSpecificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseCollateStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseEncryptionKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseModifyFileGroupStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseModifyFileStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseModifyNameStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseRebuildLogStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseRemoveFileGroupStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseRemoveFileStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseSetStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterEndpointStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterEventSessionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterEventSessionStatementType":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterFullTextCatalogStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterFullTextIndexStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterFullTextStopListStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterFunctionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterIndexStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterLoginAddDropCredentialStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterLoginEnableDisableStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterLoginOptionsStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterLoginStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterMasterKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterMessageTypeStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterPartitionFunctionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterPartitionSchemeStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterQueueStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterRemoteServiceBindingStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterResourceGovernorStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterResourcePoolStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterRoleStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterRouteStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterSchemaStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerAuditSpecificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerAuditStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterServiceMasterKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterServiceStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterSymmetricKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterTableAddTableElementStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterTableAlterColumnStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterTableChangeTrackingModificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterTableConstraintModificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterTableDropTableElementStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterTableRebuildStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterTableSetStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterTableStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterTableSwitchStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterTableTriggerModificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterTriggerStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterUserStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterViewStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterWorkloadGroupStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterXmlSchemaCollectionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ApplicationRoleStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AssemblyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AuditSpecificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BackupCertificateStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BackupDatabaseStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BackupMasterKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BackupRestoreMasterKeyStatementBase":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BackupServiceMasterKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BackupStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BackupTransactionLogStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BeginConversationTimerStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BeginDialogStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BeginEndBlockStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BeginTransactionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BreakStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BrokerPriorityStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BulkInsertBase":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BulkInsertStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CertificateStatementBase":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CheckpointStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CloseCursorStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CloseMasterKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CloseSymmetricKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CommitTransactionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ContinueStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateAggregateStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateApplicationRoleStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateAssemblyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateAsymmetricKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateBrokerPriorityStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateCertificateStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateContractStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateCredentialStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateCryptographicProviderStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateDatabaseAuditSpecificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateDatabaseEncryptionKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateDatabaseStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateDefaultStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateEndpointStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateEventNotificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateEventSessionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateFullTextCatalogStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateFullTextIndexStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateFullTextStopListStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateFunctionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateIndexStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateLoginStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateMasterKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateMessageTypeStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreatePartitionFunctionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreatePartitionSchemeStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateProcedureStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateQueueStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateRemoteServiceBindingStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateResourcePoolStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateRoleStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateRouteStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateRuleStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateSchemaStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateServerAuditSpecificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateServerAuditStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateServiceStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateSpatialIndexStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateStatisticsStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateSymmetricKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateSynonymStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateTableStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateTriggerStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateTypeStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateTypeTableStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateTypeUddtStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateTypeUdtStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateUserStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateViewStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateWorkloadGroupStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateXmlIndexStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateXmlSchemaCollectionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CredentialStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CursorStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DatabaseEncryptionKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DataModificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DbccStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DeallocateCursorStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareTableStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareVariableStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DenyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DenyStatement80":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropAggregateStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropApplicationRoleStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropAssemblyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropAsymmetricKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropBrokerPriorityStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropCertificateStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropChildObjectsStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropContractStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropCredentialStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropCryptographicProviderStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropDatabaseAuditSpecificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropDatabaseEncryptionKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropDatabaseStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropDefaultStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropEndpointStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropEventNotificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropEventSessionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropFullTextCatalogStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropFullTextIndexStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropFullTextStopListStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropFunctionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropIndexStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropLoginStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropMasterKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropMessageTypeStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropObjectsStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropPartitionFunctionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropPartitionSchemeStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropProcedureStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropQueueStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropRemoteServiceBindingStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropResourcePoolStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropRoleStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropRouteStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropRuleStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropSchemaStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropServerAuditSpecificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropServerAuditStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropServiceStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropSignatureStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropStatisticsStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropSymmetricKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropSynonymStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropTableStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropTriggerStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropTypeStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropUnownedObjectStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropUserStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropViewStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropWorkloadGroupStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DropXmlSchemaCollectionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.EnableDisableTriggerStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.EndConversationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.EventSessionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ExecuteAsStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.FetchCursorStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.FullTextCatalogStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.GetConversationGroupStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.GoToStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.GrantStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.GrantStatement80":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.IndexStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.InsertBulkStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.InvalidSelectStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.InvalidStatementList":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.InvalidTSqlStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.KillQueryNotificationSubscriptionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.KillStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.KillStatsJobStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.LabelStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.LineNoStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.MasterKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.MergeStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.MessageTypeStatementBase":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.MoveConversationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenCursorStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenMasterKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenSymmetricKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.PredicateSetStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.PrintStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ProcedureStatementBody":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ProcedureStatementBodyBase":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.QueueStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RaiseErrorLegacyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RaiseErrorStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ReadTextStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ReceiveStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ReconfigureStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RemoteServiceBindingStatementBase":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ResourcePoolStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RestoreMasterKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RestoreServiceMasterKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RestoreStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RestoreStatementKind":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ReturnStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RevertStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RevokeStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RevokeStatement80":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RoleStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RollbackTransactionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RouteStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SaveTransactionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SecurityStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SecurityStatementBody80":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SendStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ServerAuditStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SetCommandStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SetErrorLevelStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SetIdentityInsertStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SetOffsetsStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SetOnOffStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SetRowCountStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SetStatisticsStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SetTextSizeStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SetTransactionIsolationLevelStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SetUserStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SetVariableStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ShutdownStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SignatureStatementBase":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.StatementWithCommonTableExpressionsAndXmlNamespaces":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SymmetricKeyStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.TextModificationStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.TransactionStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.TriggerStatementBody":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.TruncateTableStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.TryCatchStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.UpdateStatisticsStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.UpdateTextStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.UserStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.UseStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.WaitForStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.WaitForSupportedStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.WhileStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadGroupStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.WriteTextStatement":
-                    break;
+                if (sqlStatement is Microsoft.SqlServer.TransactSql.ScriptDom.SelectStatement)
+                {
+                    SelectStatement selectStatement = sqlStatement as SelectStatement;
+                    if (selectStatement.WithCtesAndXmlNamespaces != null)
+                    {
+                        foreach (CommonTableExpression cte in selectStatement.WithCtesAndXmlNamespaces.CommonTableExpressions)
+                        {
+                            findIdentifiers(cte.QueryExpression);
+                        }
+                    }
+                    findIdentifiers(selectStatement.QueryExpression);
+                }
+                else if (sqlStatement is Microsoft.SqlServer.TransactSql.ScriptDom.DeleteStatement)
+                {
+                    DeleteStatement deleteStatement = sqlStatement as DeleteStatement;
+                    if (deleteStatement.WithCtesAndXmlNamespaces != null)
+                    {
+                        foreach (CommonTableExpression cte in deleteStatement.WithCtesAndXmlNamespaces.CommonTableExpressions)
+                        {
+                            findIdentifiers(cte.QueryExpression);
+                        }
+                    }
+                    findIdentifiers(deleteStatement.DeleteSpecification.WhereClause);
+                    findIdentifiers(deleteStatement.DeleteSpecification.Target);
+                    if (deleteStatement.DeleteSpecification.FromClause != null)
+                    {
+                        foreach (TableReference table in deleteStatement.DeleteSpecification.FromClause.TableReferences)
+                        {
+                            findIdentifiers(table);
+                        }
+                    }
+                    if (deleteStatement.DeleteSpecification.OutputIntoClause != null)
+                    {
+                        findIdentifiers(deleteStatement.DeleteSpecification.OutputIntoClause.IntoTable);
+                    }
+                }
+                else if (sqlStatement is Microsoft.SqlServer.TransactSql.ScriptDom.InsertStatement)
+                { }
+                else if (sqlStatement is Microsoft.SqlServer.TransactSql.ScriptDom.MergeStatement)
+                { }
+                else if (sqlStatement is Microsoft.SqlServer.TransactSql.ScriptDom.UpdateStatement)
+                {
+                    UpdateStatement updateStatement = sqlStatement as UpdateStatement;
+                    if (updateStatement.WithCtesAndXmlNamespaces != null)
+                    {
+                        foreach (CommonTableExpression cte in updateStatement.WithCtesAndXmlNamespaces.CommonTableExpressions)
+                        {
+                            findIdentifiers(cte.QueryExpression);
+                        }
+                    }
+                    findIdentifiers(updateStatement.UpdateSpecification.WhereClause);
+                    findIdentifiers(updateStatement.UpdateSpecification.Target);
+                    if (updateStatement.UpdateSpecification.FromClause != null)
+                    {
+                        foreach (TableReference table in updateStatement.UpdateSpecification.FromClause.TableReferences)
+                        {
+                            findIdentifiers(table);
+                        }
+                    }
+                    if (updateStatement.UpdateSpecification.OutputIntoClause != null)
+                    {
+                        findIdentifiers(updateStatement.UpdateSpecification.OutputIntoClause.IntoTable);
+                    }
+                    foreach(SetClause setClause in updateStatement.UpdateSpecification.SetClauses)
+                    {
+                        findIdentifiers(setClause);
+                    }
+                    
+                }
+            }
+            else
+            {
+                // ToDo: Finish handling of the different TSqlStatements below.  And do the drill through.
+                switch (sqlStatement.GetType().FullName)
+                {
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterAsymmetricKeyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterAuthorizationStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterCreateEndpointStatementBase":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterCreateServiceStatementBase":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterCryptographicProviderStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterDatabaseStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterFederationStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterFullTextIndexStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterFullTextStopListStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterLoginStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterPartitionFunctionStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterPartitionSchemeStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterResourceGovernorStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterSchemaStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterSearchPropertyListStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterServiceMasterKeyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterTableStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterXmlSchemaCollectionStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ApplicationRoleStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AssemblyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AuditSpecificationStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AvailabilityGroupStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.BackupRestoreMasterKeyStatementBase":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.BackupStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.BeginConversationTimerStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.BeginDialogStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.BeginEndBlockStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.BreakStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.BrokerPriorityStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.BulkInsertBase":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CertificateStatementBase":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CheckpointStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CloseMasterKeyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CloseSymmetricKeyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ContinueStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateAggregateStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateAsymmetricKeyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateColumnStoreIndexStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateContractStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateCryptographicProviderStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateDatabaseStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateDefaultStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateEventNotificationStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateFederationStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateFullTextIndexStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateFullTextStopListStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateLoginStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreatePartitionFunctionStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreatePartitionSchemeStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateRuleStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateSchemaStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateSearchPropertyListStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateSpatialIndexStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateStatisticsStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateSynonymStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateTableStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateTypeStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateXmlSchemaCollectionStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CredentialStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CursorStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DatabaseEncryptionKeyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DbccStatement":
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareCursorStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareTableVariableStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareVariableStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DiskStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DropChildObjectsStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DropDatabaseEncryptionKeyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DropDatabaseStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DropEventNotificationStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DropFullTextIndexStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DropIndexStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DropMasterKeyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DropObjectsStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DropQueueStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DropSchemaStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DropTypeStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DropUnownedObjectStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DropXmlSchemaCollectionStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.EnableDisableTriggerStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.EndConversationStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.EventSessionStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ExecuteAsStatement":
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.ExecuteStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.FullTextCatalogStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.GoToStatement":
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.IfStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.IndexStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.KillQueryNotificationSubscriptionStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.KillStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.KillStatsJobStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.LabelStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.LineNoStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.MasterKeyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.MessageTypeStatementBase":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.MoveConversationStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenMasterKeyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenSymmetricKeyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.PrintStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ProcedureStatementBodyBase":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.QueueStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.RaiseErrorLegacyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.RaiseErrorStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ReadTextStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ReconfigureStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.RemoteServiceBindingStatementBase":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ResourcePoolStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.RestoreStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ReturnStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.RevertStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.RoleStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.RouteStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SecurityStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SecurityStatementBody80":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SendStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SequenceStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ServerAuditStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SetCommandStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SetErrorLevelStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SetOnOffStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SetRowCountStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SetTextSizeStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SetTransactionIsolationLevelStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SetUserStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SetVariableStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ShutdownStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SignatureStatementBase":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.StatementWithCtesAndXmlNamespaces":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SymmetricKeyStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.TextModificationStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ThrowStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.TransactionStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.TriggerStatementBody":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.TruncateTableStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.TryCatchStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.TSqlStatementSnippet":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.UpdateStatisticsStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.UseFederationStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.UserStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.UseStatement":
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.ViewStatementBody":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.WaitForStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.WaitForSupportedStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.WhileStatement":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadGroupStatement":
+                        break;
 
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.IfStatement":
-//                    if (((IfStatement)sqlStatement).Predicate != null)
-//                        findIdentifiers(((IfStatement)sqlStatement).Predicate);
-                    if (((IfStatement)sqlStatement).ThenStatement != null)
-                        findIdentifiers(((IfStatement)sqlStatement).ThenStatement);
-                    if (((IfStatement)sqlStatement).ElseStatement != null)
-                        findIdentifiers(((IfStatement)sqlStatement).ElseStatement);
-                    break;
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SelectStatement":
-                    findIdentifiers((SelectStatement)sqlStatement);
-                    break;
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.InsertStatement":
-                    findIdentifiers((InsertStatement)sqlStatement);
-                    break;
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.UpdateStatement":
-                    findIdentifiers((UpdateStatement)sqlStatement);
-                    break;
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DeleteStatement":
-                    findIdentifiers((DeleteStatement)sqlStatement);
-                    break;
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ExecuteStatement":
-                    findIdentifiers((ExecuteStatement)sqlStatement);
-                    break;
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterProcedureStatement":
-                    findIdentifiers(((AlterProcedureStatement)sqlStatement).ProcedureReference.Name);
-                    findIdentifiers(((AlterProcedureStatement)sqlStatement).StatementList);
-                    break;
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.FunctionStatementBody":
-                    findIdentifiers(((FunctionStatementBody)sqlStatement).StatementList);
-                    break;
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareCursorStatement":
-                    findIdentifiers(((DeclareCursorStatement)sqlStatement).CursorDefinition.Select);
-                    break;
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ViewStatementBody":
-                    findIdentifiers(((ViewStatementBody)sqlStatement).SelectStatement);
-                    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.IfStatement":
+                        //                    if (((IfStatement)sqlStatement).Predicate != null)
+                        //                        findIdentifiers(((IfStatement)sqlStatement).Predicate);
+                        if (((IfStatement)sqlStatement).ThenStatement != null)
+                            findIdentifiers(((IfStatement)sqlStatement).ThenStatement);
+                        if (((IfStatement)sqlStatement).ElseStatement != null)
+                            findIdentifiers(((IfStatement)sqlStatement).ElseStatement);
+                        break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.InsertStatement":
+                    //    findIdentifiers((InsertStatement)sqlStatement);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.UpdateStatement":
+                    //    findIdentifiers((UpdateStatement)sqlStatement);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.DeleteStatement":
+                    //    findIdentifiers((DeleteStatement)sqlStatement);
+                    //    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ExecuteStatement":
+                        findIdentifiers((ExecuteStatement)sqlStatement);
+                        break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterProcedureStatement":
+                    //    findIdentifiers(((AlterProcedureStatement)sqlStatement).ProcedureReference.Name);
+                    //    findIdentifiers(((AlterProcedureStatement)sqlStatement).StatementList);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.FunctionStatementBody":
+                    //    findIdentifiers(((FunctionStatementBody)sqlStatement).StatementList);
+                    //    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareCursorStatement":
+                        findIdentifiers(((DeclareCursorStatement)sqlStatement).CursorDefinition.Select);
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ViewStatementBody":
+                        findIdentifiers(((ViewStatementBody)sqlStatement).SelectStatement);
+                        break;
 
-                default:
-                    throw new Exception("Unhandled Statement Type in findIdentifiers(TSqlStatement sqlStatement) " + sqlStatement.GetType().FullName);
+                    default:
+                        throw new Exception("Unhandled Statement Type in findIdentifiers(TSqlStatement sqlStatement) " + sqlStatement.GetType().FullName);
+                }
+            }
+        }
+
+        private void findIdentifiers(SetClause setClause)
+        {
+            if (setClause is AssignmentSetClause)
+            {
+                AssignmentSetClause assSetClause = setClause as AssignmentSetClause;
+                findIdentifiers(assSetClause.NewValue);
+            }
+            else
+            {
+                FunctionCallSetClause funcSetClause = setClause as FunctionCallSetClause;
+                findIdentifiers(funcSetClause.MutatorFunction);
             }
         }
 
@@ -658,21 +599,27 @@ namespace TSQLParser
         #region QueryExpression
         private void findIdentifiers(QueryExpression queryExpression)
         {
-            if (queryExpression is QuerySpecification)
+            if (queryExpression != null)
             {
-                findIdentifiers((QuerySpecification)queryExpression);
-            }
-            else if (queryExpression is BinaryQueryExpression)
-            {
-                findIdentifiers((BinaryQueryExpression)queryExpression);
-            }
-//            else if (queryExpression is QueryParenthesis)
-//            {
-//                findIdentifiers((QueryParenthesis)queryExpression);
-//            }
-            else
-            {
-                throw new Exception("Unhandled Statement Type in findIdentifiers(QueryExpression queryExpression) " + queryExpression.GetType().FullName);
+                if (queryExpression is QuerySpecification)
+                {
+                    findIdentifiers((QuerySpecification)queryExpression);
+                }
+                else if (queryExpression is BinaryQueryExpression)
+                {
+                    BinaryQueryExpression binaryQueryExpression = queryExpression as BinaryQueryExpression;
+
+                    findIdentifiers(binaryQueryExpression.FirstQueryExpression);
+                    findIdentifiers(binaryQueryExpression.SecondQueryExpression);
+                }
+                //            else if (queryExpression is QueryParenthesis)
+                //            {
+                //                findIdentifiers((QueryParenthesis)queryExpression);
+                //            }
+                else
+                {
+                    throw new Exception("Unhandled Statement Type in findIdentifiers(QueryExpression queryExpression) " + queryExpression.GetType().FullName);
+                }
             }
         }
 
@@ -765,7 +712,8 @@ namespace TSQLParser
 
         private void findIdentifiers(WhereClause whereClause)
         {
-            findIdentifiers(whereClause.SearchCondition);
+            if (whereClause != null)
+                findIdentifiers(whereClause.SearchCondition);
         }
 
         private void findIdentifiers(BooleanExpression booleanExpression)
@@ -783,7 +731,78 @@ namespace TSQLParser
 
         private void findIdentifiers(ScalarExpression scalarExpression)
         {
-            throw new NotImplementedException();
+            if (scalarExpression is Microsoft.SqlServer.TransactSql.ScriptDom.CaseExpression)
+            {
+                if (scalarExpression is Microsoft.SqlServer.TransactSql.ScriptDom.SearchedCaseExpression)
+                {
+                    SearchedCaseExpression searchedCaseExpression = scalarExpression as SearchedCaseExpression;
+                    findIdentifiers(searchedCaseExpression.ElseExpression);
+                    foreach (WhenClause whenClause in searchedCaseExpression.WhenClauses)
+                    {
+                        findIdentifiers(whenClause.ThenExpression);
+                    }
+                }
+                else
+                {
+                    SimpleCaseExpression simpleCaseExpression = scalarExpression as SimpleCaseExpression;
+                    findIdentifiers(simpleCaseExpression.InputExpression);
+                    findIdentifiers(simpleCaseExpression.ElseExpression);
+                    foreach (WhenClause whenClause in simpleCaseExpression.WhenClauses)
+                    {
+                        findIdentifiers(whenClause.ThenExpression);
+                    }
+                }
+            }
+            else if (scalarExpression is Microsoft.SqlServer.TransactSql.ScriptDom.CoalesceExpression)
+            {
+                foreach(ScalarExpression expression in ((scalarExpression as CoalesceExpression).Expressions))
+                {
+                    findIdentifiers(expression);
+                }
+            }
+            else if (scalarExpression is Microsoft.SqlServer.TransactSql.ScriptDom.FunctionCall)
+            {
+                FunctionCall functionCall = scalarExpression as FunctionCall;
+                //ToDo:  Handle Identifiers!  
+                findIdentifiers(functionCall.FunctionName, Identifier.IdentifierEnum.Function);
+                foreach(ScalarExpression expression in functionCall.Parameters)
+                {
+                    findIdentifiers(expression);
+                }
+            }
+            else if ((scalarExpression is CastCall) || (scalarExpression is ColumnReferenceExpression) || (scalarExpression is ConvertCall) || (scalarExpression is ValueExpression))
+            {
+                // Ignore these and their children as they have no identifiers in them
+                //Microsoft.SqlServer.TransactSql.ScriptDom.GlobalVariableExpression
+                //Microsoft.SqlServer.TransactSql.ScriptDom.Literal
+                //Microsoft.SqlServer.TransactSql.ScriptDom.VariableReference            
+            }
+            else
+            {
+                switch (scalarExpression.GetType().FullName)
+                {
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.BinaryExpression":
+                        BinaryExpression binaryExpression = (scalarExpression as BinaryExpression);
+                        findIdentifiers(binaryExpression.FirstExpression);
+                        findIdentifiers(binaryExpression.SecondExpression);
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ExtractFromExpression":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.IdentityFunctionCall":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.OdbcConvertSpecification":
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.PrimaryExpression":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ScalarExpressionSnippet":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SourceDeclaration":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.UnaryExpression":
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ColumnReferenceExpression":
+                        // No useful identifiers here
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.PrimaryExpression":
+                        break;
+                    default:
+                        throw new Exception("Unhandled Statement Type in findIdentifiers(ScalarExpression scalarExpression) " + scalarExpression.GetType().FullName);
+                }
+            }
         }
 
         //private void findIdentifiers(Expression expression)
@@ -957,92 +976,95 @@ namespace TSQLParser
 
         private void findIdentifiers(TableReference tableSource)
         {
-            switch (tableSource.GetType().FullName)
+            if (tableSource != null)
             {
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.NamedTableReference":
-                    findIdentifiers((tableSource as NamedTableReference).SchemaObject);
-                    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.JoinParenthesis":
-                //    findIdentifiers(((JoinParenthesis)tableSource).Join);
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.OdbcQualifiedJoin":
-                //    findIdentifiers(((OdbcQualifiedJoin)tableSource).TableSource);
-                //    break;
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.QualifiedJoin":
-                    findIdentifiers(((QualifiedJoin)tableSource).FirstTableReference);
-                    findIdentifiers(((QualifiedJoin)tableSource).SecondTableReference);
-                    findIdentifiers(((QualifiedJoin)tableSource).SearchCondition);
-                    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.UnqualifiedJoin":
-                //    findIdentifiers(((UnqualifiedJoin)tableSource).FirstTableSource);
-                //    findIdentifiers(((UnqualifiedJoin)tableSource).SecondTableSource);
-                //    break;
+                switch (tableSource.GetType().FullName)
+                {
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.NamedTableReference":
+                        findIdentifiers((tableSource as NamedTableReference).SchemaObject);
+                        break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.JoinParenthesis":
+                    //    findIdentifiers(((JoinParenthesis)tableSource).Join);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.OdbcQualifiedJoin":
+                    //    findIdentifiers(((OdbcQualifiedJoin)tableSource).TableSource);
+                    //    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.QualifiedJoin":
+                        findIdentifiers(((QualifiedJoin)tableSource).FirstTableReference);
+                        findIdentifiers(((QualifiedJoin)tableSource).SecondTableReference);
+                        findIdentifiers(((QualifiedJoin)tableSource).SearchCondition);
+                        break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.UnqualifiedJoin":
+                    //    findIdentifiers(((UnqualifiedJoin)tableSource).FirstTableSource);
+                    //    findIdentifiers(((UnqualifiedJoin)tableSource).SecondTableSource);
+                    //    break;
 
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.TableSourceWithAlias":
-                //    // NOP (Not interested in the Alias)
-                //    break;
-                //// The following are all based on TableSourceWithAlias
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.AdhocTableSource":
-                //    // ToDo:  Handle This?
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.BuiltInFunctionTableSource":
-                //    // findIdentifiers(((BuiltInFunctionTableSource)tableSource).Name);
-                //    // Not interested in Builtin Functions!
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.FullTextTableSource":
-                //    findIdentifiers(((FullTextTableSource)tableSource).TableName);
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.InternalOpenRowset":
-                //    // NOP (No useful data)
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenQueryTableSource":
-                //    findIdentifiers((OpenQueryTableSource)tableSource);
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenRowsetTableSource":
-                //    findIdentifiers(((OpenRowsetTableSource)tableSource).Query);
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenXmlTableSource":
-                //    findIdentifiers(((OpenXmlTableSource)tableSource).TableName);
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.PivotedTableSource":
-                //    findIdentifiers(((PivotedTableSource)tableSource).TableSource);
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.UnpivotedTableSource":
-                //    findIdentifiers(((UnpivotedTableSource)tableSource).TableSource);
-                //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.TableSourceWithAlias":
+                    //    // NOP (Not interested in the Alias)
+                    //    break;
+                    //// The following are all based on TableSourceWithAlias
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.AdhocTableSource":
+                    //    // ToDo:  Handle This?
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.BuiltInFunctionTableSource":
+                    //    // findIdentifiers(((BuiltInFunctionTableSource)tableSource).Name);
+                    //    // Not interested in Builtin Functions!
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.FullTextTableSource":
+                    //    findIdentifiers(((FullTextTableSource)tableSource).TableName);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.InternalOpenRowset":
+                    //    // NOP (No useful data)
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenQueryTableSource":
+                    //    findIdentifiers((OpenQueryTableSource)tableSource);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenRowsetTableSource":
+                    //    findIdentifiers(((OpenRowsetTableSource)tableSource).Query);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenXmlTableSource":
+                    //    findIdentifiers(((OpenXmlTableSource)tableSource).TableName);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.PivotedTableSource":
+                    //    findIdentifiers(((PivotedTableSource)tableSource).TableSource);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.UnpivotedTableSource":
+                    //    findIdentifiers(((UnpivotedTableSource)tableSource).TableSource);
+                    //    break;
 
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.TableSourceWithAliasAndColumns":
-                //    // See Below
-                //    break;
-                //// The following are all based on TableSourceWithAliasAndColumns
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.BulkOpenRowset":
-                //    // NOP (Filename)
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.ChangeTableChangesTableSource":
-                //    findIdentifiers(((ChangeTableChangesTableSource)tableSource).Target);
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.ChangeTableVersionTableSource":
-                //    findIdentifiers(((ChangeTableVersionTableSource)tableSource).Target);
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.DataModificationStatementTableSource":
-                //    findIdentifiers(((DataModificationStatementTableSource)tableSource).Statement);
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.InlineDerivedTable":
-                //    // NOP
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.QueryDerivedTable":
-                //    findIdentifiers(((QueryDerivedTable)tableSource).Subquery);
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.SchemaObjectTableSource":
-                //    findIdentifiers(((SchemaObjectTableSource)tableSource).SchemaObject);
-                //    break;
-                //case "Microsoft.SqlServer.TransactSql.ScriptDom.VariableTableSource":
-                //    // Not intested in Variables...
-                //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.TableSourceWithAliasAndColumns":
+                    //    // See Below
+                    //    break;
+                    //// The following are all based on TableSourceWithAliasAndColumns
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.BulkOpenRowset":
+                    //    // NOP (Filename)
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.ChangeTableChangesTableSource":
+                    //    findIdentifiers(((ChangeTableChangesTableSource)tableSource).Target);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.ChangeTableVersionTableSource":
+                    //    findIdentifiers(((ChangeTableVersionTableSource)tableSource).Target);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.DataModificationStatementTableSource":
+                    //    findIdentifiers(((DataModificationStatementTableSource)tableSource).Statement);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.InlineDerivedTable":
+                    //    // NOP
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.QueryDerivedTable":
+                    //    findIdentifiers(((QueryDerivedTable)tableSource).Subquery);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.SchemaObjectTableSource":
+                    //    findIdentifiers(((SchemaObjectTableSource)tableSource).SchemaObject);
+                    //    break;
+                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.VariableTableSource":
+                    //    // Not intested in Variables...
+                    //    break;
 
 
-                default:
-                    throw new Exception("Unhandled Statement Type in findIdentifiers(TableSource tableSource) " + tableSource.GetType().FullName);
+                    default:
+                        throw new Exception("Unhandled Statement Type in findIdentifiers(TableSource tableSource) " + tableSource.GetType().FullName);
+                }
             }
         }
 
@@ -1115,6 +1137,15 @@ namespace TSQLParser
                 default: foundID = new Identifier(string.Empty, string.Empty, string.Empty, schemaObject.BaseIdentifier.Value, objectType);
                     break;
             }
+            if (!_identifiers.ContainsKey(foundID.ToString()))
+            {
+                _identifiers.Add(foundID.ToString(), foundID);
+            }
+        }
+
+        private void findIdentifiers(Microsoft.SqlServer.TransactSql.ScriptDom.Identifier objectName, Identifier.IdentifierEnum objectType)
+        {
+            Identifier foundID = new Identifier(string.Empty, string.Empty, string.Empty, objectName.Value, objectType);
             if (!_identifiers.ContainsKey(foundID.ToString()))
             {
                 _identifiers.Add(foundID.ToString(), foundID);

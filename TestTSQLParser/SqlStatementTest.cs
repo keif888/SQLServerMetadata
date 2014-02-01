@@ -263,7 +263,7 @@ namespace TestTSQLParser
             target.ParseString(sqlString);
             actual = target.parseErrors;
             Assert.AreEqual(1, actual.Count);
-            Assert.AreEqual("TSP0010 Incorrect syntax near select.", actual[0]);
+            Assert.AreEqual("46010 Incorrect syntax near select.", actual[0]);
         }
 
 
@@ -514,6 +514,21 @@ namespace TestTSQLParser
             List<string> expected = new List<string>();
             List<string> actual;
             string sqlString = "SELECT CASE WHEN Col1 = 'A' THEN 'B' ELSE 'C' END FROM [dbo].[TestTable] WHERE CASE WHEN Col1 = 'A' THEN 'B' ELSE 'C' END = 'C';";
+            expected.Add("[dbo].[TestTable]");
+            target.ParseString(sqlString);
+            actual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(expected.Count, actual.Count);
+            Assert.AreEqual(expected[0], actual[0]);
+        }
+
+        [TestMethod()]
+        public void basicDeleteStatement()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            List<string> expected = new List<string>();
+            List<string> actual;
+            string sqlString = "DELETE FROM [dbo].[TestTable];";
             expected.Add("[dbo].[TestTable]");
             target.ParseString(sqlString);
             actual = target.getTableNames(forceSchemaQualified);
