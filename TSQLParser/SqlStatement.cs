@@ -261,6 +261,7 @@ namespace TSQLParser
                     {
                         foreach (CommonTableExpression cte in selectStatement.WithCtesAndXmlNamespaces.CommonTableExpressions)
                         {
+                            findIdentifiers(cte.ExpressionName, Identifier.IdentifierEnum.CommonTableExpression);
                             findIdentifiers(cte.QueryExpression);
                         }
                     }
@@ -273,6 +274,7 @@ namespace TSQLParser
                     {
                         foreach (CommonTableExpression cte in deleteStatement.WithCtesAndXmlNamespaces.CommonTableExpressions)
                         {
+                            findIdentifiers(cte.ExpressionName, Identifier.IdentifierEnum.CommonTableExpression);
                             findIdentifiers(cte.QueryExpression);
                         }
                     }
@@ -291,9 +293,37 @@ namespace TSQLParser
                     }
                 }
                 else if (sqlStatement is Microsoft.SqlServer.TransactSql.ScriptDom.InsertStatement)
-                { }
+                {
+                    InsertStatement insertStatement = sqlStatement as InsertStatement;
+                    if (insertStatement.WithCtesAndXmlNamespaces != null)
+                    {
+                        foreach (CommonTableExpression cte in insertStatement.WithCtesAndXmlNamespaces.CommonTableExpressions)
+                        {
+                            findIdentifiers(cte.ExpressionName, Identifier.IdentifierEnum.CommonTableExpression);
+                            findIdentifiers(cte.QueryExpression);
+                        }
+                    }
+                    findIdentifiers(insertStatement.InsertSpecification.Target);
+                    findIdentifiers(insertStatement.InsertSpecification.InsertSource);
+                    if (insertStatement.InsertSpecification.OutputIntoClause != null) 
+                        findIdentifiers(insertStatement.InsertSpecification.OutputIntoClause.IntoTable);
+                }
                 else if (sqlStatement is Microsoft.SqlServer.TransactSql.ScriptDom.MergeStatement)
-                { }
+                {
+                    MergeStatement mergeStatement = sqlStatement as MergeStatement;
+                    if (mergeStatement.WithCtesAndXmlNamespaces != null)
+                    {
+                        foreach (CommonTableExpression cte in mergeStatement.WithCtesAndXmlNamespaces.CommonTableExpressions)
+                        {
+                            findIdentifiers(cte.ExpressionName, Identifier.IdentifierEnum.CommonTableExpression);
+                            findIdentifiers(cte.QueryExpression);
+                        }
+                    }
+                    findIdentifiers(mergeStatement.MergeSpecification.Target);
+                    findIdentifiers(mergeStatement.MergeSpecification.TableReference);
+                    if (mergeStatement.MergeSpecification.OutputIntoClause != null)
+                        findIdentifiers(mergeStatement.MergeSpecification.OutputIntoClause.IntoTable);
+                }
                 else if (sqlStatement is Microsoft.SqlServer.TransactSql.ScriptDom.UpdateStatement)
                 {
                     UpdateStatement updateStatement = sqlStatement as UpdateStatement;
@@ -301,6 +331,7 @@ namespace TSQLParser
                     {
                         foreach (CommonTableExpression cte in updateStatement.WithCtesAndXmlNamespaces.CommonTableExpressions)
                         {
+                            findIdentifiers(cte.ExpressionName, Identifier.IdentifierEnum.CommonTableExpression);
                             findIdentifiers(cte.QueryExpression);
                         }
                     }
@@ -517,6 +548,39 @@ namespace TSQLParser
             }
         }
 
+        private void findIdentifiers(InsertSource insertSource)
+        {
+            if (insertSource is SelectInsertSource)
+            {
+                SelectInsertSource selectInsertSource = insertSource as SelectInsertSource;
+                findIdentifiers(selectInsertSource.Select);
+            }
+            else if (insertSource is ExecuteInsertSource)
+            {
+                findIdentifiers((insertSource as ExecuteInsertSource).Execute);
+            }
+        }
+
+        private void findIdentifiers(ExecuteSpecification executeSpecification)
+        {
+            if (executeSpecification.ExecutableEntity != null)
+            { 
+                if (executeSpecification.ExecutableEntity is ExecutableProcedureReference)
+                {
+                    ExecutableProcedureReference executableProcedureReference = executeSpecification.ExecutableEntity as ExecutableProcedureReference;
+                    findIdentifiers(executableProcedureReference.ProcedureReference.ProcedureReference.Name, Identifier.IdentifierEnum.Procedure);
+                }
+                else
+                {
+                    ExecutableStringList executableStringList = executeSpecification.ExecutableEntity as ExecutableStringList;
+                    foreach (ValueExpression ve in executableStringList.Strings)
+                    {
+                        findIdentifiers(ve);
+                    }
+                }
+            }
+        }
+
         private void findIdentifiers(SetClause setClause)
         {
             if (setClause is AssignmentSetClause)
@@ -561,6 +625,11 @@ namespace TSQLParser
             {
                 if (selectStatement.WithCtesAndXmlNamespaces != null) // .WithCommonTableExpressionsAndXmlNamespaces != null)
                 {
+                    foreach (CommonTableExpression cte in selectStatement.WithCtesAndXmlNamespaces.CommonTableExpressions)
+                    {
+                        findIdentifiers(cte.ExpressionName, Identifier.IdentifierEnum.CommonTableExpression);
+                        findIdentifiers(cte.QueryExpression);
+                    }
                     //findIdentifiers(selectStatement.WithCtesAndXmlNamespaces);
                 }
             }
@@ -722,6 +791,75 @@ namespace TSQLParser
             {
                 findIdentifiers((booleanExpression as BooleanComparisonExpression).FirstExpression);
                 findIdentifiers((booleanExpression as BooleanComparisonExpression).SecondExpression);
+            }
+            else if (booleanExpression is BooleanBinaryExpression)
+            {
+                findIdentifiers((booleanExpression as BooleanBinaryExpression).FirstExpression);
+                findIdentifiers((booleanExpression as BooleanBinaryExpression).SecondExpression);
+            }
+            //else if (booleanExpression is BooleanExpressionSnippet)
+            //{
+            //    findIdentifiers((booleanExpression as BooleanExpressionSnippet).);
+            //    findIdentifiers((booleanExpression as BooleanExpressionSnippet).SecondExpression);
+            //}
+            else if (booleanExpression is BooleanIsNullExpression)
+            {
+                findIdentifiers((booleanExpression as BooleanIsNullExpression).Expression);
+            }
+            else if (booleanExpression is BooleanNotExpression)
+            {
+                findIdentifiers((booleanExpression as BooleanNotExpression).Expression);
+            }
+            else if (booleanExpression is BooleanParenthesisExpression)
+            {
+                findIdentifiers((booleanExpression as BooleanParenthesisExpression).Expression);
+            }
+            else if (booleanExpression is BooleanTernaryExpression)
+            {
+                findIdentifiers((booleanExpression as BooleanTernaryExpression).FirstExpression);
+                findIdentifiers((booleanExpression as BooleanTernaryExpression).SecondExpression);
+                findIdentifiers((booleanExpression as BooleanTernaryExpression).ThirdExpression);
+            }
+            else if (booleanExpression is EventDeclarationCompareFunctionParameter)
+            {
+                //foreach (Microsoft.SqlServer.TransactSql.ScriptDom.Identifier id in (booleanExpression as EventDeclarationCompareFunctionParameter).Name.MultiPartIdentifier.Identifiers)
+                //    findIdentifiers(id.);
+                findIdentifiers((booleanExpression as EventDeclarationCompareFunctionParameter).SourceDeclaration);
+            }
+            else if (booleanExpression is ExistsPredicate)
+            {
+                findIdentifiers((booleanExpression as ExistsPredicate).Subquery);
+            }
+            else if (booleanExpression is FullTextPredicate)
+            {
+                // No Table ID's here!
+            }
+            else if (booleanExpression is InPredicate)
+            {
+                findIdentifiers((booleanExpression as InPredicate).Expression);
+                foreach (ScalarExpression expression in (booleanExpression as InPredicate).Values)
+                    findIdentifiers(expression);
+            }
+            else if (booleanExpression is LikePredicate)
+            {
+                findIdentifiers((booleanExpression as LikePredicate).FirstExpression);
+                findIdentifiers((booleanExpression as LikePredicate).SecondExpression);
+            }
+            else if (booleanExpression is SubqueryComparisonPredicate)
+            {
+                findIdentifiers((booleanExpression as SubqueryComparisonPredicate).Expression);
+                findIdentifiers((booleanExpression as SubqueryComparisonPredicate).Subquery);
+            }
+            else if (booleanExpression is TSEqualCall)
+            {
+                findIdentifiers((booleanExpression as TSEqualCall).FirstExpression);
+                findIdentifiers((booleanExpression as TSEqualCall).SecondExpression);
+            }
+            else if (booleanExpression is UpdateCall)
+            {
+                //ToDo: test this and find out what it is.
+                //findIdentifiers((booleanExpression as UpdateCall).Identifier);
+                //findIdentifiers((booleanExpression as UpdateCall).);
             }
             else
             {
@@ -981,7 +1119,9 @@ namespace TSQLParser
                 switch (tableSource.GetType().FullName)
                 {
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.NamedTableReference":
+                        // These are sometimes CTE's.  How do you tell the difference?
                         findIdentifiers((tableSource as NamedTableReference).SchemaObject);
+                        // Ignore these as they are CTE names...
                         break;
                     //case "Microsoft.SqlServer.TransactSql.ScriptDom.JoinParenthesis":
                     //    findIdentifiers(((JoinParenthesis)tableSource).Join);
