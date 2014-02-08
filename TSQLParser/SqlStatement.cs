@@ -416,7 +416,6 @@ namespace TSQLParser
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateSpatialIndexStatement":
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateStatisticsStatement":
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateSynonymStatement":
-                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateTableStatement":
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateTypeStatement":
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateXmlSchemaCollectionStatement":
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.CredentialStatement":
@@ -516,25 +515,16 @@ namespace TSQLParser
                         if (((IfStatement)sqlStatement).ElseStatement != null)
                             findIdentifiers(((IfStatement)sqlStatement).ElseStatement);
                         break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.InsertStatement":
-                    //    findIdentifiers((InsertStatement)sqlStatement);
-                    //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.UpdateStatement":
-                    //    findIdentifiers((UpdateStatement)sqlStatement);
-                    //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.DeleteStatement":
-                    //    findIdentifiers((DeleteStatement)sqlStatement);
-                    //    break;
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.ExecuteStatement":
                         findIdentifiers((ExecuteStatement)sqlStatement);
                         break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterProcedureStatement":
-                    //    findIdentifiers(((AlterProcedureStatement)sqlStatement).ProcedureReference.Name);
-                    //    findIdentifiers(((AlterProcedureStatement)sqlStatement).StatementList);
-                    //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.FunctionStatementBody":
-                    //    findIdentifiers(((FunctionStatementBody)sqlStatement).StatementList);
-                    //    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterProcedureStatement":
+                        findIdentifiers(((AlterProcedureStatement)sqlStatement).ProcedureReference.Name);
+                        findIdentifiers(((AlterProcedureStatement)sqlStatement).StatementList);
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.FunctionStatementBody":
+                        findIdentifiers(((FunctionStatementBody)sqlStatement).StatementList);
+                        break;
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareCursorStatement":
                         findIdentifiers(((DeclareCursorStatement)sqlStatement).CursorDefinition.Select);
                         break;
@@ -542,6 +532,9 @@ namespace TSQLParser
                         findIdentifiers(((ViewStatementBody)sqlStatement).SelectStatement);
                         break;
 
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateTableStatement":
+                        findIdentifiers(((CreateTableStatement)sqlStatement).SchemaObjectName);
+                        break;
                     default:
                         throw new Exception("Unhandled Statement Type in findIdentifiers(TSqlStatement sqlStatement) " + sqlStatement.GetType().FullName);
                 }
@@ -839,6 +832,8 @@ namespace TSQLParser
                 findIdentifiers((booleanExpression as InPredicate).Expression);
                 foreach (ScalarExpression expression in (booleanExpression as InPredicate).Values)
                     findIdentifiers(expression);
+                if ((booleanExpression as InPredicate).Subquery != null)
+                    findIdentifiers((booleanExpression as InPredicate).Subquery);
             }
             else if (booleanExpression is LikePredicate)
             {
@@ -914,6 +909,11 @@ namespace TSQLParser
                 //Microsoft.SqlServer.TransactSql.ScriptDom.GlobalVariableExpression
                 //Microsoft.SqlServer.TransactSql.ScriptDom.Literal
                 //Microsoft.SqlServer.TransactSql.ScriptDom.VariableReference            
+            }
+            else if ((scalarExpression is ScalarSubquery))
+            {
+                ScalarSubquery scalarSubquery = scalarExpression as ScalarSubquery;
+                findIdentifiers(scalarSubquery.QueryExpression);
             }
             else
             {
@@ -1123,21 +1123,21 @@ namespace TSQLParser
                         findIdentifiers((tableSource as NamedTableReference).SchemaObject);
                         // Ignore these as they are CTE names...
                         break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.JoinParenthesis":
-                    //    findIdentifiers(((JoinParenthesis)tableSource).Join);
-                    //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.OdbcQualifiedJoin":
-                    //    findIdentifiers(((OdbcQualifiedJoin)tableSource).TableSource);
-                    //    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.JoinParenthesisTableReference":
+                        findIdentifiers(((JoinParenthesisTableReference)tableSource).Join);
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.OdbcQualifiedJoinTableReference":
+                        findIdentifiers(((OdbcQualifiedJoinTableReference)tableSource).TableReference);
+                        break;
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.QualifiedJoin":
                         findIdentifiers(((QualifiedJoin)tableSource).FirstTableReference);
                         findIdentifiers(((QualifiedJoin)tableSource).SecondTableReference);
                         findIdentifiers(((QualifiedJoin)tableSource).SearchCondition);
                         break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.UnqualifiedJoin":
-                    //    findIdentifiers(((UnqualifiedJoin)tableSource).FirstTableSource);
-                    //    findIdentifiers(((UnqualifiedJoin)tableSource).SecondTableSource);
-                    //    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.UnqualifiedJoin":
+                        findIdentifiers(((UnqualifiedJoin)tableSource).FirstTableReference);
+                        findIdentifiers(((UnqualifiedJoin)tableSource).SecondTableReference);
+                        break;
 
                     //case "Microsoft.SqlServer.TransactSql.ScriptDom.TableSourceWithAlias":
                     //    // NOP (Not interested in the Alias)
@@ -1150,27 +1150,27 @@ namespace TSQLParser
                     //    // findIdentifiers(((BuiltInFunctionTableSource)tableSource).Name);
                     //    // Not interested in Builtin Functions!
                     //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.FullTextTableSource":
-                    //    findIdentifiers(((FullTextTableSource)tableSource).TableName);
-                    //    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.FullTextTableReference":
+                        findIdentifiers(((FullTextTableReference)tableSource).TableName);
+                        break;
                     //case "Microsoft.SqlServer.TransactSql.ScriptDom.InternalOpenRowset":
                     //    // NOP (No useful data)
                     //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenQueryTableSource":
-                    //    findIdentifiers((OpenQueryTableSource)tableSource);
-                    //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenRowsetTableSource":
-                    //    findIdentifiers(((OpenRowsetTableSource)tableSource).Query);
-                    //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenXmlTableSource":
-                    //    findIdentifiers(((OpenXmlTableSource)tableSource).TableName);
-                    //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.PivotedTableSource":
-                    //    findIdentifiers(((PivotedTableSource)tableSource).TableSource);
-                    //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.UnpivotedTableSource":
-                    //    findIdentifiers(((UnpivotedTableSource)tableSource).TableSource);
-                    //    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenQueryTableReference":
+                        findIdentifiers((OpenQueryTableReference)tableSource);
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenRowsetTableReference":
+                        findIdentifiers(((OpenRowsetTableReference)tableSource).Query);
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.OpenXmlTableReference":
+                        findIdentifiers(((OpenXmlTableReference)tableSource).TableName);
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.PivotedTableReference":
+                        findIdentifiers(((PivotedTableReference)tableSource).TableReference);
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.UnpivotedTableReference":
+                        findIdentifiers(((UnpivotedTableReference)tableSource).TableReference);
+                        break;
 
                     //case "Microsoft.SqlServer.TransactSql.ScriptDom.TableSourceWithAliasAndColumns":
                     //    // See Below
@@ -1179,24 +1179,28 @@ namespace TSQLParser
                     //case "Microsoft.SqlServer.TransactSql.ScriptDom.BulkOpenRowset":
                     //    // NOP (Filename)
                     //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.ChangeTableChangesTableSource":
-                    //    findIdentifiers(((ChangeTableChangesTableSource)tableSource).Target);
-                    //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.ChangeTableVersionTableSource":
-                    //    findIdentifiers(((ChangeTableVersionTableSource)tableSource).Target);
-                    //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.DataModificationStatementTableSource":
-                    //    findIdentifiers(((DataModificationStatementTableSource)tableSource).Statement);
-                    //    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ChangeTableChangesTableReference":
+                        findIdentifiers(((ChangeTableChangesTableReference)tableSource).Target);
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ChangeTableVersionTableReference":
+                        findIdentifiers(((ChangeTableVersionTableReference)tableSource).Target);
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DataModificationTableReference":
+                        findIdentifiers(((DataModificationTableReference)tableSource).DataModificationSpecification.Target);
+                        if (((DataModificationTableReference)tableSource).DataModificationSpecification.OutputIntoClause != null)
+                        {
+                            findIdentifiers(((DataModificationTableReference)tableSource).DataModificationSpecification.OutputIntoClause.IntoTable);
+                        }
+                        break;
                     //case "Microsoft.SqlServer.TransactSql.ScriptDom.InlineDerivedTable":
                     //    // NOP
                     //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.QueryDerivedTable":
-                    //    findIdentifiers(((QueryDerivedTable)tableSource).Subquery);
-                    //    break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.SchemaObjectTableSource":
-                    //    findIdentifiers(((SchemaObjectTableSource)tableSource).SchemaObject);
-                    //    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.QueryDerivedTable":
+                        findIdentifiers(((QueryDerivedTable)tableSource).QueryExpression);
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SchemaObjectFunctionTableReference":
+                        findIdentifiers(((SchemaObjectFunctionTableReference)tableSource).SchemaObject);
+                        break;
                     //case "Microsoft.SqlServer.TransactSql.ScriptDom.VariableTableSource":
                     //    // Not intested in Variables...
                     //    break;

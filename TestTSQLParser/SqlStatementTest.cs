@@ -535,6 +535,64 @@ namespace TestTSQLParser
             Assert.AreEqual(expected.Count, actual.Count);
             Assert.AreEqual(expected[0], actual[0]);
         }
-    
+
+        [TestMethod()]
+        public void fullOuterJoinStatement()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = "SELECT p1.PLAYERID,\n\tf1.PLAYERNAME,\n\tp2.PLAYERID,\n\tf2.PLAYERNAME\n\tFROM   PLAYER f1,\n\tPLAYER f2,\n\tPLAYS p1\n\tFULL OUTER JOIN PLAYS p2\n\t\tON p1.PLAYERID < p2.PLAYERID\n\t\tAND p1.TEAMID = p2.TEAMID\nGROUP  BY p1.PLAYERID,\n\tf1.PLAYERID,\n\tp2.PLAYERID,\n\tf2.PLAYERID\nHAVING Count(p1.PLAYERID) = Count(*)\n\tAND Count(p2.PLAYERID) = Count(*)\n\tAND p1.PLAYERID = f1.PLAYERID\n\tAND p2.PLAYERID = f2.PLAYERID; ";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[PLAYER]");
+            lstrexpected.Add("[PLAYS]");
+            lstractual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
+        [TestMethod()]
+        public void fullMultiSubSelectStatement()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = "select * from player where player_id in \n(\n select set2.player_id orig\n from\n (select count(*) count,b.player_id , nvl(sum(a.team_id+ascii(team_name)),0) team_value\n   from plays a, player b , team c\n   where a.player_id=b.player_id\n    and a.team_id = c.team_id\n   group by b.player_id) set1,\n(select count(*) count,b.player_id , nvl(sum(a.team_id+ascii(team_name)),0) team_value\n   from plays a, player b , team c\n   where a.player_id=b.player_id\n    and a.team_id = c.team_id\n   group by b.player_id) set2\nwhere set1.count=set2.count and set1.team_value=set2.team_value\n  and set1.player_id<>set2.player_id\n)";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[player]");
+            lstrexpected.Add("[plays]");
+            lstrexpected.Add("[team]");
+            lstractual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
+        [TestMethod()]
+        public void createTableStatement()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = "CREATE TABLE [dbo].[TestMe] ([Col1] NVARCHAR(max));";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[dbo].[TestMe]");
+            lstractual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+
+        }
+
     }
 }
