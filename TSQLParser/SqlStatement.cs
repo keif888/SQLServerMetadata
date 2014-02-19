@@ -535,6 +535,9 @@ namespace TSQLParser
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateTableStatement":
                         findIdentifiers(((CreateTableStatement)sqlStatement).SchemaObjectName);
                         break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateFunctionStatement":
+                        findIdentifiers(((CreateFunctionStatement)sqlStatement).Name, Identifier.IdentifierEnum.Function);
+                        break;
                     default:
                         throw new Exception("Unhandled Statement Type in findIdentifiers(TSqlStatement sqlStatement) " + sqlStatement.GetType().FullName);
                 }
@@ -666,6 +669,25 @@ namespace TSQLParser
                 if (queryExpression is QuerySpecification)
                 {
                     findIdentifiers((QuerySpecification)queryExpression);
+                    foreach (SelectElement selectElement in (queryExpression as QuerySpecification).SelectElements)
+                    {
+                        if (selectElement is SelectScalarExpression)
+                        {
+                            findIdentifiers(selectElement as SelectScalarExpression);
+                        }
+                        else if (selectElement is SelectSetVariable)
+                        {
+                            findIdentifiers(selectElement as SelectSetVariable);
+                        }
+                        else if (selectElement is SelectStarExpression)
+                        {
+                            // No Identifiers on a SELECT *...
+                        }
+                        else
+                        {
+                            throw new Exception("Unhandled Statement Type in findIdentifiers(QueryExpression queryExpression) " + selectElement.GetType().FullName);
+                        }
+                    }
                 }
                 else if (queryExpression is BinaryQueryExpression)
                 {
@@ -682,6 +704,38 @@ namespace TSQLParser
                 {
                     throw new Exception("Unhandled Statement Type in findIdentifiers(QueryExpression queryExpression) " + queryExpression.GetType().FullName);
                 }
+            }
+        }
+
+        private void findIdentifiers(SelectSetVariable selectSetVariable)
+        {
+            if (selectSetVariable.Expression != null)
+            {
+                findIdentifiers(selectSetVariable.Expression);
+            }
+        }
+
+        private void findIdentifiers(SelectScalarExpression selectScalarExpression)
+        {
+            if (selectScalarExpression.Expression != null)
+            {
+                findIdentifiers(selectScalarExpression.Expression);
+            }
+            if (selectScalarExpression.ColumnName != null)
+            {
+                findIdentifiers(selectScalarExpression.ColumnName);
+            }
+        }
+
+        private void findIdentifiers(IdentifierOrValueExpression identifierOrValueExpression)
+        {
+            if (identifierOrValueExpression.Identifier != null)
+            {
+                // This is the column name? identifierOrValueExpression.Identifier.Value
+            }
+            if (identifierOrValueExpression.ValueExpression != null)
+            {
+                findIdentifiers(identifierOrValueExpression.ValueExpression);
             }
         }
 
@@ -897,7 +951,23 @@ namespace TSQLParser
             {
                 FunctionCall functionCall = scalarExpression as FunctionCall;
                 //ToDo:  Handle Identifiers!  
-                findIdentifiers(functionCall.FunctionName, Identifier.IdentifierEnum.Function);
+                if (functionCall.CallTarget != null)
+                {
+                    SchemaObjectName son = new SchemaObjectName();
+                    if (functionCall.CallTarget is MultiPartIdentifierCallTarget)
+                    {
+                        foreach (Microsoft.SqlServer.TransactSql.ScriptDom.Identifier mpi in (functionCall.CallTarget as MultiPartIdentifierCallTarget).MultiPartIdentifier.Identifiers)
+                        {
+                            son.Identifiers.Add(mpi);
+                        }
+                    }
+                    son.Identifiers.Add(functionCall.FunctionName);
+                    findIdentifiers(son, Identifier.IdentifierEnum.Function);
+                }
+                else
+                {
+                    findIdentifiers(functionCall.FunctionName, Identifier.IdentifierEnum.Function);
+                }
                 foreach(ScalarExpression expression in functionCall.Parameters)
                 {
                     findIdentifiers(expression);
@@ -1192,9 +1262,9 @@ namespace TSQLParser
                             findIdentifiers(((DataModificationTableReference)tableSource).DataModificationSpecification.OutputIntoClause.IntoTable);
                         }
                         break;
-                    //case "Microsoft.SqlServer.TransactSql.ScriptDom.InlineDerivedTable":
-                    //    // NOP
-                    //    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.InlineDerivedTable":
+                        // NOP
+                        break;
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.QueryDerivedTable":
                         findIdentifiers(((QueryDerivedTable)tableSource).QueryExpression);
                         break;

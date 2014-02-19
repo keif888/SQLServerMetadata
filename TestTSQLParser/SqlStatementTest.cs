@@ -115,11 +115,11 @@ namespace TestTSQLParser
             SqlStatement target = new SqlStatement();
             bool expected = true;
             bool actual;
-            string sqlString = "SELECT DISTINCT UX002_ExtractId, \r\n" +
-"DATEADD(day, CAST(SUBSTRING(UX002_ExtractId, 5, 3) AS INT) - 1, DATEADD(year, CAST(SUBSTRING(UX002_ExtractId, 3, 2) AS INT), cast('2000-01-01' +' '+Convert(varchar,getdate(),8) AS datetime) ) ) AS ProcessDate \r\n" +
-"FROM dbo.RolloutOutfile \r\n" +
-"ORDER BY \r\n" +
-"DATEADD(day, CAST(SUBSTRING(UX002_ExtractId, 5, 3) AS INT) - 1, DATEADD(year, CAST(SUBSTRING(UX002_ExtractId, 3, 2) AS INT), cast('2000-01-01' +' '+Convert(varchar,getdate(),8) AS datetime))) \r\n";
+            string sqlString = @"SELECT DISTINCT UX002_ExtractId, 
+DATEADD(day, CAST(SUBSTRING(UX002_ExtractId, 5, 3) AS INT) - 1, DATEADD(year, CAST(SUBSTRING(UX002_ExtractId, 3, 2) AS INT), cast('2000-01-01' +' '+Convert(varchar,getdate(),8) AS datetime) ) ) AS ProcessDate
+FROM dbo.RolloutOutfile
+ORDER BY
+DATEADD(day, CAST(SUBSTRING(UX002_ExtractId, 5, 3) AS INT) - 1, DATEADD(year, CAST(SUBSTRING(UX002_ExtractId, 3, 2) AS INT), cast('2000-01-01' +' '+Convert(varchar,getdate(),8) AS datetime)))";
             actual = target.ParseString(sqlString);
             Assert.AreEqual(expected, actual);
             List<string> lstrexpected = new List<string>();
@@ -139,32 +139,32 @@ namespace TestTSQLParser
             SqlStatement target = new SqlStatement();
             bool expected = true;
             bool actual;
-            string sqlString = "-- Create the recursive CTE to find all of Bonnie's ancestors.\r\n" +
-                                "WITH Generation (ID) AS\r\n" +
-                                "(\r\n" +
-                                "-- First anchor member returns Bonnie's mother.\r\n" +
-                                "    SELECT Mother \r\n" +
-                                "    FROM dbo.Person\r\n" +
-                                "    WHERE Name = 'Bonnie'\r\n" +
-                                "UNION\r\n" +
-                                "-- Second anchor member returns Bonnie's father.\r\n" +
-                                "    SELECT Father \r\n" +
-                                "    FROM dbo.Person\r\n" +
-                                "    WHERE Name = 'Bonnie'\r\n" +
-                                "UNION ALL\r\n" +
-                                "-- First recursive member returns male ancestors of the previous generation.\r\n" +
-                                "    SELECT Person.Father\r\n" +
-                                "    FROM Generation, Person\r\n" +
-                                "    WHERE Generation.ID=Person.ID\r\n" +
-                                "UNION ALL\r\n" +
-                                "-- Second recursive member returns female ancestors of the previous generation.\r\n" +
-                                "    SELECT Person.Mother\r\n" +
-                                "    FROM Generation, dbo.Person\r\n" +
-                                "    WHERE Generation.ID=Person.ID\r\n" +
-                                ")\r\n" +
-                                "SELECT Person.ID, Person.Name, Person.Mother, Person.Father\r\n" +
-                                "FROM Generation, dbo.Person\r\n" +
-                                "WHERE Generation.ID = Person.ID;";
+            string sqlString = @"-- Create the recursive CTE to find all of Bonnie's ancestors.
+                                WITH Generation (ID) AS
+                                (
+                                -- First anchor member returns Bonnie's mother.
+                                    SELECT Mother 
+                                    FROM dbo.Person
+                                    WHERE Name = 'Bonnie'
+                                UNION
+                                -- Second anchor member returns Bonnie's father.
+                                    SELECT Father 
+                                    FROM dbo.Person
+                                    WHERE Name = 'Bonnie'
+                                UNION ALL
+                                -- First recursive member returns male ancestors of the previous generation.
+                                    SELECT Person.Father
+                                    FROM Generation, Person
+                                    WHERE Generation.ID=Person.ID
+                                UNION ALL
+                                -- Second recursive member returns female ancestors of the previous generation.
+                                    SELECT Person.Mother
+                                    FROM Generation, dbo.Person
+                                    WHERE Generation.ID=Person.ID
+                                )
+                                SELECT Person.ID, Person.Name, Person.Mother, Person.Father
+                                FROM Generation, dbo.Person
+                                WHERE Generation.ID = Person.ID;";
             actual = target.ParseString(sqlString);
             Assert.AreEqual(expected, actual);
             List<string> lstrexpected = new List<string>();
@@ -189,26 +189,26 @@ namespace TestTSQLParser
             SqlStatement target = new SqlStatement();
             bool expected = true;
             bool actual;
-            string sqlString = "WITH Parts(AssemblyID, ComponentID, PerAssemblyQty, EndDate, ComponentLevel) AS\r\n" +
-                                "(\r\n" +
-                                "    SELECT b.ProductAssemblyID, b.ComponentID, b.PerAssemblyQty,\r\n" +
-                                "        b.EndDate, 0 AS ComponentLevel\r\n" +
-                                "    FROM Production.BillOfMaterials AS b\r\n" +
-                                "    WHERE b.ProductAssemblyID = 800\r\n" +
-                                "          AND b.EndDate IS NULL\r\n" +
-                                "    UNION ALL\r\n" +
-                                "    SELECT bom.ProductAssemblyID, bom.ComponentID, p.PerAssemblyQty,\r\n" +
-                                "        bom.EndDate, ComponentLevel + 1\r\n" +
-                                "    FROM Production.BillOfMaterials AS bom \r\n" +
-                                "        INNER JOIN Parts AS p\r\n" +
-                                "        ON bom.ProductAssemblyID = p.ComponentID\r\n" +
-                                "        AND bom.EndDate IS NULL\r\n" +
-                                ")\r\n" +
-                                "UPDATE Production.BillOfMaterials\r\n" +
-                                "SET PerAssemblyQty = c.PerAssemblyQty * 2\r\n" +
-                                "FROM Production.BillOfMaterials AS c\r\n" +
-                                "JOIN Parts AS d ON c.ProductAssemblyID = d.AssemblyID\r\n" +
-                                "WHERE d.ComponentLevel = 0;";
+            string sqlString = @"WITH Parts(AssemblyID, ComponentID, PerAssemblyQty, EndDate, ComponentLevel) AS
+                                (
+                                    SELECT b.ProductAssemblyID, b.ComponentID, b.PerAssemblyQty,
+                                        b.EndDate, 0 AS ComponentLevel
+                                    FROM Production.BillOfMaterials AS b
+                                    WHERE b.ProductAssemblyID = 800
+                                          AND b.EndDate IS NULL
+                                    UNION ALL
+                                    SELECT bom.ProductAssemblyID, bom.ComponentID, p.PerAssemblyQty,
+                                        bom.EndDate, ComponentLevel + 1
+                                    FROM Production.BillOfMaterials AS bom 
+                                        INNER JOIN Parts AS p
+                                        ON bom.ProductAssemblyID = p.ComponentID
+                                        AND bom.EndDate IS NULL
+                                )
+                                UPDATE Production.BillOfMaterials
+                                SET PerAssemblyQty = c.PerAssemblyQty * 2
+                                FROM Production.BillOfMaterials AS c
+                                JOIN Parts AS d ON c.ProductAssemblyID = d.AssemblyID
+                                WHERE d.ComponentLevel = 0;";
             actual = target.ParseString(sqlString);
             Assert.AreEqual(expected, actual);
             List<string> lstrexpected = new List<string>();
@@ -513,7 +513,12 @@ namespace TestTSQLParser
             bool forceSchemaQualified = false;
             List<string> expected = new List<string>();
             List<string> actual;
-            string sqlString = "SELECT CASE WHEN Col1 = 'A' THEN 'B' ELSE 'C' END FROM [dbo].[TestTable] WHERE CASE WHEN Col1 = 'A' THEN 'B' ELSE 'C' END = 'C';";
+            string sqlString = @"SELECT CASE WHEN Col1 = 'A' THEN 'B' 
+    ELSE 'C' END 
+FROM [dbo].[TestTable] 
+WHERE CASE WHEN Col1 = 'A' THEN 'B' 
+    ELSE 'C' 
+END = 'C';";
             expected.Add("[dbo].[TestTable]");
             target.ParseString(sqlString);
             actual = target.getTableNames(forceSchemaQualified);
@@ -541,7 +546,24 @@ namespace TestTSQLParser
         {
             SqlStatement target = new SqlStatement();
             bool forceSchemaQualified = false;
-            string sqlString = "SELECT p1.PLAYERID,\n\tf1.PLAYERNAME,\n\tp2.PLAYERID,\n\tf2.PLAYERNAME\n\tFROM   PLAYER f1,\n\tPLAYER f2,\n\tPLAYS p1\n\tFULL OUTER JOIN PLAYS p2\n\t\tON p1.PLAYERID < p2.PLAYERID\n\t\tAND p1.TEAMID = p2.TEAMID\nGROUP  BY p1.PLAYERID,\n\tf1.PLAYERID,\n\tp2.PLAYERID,\n\tf2.PLAYERID\nHAVING Count(p1.PLAYERID) = Count(*)\n\tAND Count(p2.PLAYERID) = Count(*)\n\tAND p1.PLAYERID = f1.PLAYERID\n\tAND p2.PLAYERID = f2.PLAYERID; ";
+            string sqlString = @"SELECT p1.PLAYERID,
+    f1.PLAYERNAME,
+    p2.PLAYERID,
+    f2.PLAYERNAME
+FROM   PLAYER f1,
+        PLAYER f2,
+        PLAYS p1
+FULL OUTER JOIN PLAYS p2
+	ON p1.PLAYERID < p2.PLAYERID
+	AND p1.TEAMID = p2.TEAMID
+GROUP  BY p1.PLAYERID,
+    f1.PLAYERID,
+    p2.PLAYERID,
+    f2.PLAYERID
+HAVING Count(p1.PLAYERID) = Count(*)
+    AND Count(p2.PLAYERID) = Count(*)
+    AND p1.PLAYERID = f1.PLAYERID
+    AND p2.PLAYERID = f2.PLAYERID; ";
             target.ParseString(sqlString);
             List<string> lstrexpected = new List<string>();
             List<string> lstractual;
@@ -560,7 +582,23 @@ namespace TestTSQLParser
         {
             SqlStatement target = new SqlStatement();
             bool forceSchemaQualified = false;
-            string sqlString = "select * from player where player_id in \n(\n select set2.player_id orig\n from\n (select count(*) count,b.player_id , nvl(sum(a.team_id+ascii(team_name)),0) team_value\n   from plays a, player b , team c\n   where a.player_id=b.player_id\n    and a.team_id = c.team_id\n   group by b.player_id) set1,\n(select count(*) count,b.player_id , nvl(sum(a.team_id+ascii(team_name)),0) team_value\n   from plays a, player b , team c\n   where a.player_id=b.player_id\n    and a.team_id = c.team_id\n   group by b.player_id) set2\nwhere set1.count=set2.count and set1.team_value=set2.team_value\n  and set1.player_id<>set2.player_id\n)";
+            string sqlString = @"select * from player where player_id in 
+(
+ select set2.player_id orig
+ from
+ (select count(*) count,b.player_id , nvl(sum(a.team_id+ascii(team_name)),0) team_value
+   from plays a, player b , team c
+   where a.player_id=b.player_id
+    and a.team_id = c.team_id
+   group by b.player_id) set1,
+(select count(*) count,b.player_id , nvl(sum(a.team_id+ascii(team_name)),0) team_value
+   from plays a, player b , team c
+   where a.player_id=b.player_id
+    and a.team_id = c.team_id
+   group by b.player_id) set2
+       where set1.count=set2.count and set1.team_value=set2.team_value
+  and set1.player_id<>set2.player_id
+)";
             target.ParseString(sqlString);
             List<string> lstrexpected = new List<string>();
             List<string> lstractual;
@@ -591,7 +629,162 @@ namespace TestTSQLParser
             {
                 Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
             }
+        }
 
+        [TestMethod()]
+        public void createFunctionStatement()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @"CREATE FUNCTION dbo.Triple(@Input int)
+       RETURNS int
+AS
+BEGIN;
+  DECLARE @Result int;
+  SET @Result = @Input * 3;
+  RETURN @Result;
+END;
+go";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstractual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+            lstrexpected.Add("[dbo].[Triple]");
+            lstractual = target.getFunctionNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
+        [TestMethod()]
+        public void selectFromTableAndFunctionStatement()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @"SELECT DataVal, dbo.Triple(DataVal) AS Triple
+FROM   dbo.LargeTable;";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[dbo].[LargeTable]");
+            lstractual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+            lstrexpected.Clear();
+            lstrexpected.Add("[dbo].[Triple]");
+            lstractual = target.getFunctionNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
+        [TestMethod()]
+        public void CreateTableWithFollowingInsert()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @"CREATE TABLE dbo.LargeTable
+  (KeyVal int NOT NULL PRIMARY KEY,
+   DataVal int NOT NULL CHECK (DataVal BETWEEN 1 AND 10)
+  );
+
+WITH Digits
+AS (SELECT d FROM (VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9)) AS d(d))
+INSERT INTO dbo.LargeTable (KeyVal, DataVal)
+SELECT 10000 * tt.d + 1000 * st.d
+     + 100 * h.d + 10 * t.d + s.d + 1,
+       10 * RAND(CHECKSUM(NEWID())) + 1
+FROM   Digits AS s,  Digits AS t,  Digits AS h,
+       Digits AS st, Digits AS tt;";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[dbo].[LargeTable]");
+            lstractual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
+        [TestMethod()]
+        public void CrossApplyStatement()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @"SELECT *
+FROM
+  orders o
+  CROSS APPLY (
+    SELECT *  FROM
+       customers c
+    WHERE
+       o.customerid = c.customerid) AS c
+WHERE
+  c.companyname = 'Around the Horn';";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[orders]");
+            lstrexpected.Add("[customers]");
+            lstractual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
+        [TestMethod()]
+        public void CrossApplyWithExceptStatement()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @"SELECT *
+FROM
+    orders o
+    CROSS APPLY (SELECT *
+                 FROM
+                     customers c
+                 WHERE
+                     o.customerid = c.customerid) AS c
+WHERE
+    c.companyname = 'Around the Horn'
+ 
+EXCEPT
+SELECT *
+FROM
+    specialorders o
+    JOIN specialcustomers c
+        ON o.customerid = c.customerid
+WHERE
+    c.companyname = 'Around the Horn';";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[orders]");
+            lstrexpected.Add("[customers]");
+            lstrexpected.Add("[specialorders]");
+            lstrexpected.Add("[specialcustomers]");
+            lstractual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
         }
 
     }
