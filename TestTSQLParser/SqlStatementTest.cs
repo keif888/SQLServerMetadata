@@ -490,6 +490,23 @@ DATEADD(day, CAST(SUBSTRING(UX002_ExtractId, 5, 3) AS INT) - 1, DATEADD(year, CA
             Assert.AreEqual(expected[0], actual[0]);
         }
 
+        [TestMethod()]
+        public void execStatement()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            List<string> expected = new List<string>();
+            List<string> actual;
+            string sqlString = "EXEC [dbo].[usp_GetData];";
+            target.ParseString(sqlString);
+            actual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(expected.Count, actual.Count);
+            expected.Clear();
+            expected.Add("[dbo].[usp_GetData]");
+            actual = target.getProcedureNames(forceSchemaQualified);
+            Assert.AreEqual(expected.Count, actual.Count);
+            Assert.AreEqual(expected[0], actual[0]);
+        }
 
         [TestMethod()]
         public void caseExpressionSimple()
@@ -786,6 +803,310 @@ WHERE
                 Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
             }
         }
+
+         [TestMethod()]
+        public void BasicCursorStatement()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @"declare @CustId nchar(5);
+	declare @RowNum int;
+	declare CustList cursor for
+	select top 5 CustomerID from Northwind.dbo.Customers;
+	OPEN CustList;
+	FETCH NEXT FROM CustList 
+	INTO @CustId;
+	set @RowNum = 0 ;
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+	  set @RowNum = @RowNum + 1;
+	  print cast(@RowNum as char(1)) + ' ' + @CustId;
+	  FETCH NEXT FROM CustList 
+	    INTO @CustId;
+	END
+	CLOSE CustList;
+	DEALLOCATE CustList;";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[Northwind].[dbo].[Customers]");
+            lstractual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
+         [TestMethod()]
+         public void BasicWithStatement()
+         {
+             SqlStatement target = new SqlStatement();
+             bool forceSchemaQualified = false;
+             string sqlString = @"-- Define the CTE expression name and column list.
+WITH Sales_CTE (SalesPersonID, SalesOrderID, SalesYear)
+AS
+-- Define the CTE query.
+(
+    SELECT SalesPersonID, SalesOrderID, YEAR(OrderDate) AS SalesYear
+    FROM Sales.SalesOrderHeader
+    WHERE SalesPersonID IS NOT NULL
+)
+-- Define the outer query referencing the CTE name.
+SELECT SalesPersonID, COUNT(SalesOrderID) AS TotalSales, SalesYear
+FROM Sales_CTE
+GROUP BY SalesYear, SalesPersonID
+ORDER BY SalesPersonID, SalesYear;";
+             target.ParseString(sqlString);
+             List<string> lstrexpected = new List<string>();
+             List<string> lstractual;
+             lstrexpected.Add("[Sales].[SalesOrderHeader]");
+             lstractual = target.getTableNames(forceSchemaQualified);
+             Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+             for (int i = 0; i < lstractual.Count; i++)
+             {
+                 Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+             }
+         }
+
+         [TestMethod()]
+         public void MultipleWithStatement()
+         {
+             SqlStatement target = new SqlStatement();
+             bool forceSchemaQualified = false;
+             string sqlString = @"WITH Sales_CTE (SalesPersonID, TotalSales, SalesYear)
+AS
+-- Define the first CTE query.
+(
+    SELECT SalesPersonID, SUM(TotalDue) AS TotalSales, YEAR(OrderDate) AS SalesYear
+    FROM Sales.SalesOrderHeader
+    WHERE SalesPersonID IS NOT NULL
+       GROUP BY SalesPersonID, YEAR(OrderDate)
+
+)
+,   -- Use a comma to separate multiple CTE definitions.
+
+-- Define the second CTE query, which returns sales quota data by year for each sales person.
+Sales_Quota_CTE (BusinessEntityID, SalesQuota, SalesQuotaYear)
+AS
+(
+       SELECT BusinessEntityID, SUM(SalesQuota)AS SalesQuota, YEAR(QuotaDate) AS SalesQuotaYear
+       FROM Sales.SalesPersonQuotaHistory
+       GROUP BY BusinessEntityID, YEAR(QuotaDate)
+)
+
+-- Define the outer query by referencing columns from both CTEs.
+SELECT SalesPersonID
+  , SalesYear
+  , FORMAT(TotalSales,'C','en-us') AS TotalSales
+  , SalesQuotaYear
+  , FORMAT (SalesQuota,'C','en-us') AS SalesQuota
+  , FORMAT (TotalSales -SalesQuota, 'C','en-us') AS Amt_Above_or_Below_Quota
+FROM Sales_CTE
+JOIN Sales_Quota_CTE ON Sales_Quota_CTE.BusinessEntityID = Sales_CTE.SalesPersonID
+                    AND Sales_CTE.SalesYear = Sales_Quota_CTE.SalesQuotaYear
+ORDER BY SalesPersonID, SalesYear;";
+             target.ParseString(sqlString);
+             List<string> lstrexpected = new List<string>();
+             List<string> lstractual;
+             lstrexpected.Add("[Sales].[SalesOrderHeader]");
+             lstrexpected.Add("[Sales].[SalesPersonQuotaHistory]");
+             lstractual = target.getTableNames(forceSchemaQualified);
+             Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+             for (int i = 0; i < lstractual.Count; i++)
+             {
+                 Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+             }
+         }
+
+         [TestMethod()]
+         public void multipleAnchorAndRecursiveMembers()
+         {
+             SqlStatement target = new SqlStatement();
+             bool forceSchemaQualified = false;
+             string sqlString = @"-- Create the recursive CTE to find all of Bonnie's ancestors.
+WITH Generation (ID) AS
+(
+-- First anchor member returns Bonnie's mother.
+    SELECT Mother 
+    FROM dbo.Person
+    WHERE Name = 'Bonnie'
+UNION
+-- Second anchor member returns Bonnie's father.
+    SELECT Father 
+    FROM dbo.Person
+    WHERE Name = 'Bonnie'
+UNION ALL
+-- First recursive member returns male ancestors of the previous generation.
+    SELECT Person.Father
+    FROM Generation, Person
+    WHERE Generation.ID=Person.ID
+UNION ALL
+-- Second recursive member returns female ancestors of the previous generation.
+    SELECT Person.Mother
+    FROM Generation, dbo.Person
+    WHERE Generation.ID=Person.ID
+)
+SELECT Person.ID, Person.Name, Person.Mother, Person.Father
+FROM Generation, dbo.Person
+WHERE Generation.ID = Person.ID;";
+             target.ParseString(sqlString);
+             List<string> lstrexpected = new List<string>();
+             List<string> lstractual;
+             lstrexpected.Add("[dbo].[Person]");
+             lstrexpected.Add("[Person]");  // One of the calls to Person isn't Qualified.  Dodgy MS Example! http://msdn.microsoft.com/en-us/library/ms175972.aspx
+             lstractual = target.getTableNames(forceSchemaQualified);
+             Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+             for (int i = 0; i < lstractual.Count; i++)
+             {
+                 Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+             }
+         }
+
+         [TestMethod()]
+         public void createProcedure()
+         {
+             SqlStatement target = new SqlStatement();
+             bool forceSchemaQualified = false;
+             string sqlString = @"USE AdventureWorks2012;
+GO
+IF OBJECT_ID ( 'HumanResources.uspGetEmployees', 'P' ) IS NOT NULL 
+    DROP PROCEDURE HumanResources.uspGetEmployees;
+GO
+CREATE PROCEDURE HumanResources.uspGetEmployees 
+    @LastName nvarchar(50), 
+    @FirstName nvarchar(50) 
+AS 
+
+    SET NOCOUNT ON;
+    SELECT FirstName, LastName, Department
+    FROM HumanResources.vEmployeeDepartmentHistory
+    WHERE FirstName = @FirstName AND LastName = @LastName;
+GO";
+             target.ParseString(sqlString);
+             List<string> lstrexpected = new List<string>();
+             List<string> lstractual;
+             lstrexpected.Add("[HumanResources].[vEmployeeDepartmentHistory]");
+             lstractual = target.getTableNames(forceSchemaQualified);
+             Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+             for (int i = 0; i < lstractual.Count; i++)
+             {
+                 Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+             }
+             lstrexpected.Clear();
+             lstrexpected.Add("[HumanResources].[uspGetEmployees]");
+             lstractual = target.getProcedureNames(forceSchemaQualified);
+             Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+             for (int i = 0; i < lstractual.Count; i++)
+             {
+                 Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+             }
+         }
+
+         [TestMethod()]
+         public void caseSubSelectStatement()
+         {
+             SqlStatement target = new SqlStatement();
+             bool forceSchemaQualified = false;
+             string sqlString = @"DECLARE @reportDate datetime
+DECLARE @startDateMonthly datetime
+DECLARE @protocolID int
+
+SET @reportDate = '2/1/2007'
+SET @startDateMonthly = GETDATE()
+SET @protocolID = 152
+
+DECLARE @EnrollmentGoal int
+DECLARE @NoUSSites int
+DECLARE @NoSites int
+
+SELECT @EnrollmentGoal = intEnrollmentGoal, @NoUSSites = intNoUSSites, @NoSites = intNoSites
+FROM tblProtocol WHERE intProtocolID = @protocolID 
+
+SELECT
+Year(am.theDate)
+,DATENAME(month,am.theDate) as TheMonth
+,am.theDate
+
+,(SELECT intTransactionID FROM tblEnrollment e2 
+	INNER JOIN tblSiteAlias
+    ON (e2.intAliasID = tblSiteAlias.intAliasID
+    and tblSiteAlias.intProtocolID = @protocolID)
+WHERE YEAR(am.theDate) = YEAR(e2.dtmReportedDate)
+          AND MONTH(am.theDate) = MONTH(e2.dtmReportedDate)) AS TESTER
+
+,CASE(
+SELECT intTransactionID FROM tblEnrollment e2 
+	INNER JOIN tblSiteAlias
+    ON (e2.intAliasID = tblSiteAlias.intAliasID
+    and tblSiteAlias.intProtocolID = @protocolID)
+WHERE YEAR(am.theDate) = YEAR(e2.dtmReportedDate)
+          AND MONTH(am.theDate) = MONTH(e2.dtmReportedDate))
+      WHEN NULL THEN 
+
+(
+SELECT TOP (1) tblEnrollment.intEnrollment FROM tblEnrollment 
+	INNER JOIN tblSiteAlias ON tblEnrollment.intAliasID = tblSiteAlias.intAliasID
+		WHERE (tblSiteAlias.intProtocolID = @protocolID) 
+		AND (tblEnrollment.dtmReportedDate < am.theDate)
+		AND (tblEnrollment.intEnrollment > 0)
+ORDER BY tblEnrollment.dtmReportedDate DESC
+)
+
+      ELSE 
+(
+SELECT TOP 1 IsNull(SUM(intEnrollment),0) FROM tblEnrollment e2 
+	INNER JOIN tblSiteAlias
+    ON (e2.intAliasID = tblSiteAlias.intAliasID
+    and tblSiteAlias.intProtocolID = @protocolID)
+WHERE YEAR(am.theDate) = YEAR(e2.dtmReportedDate)
+          AND MONTH(am.theDate) = MONTH(e2.dtmReportedDate)
+)
+END as TotalEnrollment
+
+, IsNull(((CONVERT(REAL, @NoUSSites)/@NoSites) * @EnrollmentGoal),0) as USGoal
+, @EnrollmentGoal as [Enrollment Goal]
+FROM ALLMONTHS AS am LEFT JOIN tblEnrollment e
+     ON (     YEAR(am.theDate) = YEAR(e.dtmReportedDate)
+          AND MONTH(am.theDate) = MONTH(e.dtmReportedDate)
+        )
+WHERE am.theDate > @reportDate and am.theDate <= @startDateMonthly
+GROUP BY Year(am.theDate),Month(am.theDate),DATENAME(month,am.theDate), am.theDate
+ORDER BY Year(am.theDate) ASC,
+Month(am.theDate) ASC;";
+             target.ParseString(sqlString);
+             List<string> lstrexpected = new List<string>();
+             List<string> lstractual;
+             lstrexpected.Add("[tblProtocol]");
+             lstrexpected.Add("[tblEnrollment]");
+             lstrexpected.Add("[tblSiteAlias]");
+             lstrexpected.Add("[ALLMONTHS]");
+             lstractual = target.getTableNames(forceSchemaQualified);
+             Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+             for (int i = 0; i < lstractual.Count; i++)
+             {
+                 Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+             }
+         }
+
+
+         [TestMethod()]
+         public void execSelectStatement()
+         {
+             SqlStatement target = new SqlStatement();
+             bool forceSchemaQualified = false;
+             string sqlString = @"EXEC ('SELECT * FROM sys.tables');";  // ToDo: Handle String Literals for re-parsing.
+             target.ParseString(sqlString);
+             List<string> lstrexpected = new List<string>();
+             List<string> lstractual;
+             //lstrexpected.Add("[sys].[tables]");
+             lstractual = target.getTableNames(forceSchemaQualified);
+             Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+             for (int i = 0; i < lstractual.Count; i++)
+             {
+                 Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+             }
+         }
 
     }
 }
