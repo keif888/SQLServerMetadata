@@ -29,7 +29,7 @@ namespace TSQLParser
                 {
                     foreach (ParseError parseError in _parseErrors)
                     {
-                        result.Add(String.Format("{0} {1}", parseError.Number, parseError.Message));
+                        result.Add(String.Format("Error Number: {0}\r\nMessage: {1}\r\nLine: {2}\r\nOffset: {3}", parseError.Number, parseError.Message, parseError.Line, parseError.Offset));
                     }
                 }
                 return result; 
@@ -109,7 +109,7 @@ namespace TSQLParser
                 {
                     findIdentifiers(sqlBatch);
                 }
-                return true;
+                return (parseErrors.Count == 0);
             }
             else
             {

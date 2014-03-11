@@ -1191,6 +1191,23 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 #endregion
                 dbVersion = 6;
             }
+            if (dbVersion == 6)
+            {
+                // Add SQL 2012 entries to allow display of relational sources.
+                #region dbVersion 6
+                using (SqlCommand sqlCommand = repositoryConnection.CreateCommand())
+                {
+                    sqlCommand.CommandText = "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{32808317-2AFC-4E1C-A03A-9F8477A3BDBA}', N'ODBC 2012')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{3269FBD7-897B-4CDF-8988-2E1A24B10FBB}', N'OLEDB 2012')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{68FFA586-FFA5-41DC-8EDE-13102087EF33}', N'ADO 2012')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{39CAF1E8-6582-4C31-A5C6-405A8661EEC1}', N'ADO.Net 2012')\r\n"+
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{E3D5D606-997B-4EF6-90AD-43483A788CC3}', N'MSOLAP 2012')\r\n";
+                    sqlCommand.ExecuteNonQuery();
+                }
+
+                #endregion
+                dbVersion = 7;
+            }
         }
 
         public void LoadExisingRepository()

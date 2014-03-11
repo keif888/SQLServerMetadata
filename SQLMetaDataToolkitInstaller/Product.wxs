@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define ProductVersion = "0.0.14.0"?>
+  <?define UpgradeCode = "B758AA83-565F-453A-BECF-0B0B060E7023"?>
+  <?define Manufacturer = "Keith Martin"?>
+  <?define PackageCode = "*"?>
+  <Product Id="*"
+           Name="SQL Server Metadata Toolkit"
+           Language="1033"
+           Version="$(var.ProductVersion)"
+           Manufacturer="$(var.Manufacturer)"
+           UpgradeCode="$(var.UpgradeCode)">
+
+    <Package Id="$(var.PackageCode)"
+             Description="SQL Server Metadata Toolkit"
+             Comments="Installs the programs to allow analysis and capture of SSIS, SSAS and SSRS metadata."
+             InstallerVersion="300"
+             Manufacturer="$(var.Manufacturer)"
+             Compressed="yes"
+             InstallScope="perMachine" />
+
+    <Media Id="1" Cabinet="SQLServerMetadataToolkit.cab" EmbedCab="yes" />
+
+    <MajorUpgrade
+      Schedule="afterInstallInitialize"
+      DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit."/>
+
+    <UIRef Id="WixUI_FeatureTree"/>
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.DependencyAnalyzer2008.ProjectDir)\License.rtf" />
+
+    <Condition Message="You need to be an administrator to install this product.">
+      Privileged
+    </Condition>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="SQLServerMetadataToolkit">
+          <Directory Id="DependencyAnalyzer2005DIR" Name="Dependency Analyzer 2005">
+            <Component Id="DependencyAnalyzer2005Exe" Guid="{C529EBFF-9266-47E9-9AB7-CD94E11E7D28}" Win64="no">
+              <File Id="FDependencyAnalyzer2005Exe" Name="$(var.DependencyAnalyzer2005.TargetFileName)" Source="$(var.DependencyAnalyzer2005.TargetPath)" />
+            </Component>
+            <Component Id="DependencyAnalyzer2005Parser" Guid="{666DAD9B-DE37-4D7C-BD5C-E1F14D48BF27}" Win64="no">
+              <File Id="FDependencyAnalyzer2005Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
+            </Component>
+          </Directory>
+          <Directory Id="DependencyAnalyzer2008DIR" Name="Dependency Analyzer 2008">
+            <Component Id="DependencyAnalyzer2008Exe" Guid="{3C0B8DCE-FEF2-4B81-9069-19F9CA146370}" Win64="no">
+              <File Id="FDependencyAnalyzer2008Exe" Name="$(var.DependencyAnalyzer2008.TargetFileName)" Source="$(var.DependencyAnalyzer2008.TargetPath)" />
+            </Component>
+            <Component Id="DependencyAnalyzer2008Parser" Guid="{5F6E7D1F-8894-4484-B944-BDC2254781F0}" Win64="no">
+                <File Id="FDependencyAnalyzer2008Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
+            </Component>
+          </Directory>
+          <Directory Id="DependencyAnalyzer2012DIR" Name="Dependency Analyzer 2012">
+            <Component Id="DependencyAnalyzer2012Exe" Guid="{C73B2EEC-0C28-45A4-88F8-885EB16D09E0}" Win64="no">
+              <File Id="FDependencyAnalyzer2012Exe" Name="$(var.DependencyAnalyzer2012.TargetFileName)" Source="$(var.DependencyAnalyzer2012.TargetPath)" />
+            </Component>
+            <Component Id="DependencyAnalyzer2012Parser" Guid="{0A489594-2A5F-4677-8C0C-4EDC0A9DC002}" Win64="no">
+                <File Id="FDependencyAnalyzer2012Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
+            </Component>
+          </Directory>
+          <Directory Id="DEPENDENCYEXECUTORDIR" Name="Dependency Executor">
+            <Component Id="DependencyExecutor" Guid="{39F20A67-354B-4503-9CBD-F4DFA06C5484}" Win64="no">
+              <File Id="DependencyExecutorExe" Name="$(var.DependencyExecutor.TargetFileName)" Source="$(var.DependencyExecutor.TargetPath)" />
+            </Component>
+          </Directory>
+          <Directory Id="DEPENDENCYVIEWERDIR" Name="Dependency Viewer">
+            <Component Id="DependencyViewerExe" Guid="{F0CA97F1-064C-4E40-A879-C1846828A6C3}" Win64="no">
+              <File Id="FDependencyViewerExe" Name="$(var.DependencyViewer.TargetFileName)" Source="$(var.DependencyViewer.TargetPath)" />
+            </Component>
+            <Component Id="DependencyViewerGraphViewerGDI" Guid="{8B66B147-A42C-46E0-B157-628BACE58CAE}" Win64="no">
+                <File Id="FDependencyViewerGraphViewerGDI" Name="$(var.GraphViewerGDI.TargetFileName)" Source="$(var.GraphViewerGDI.TargetPath)" />
+            </Component>
+            <Component Id="DependencyViewerDrawing" Guid="{8D8360C9-01F9-4DCF-AD05-43C62AC3F63A}" Win64="no">
+              <File Id="FDependencyViewerDrawing" Name="$(var.Drawing.TargetFileName)" Source="$(var.Drawing.TargetPath)" />
+            </Component>
+            <Component Id="DependencyViewerMSAGL" Guid="{3E6A8ED5-1575-4A12-BF7F-2630B27AB88F}" Win64="no">
+              <File Id="FDependencyViewerMSAGL" Name="Microsoft.Msagl.dll" Source="$(var.DependencyViewer.TargetDir)Microsoft.Msagl.dll" />
+            </Component>
+          </Directory>
+          <Directory Id="ReportModelSamplesDIR" Name="Report Model Samples (Report Builder)">
+            <Component Id="ReportModelSamples" Guid="{C7B35BA4-3A43-441A-A8F1-C86D2B8D9A5B}" Win64="no">
+              <File Id="ReportModelSamplesMetadatasmdl" Name="Metadata.smdl" Source="$(var.SolutionDir)Report Model Samples (Report Builder)\Metadata.smdl" />
+              <File Id="ReportModelSamplesdatabase" Name="Report Model Sample.database" Source="$(var.SolutionDir)Report Model Samples (Report Builder)\Report Model Sample.database" />
+            </Component>
+          </Directory>
+          <Directory Id="ReportsDIR" Name="Reports">
+            <Component Id="Reports" Guid="{0D66E98F-CEA7-4780-92D8-B9BE15CD4390}" Win64="no">
+              <File Id="ReportsDataSource" Name="DataSource1.rds" Source="$(var.SolutionDir)Reports\DataSource1.rds" />
+            </Component>
+          </Directory>
+          <Directory Id="SourceCodeDIR" Name="SourceCode">
+            <Component Id="SourceCode" Guid="{B2119F90-6198-4BAB-8BB0-E412E83C9370}" Win64="no">
+              <File Id="SourceCode2008" Name="SSIS_Meta_creation.sql" Source="$(var.SolutionDir)SQL\SSIS_Meta_creation.sql" />
+              <File Id="SourceCode2005" Name="SSIS_Meta_creation_2005.sql" Source="$(var.SolutionDir)SQL\SSIS_Meta_creation_2005.sql" />
+            </Component>
+          </Directory>
+          <Directory Id="TESTPARSERDIR" Name="TestParser">
+            <Component Id="TestParserExe" Guid="{1658EDC8-A5F7-431B-8520-D53860B73DA5}" Win64="no">
+              <File Id="FTestParserExe" Name="$(var.TestParser.TargetFileName)" Source="$(var.TestParser.TargetPath)" />
+            </Component>
+            <Component Id="TestParserParser" Guid="{86B78C59-8C04-46B3-B4B6-37AE7AEADDEE}" Win64="no">
+              <File Id="FTestParserParser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="SQL Server Metadata Toolkit">
+          <Component Id="ApplicationShortcut" Guid="{321ABF50-8292-4C7B-A1D6-44C161A73448}">
+            <Shortcut Id="ApplicationStartMenuShortcut"
+                 Name="Dependency Executor"
+               Description="GUI to control SQL Server Metadata Toolkit"
+                Target="[#DependencyExecutorExe]"
+                      WorkingDirectory="DEPENDENCYEXECUTORDIR"/>
+            <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+            <RegistryValue Root="HKCU" Key="Software\MartinSource\SQL Server Metadata Toolkit" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+          </Component>
+          <Component Id="TestParserShortcut" Guid="{3B66F2DB-0571-447D-9324-BB957CCFA5D3}">
+            <Shortcut Id="TestParserStartMenuShortcut"
+                 Name="Test Parser"
+               Description="GUI to Test the SQL Parser"
+                Target="[#FTestParserExe]"
+                      WorkingDirectory="TESTPARSERDIR"/>
+            <RegistryValue Root="HKCU" Key="Software\MartinSource\SQL Server Metadata Toolkit" Name="testparser" Type="integer" Value="1" KeyPath="yes"/>
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Feature Id="Complete" Level="1" Title="SQL Server Metadata Toolkit Installer 1.0" Description="An set of programs to analyse SSIS, SSAS and SSRS and collect dependency information" Display="expand" ConfigurableDirectory="INSTALLDIR">
+      <Feature Id="DependencyAnalyzer2005" Level="1" Title="Dependency Analyzer 2005">
+        <ComponentRef Id="DependencyAnalyzer2005Exe"/>
+        <ComponentRef Id="DependencyAnalyzer2005Parser"/>
+      </Feature>
+      <Feature Id="DependencyAnalyzer2008" Level="1" Title="Dependency Analyzer 2008">
+        <ComponentRef Id="DependencyAnalyzer2008Exe"/>
+        <ComponentRef Id="DependencyAnalyzer2008Parser"/>
+      </Feature>
+      <Feature Id="DependencyAnalyzer2012" Level="1" Title="Dependency Analyzer 2012">
+        <ComponentRef Id="DependencyAnalyzer2012Exe"/>
+        <ComponentRef Id="DependencyAnalyzer2012Parser"/>
+      </Feature>
+      <Feature Id="DependencyExecutor" Level="1" Title="Dependency Executor">
+        <ComponentRef Id="DependencyExecutor"/>
+        <ComponentRef Id="ApplicationShortcut"/>
+      </Feature>
+      <Feature Id="DependencyViewer" Level="1" Title="Dependency Viewer">
+        <ComponentRef Id="DependencyViewerExe"/>
+        <ComponentRef Id="DependencyViewerGraphViewerGDI"/>
+        <ComponentRef Id="DependencyViewerDrawing"/>
+        <ComponentRef Id="DependencyViewerMSAGL"/>
+      </Feature>
+      <Feature Id="ReportModelSamples" Level="1" Title="Report Model Samples">
+        <ComponentRef Id="ReportModelSamples"/>
+      </Feature>
+      <Feature Id="Reports" Level="1" Title="Reports">
+        <ComponentRef Id="Reports"/>
+      </Feature>
+      <Feature Id="SourceCode" Level="1" Title="TSQL Database Scripts">
+        <ComponentRef Id="SourceCode"/>
+      </Feature>
+      <Feature Id="TestSQLParser" Level="1" Title="SQL Parser Test">
+        <ComponentRef Id="TestParserExe"/>
+        <ComponentRef Id="TestParserParser"/>
+        <ComponentRef Id="TestParserShortcut"/>
+      </Feature>
+
+    </Feature>
+  </Product>
+</Wix>
