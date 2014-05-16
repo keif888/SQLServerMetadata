@@ -1687,6 +1687,11 @@ namespace TSQLParser
                     findIdentifiers(binaryQueryExpression.FirstQueryExpression);
                     findIdentifiers(binaryQueryExpression.SecondQueryExpression);
                 }
+                else if (queryExpression is QueryParenthesisExpression)
+                {
+                    QueryParenthesisExpression queryPE = queryExpression as QueryParenthesisExpression;
+                    findIdentifiers(queryPE.QueryExpression);
+                }
                 //            else if (queryExpression is QueryParenthesis)
                 //            {
                 //                findIdentifiers((QueryParenthesis)queryExpression);
@@ -1732,10 +1737,11 @@ namespace TSQLParser
 
         private void findIdentifiers(QuerySpecification querySpecification)
         {
-            foreach (TableReference tableSource in querySpecification.FromClause.TableReferences)
-            {
-                findIdentifiers(tableSource);
-            }
+            if (querySpecification.FromClause != null)
+                foreach (TableReference tableSource in querySpecification.FromClause.TableReferences)
+                {
+                    findIdentifiers(tableSource);
+                }
             if (querySpecification.WhereClause != null)
             {
                 findIdentifiers(querySpecification.WhereClause);
@@ -1836,141 +1842,143 @@ namespace TSQLParser
 
         private void findIdentifiers(ScalarExpression scalarExpression)
         {
-            switch (scalarExpression.GetType().FullName)
-            {
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BinaryLiteral":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ColumnReferenceExpression":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DefaultLiteral":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.GlobalVariableExpression":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.IdentifierLiteral":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.IdentityFunctionCall":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.IntegerLiteral":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.Literal":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.MaxLiteral":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.MoneyLiteral":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.NextValueForExpression":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.NullIfExpression":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.NullLiteral":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.NumericLiteral":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.OdbcConvertSpecification":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.OdbcFunctionCall":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.OdbcLiteral":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ParameterlessCall":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ParseCall":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.PartitionFunctionCall":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.PrimaryExpression":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RealLiteral":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.RightFunctionCall":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ScalarExpression":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ScalarExpressionSnippet":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SourceDeclaration":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.StringLiteral":  // ToDo: re-parse this!
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.TryCastCall":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.TryConvertCall":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.TryParseCall":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.UnaryExpression":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.UserDefinedTypePropertyAccess":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ValueExpression":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.VariableReference":
-                    break;
+            if (scalarExpression != null)
+                switch (scalarExpression.GetType().FullName)
+                {
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.BinaryLiteral":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ColumnReferenceExpression":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.DefaultLiteral":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.GlobalVariableExpression":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.IdentifierLiteral":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.IdentityFunctionCall":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.IntegerLiteral":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.Literal":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.MaxLiteral":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.MoneyLiteral":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.NextValueForExpression":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.NullIfExpression":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.NullLiteral":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.NumericLiteral":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.OdbcConvertSpecification":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.OdbcFunctionCall":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.OdbcLiteral":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ParameterlessCall":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ParseCall":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.PartitionFunctionCall":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.PrimaryExpression":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.RealLiteral":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.RightFunctionCall":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ScalarExpression":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ScalarExpressionSnippet":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SourceDeclaration":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.StringLiteral":  // ToDo: re-parse this!
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.TryCastCall":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.TryConvertCall":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.TryParseCall":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.UnaryExpression":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.UserDefinedTypePropertyAccess":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ValueExpression":
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.VariableReference":
+                        break;
 
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BinaryExpression":
-                        findIdentifiers((scalarExpression as BinaryExpression).FirstExpression);
-                        findIdentifiers((scalarExpression as BinaryExpression).SecondExpression);
-                    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.BinaryExpression":
+                            findIdentifiers((scalarExpression as BinaryExpression).FirstExpression);
+                            findIdentifiers((scalarExpression as BinaryExpression).SecondExpression);
+                        break;
 
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CaseExpression":
-                    findIdentifiers((scalarExpression as CaseExpression).ElseExpression);
-                    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CaseExpression":
+                        findIdentifiers((scalarExpression as CaseExpression).ElseExpression);
+                        break;
 
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CastCall":
-                    findIdentifiers((scalarExpression as CastCall).Parameter);
-                    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CastCall":
+                        findIdentifiers((scalarExpression as CastCall).Parameter);
+                        break;
 
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.CoalesceExpression":
-                    foreach(ScalarExpression expression in (scalarExpression as CoalesceExpression).Expressions)
-                    {
-                        findIdentifiers(expression);
-                    }
-                    break;
-
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ConvertCall":
-                    findIdentifiers((scalarExpression as ConvertCall).Parameter);
-                    break;
-
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ExtractFromExpression":
-                    findIdentifiers((scalarExpression as ExtractFromExpression).Expression);
-                    break;
-
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.FunctionCall":
-                    FunctionCall functionCall = scalarExpression as FunctionCall;
-                    //ToDo:  Handle Identifiers!  
-                    if (functionCall.CallTarget != null)
-                    {
-                        SchemaObjectName son = new SchemaObjectName();
-                        if (functionCall.CallTarget is MultiPartIdentifierCallTarget)
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.CoalesceExpression":
+                        foreach(ScalarExpression expression in (scalarExpression as CoalesceExpression).Expressions)
                         {
-                            foreach (Microsoft.SqlServer.TransactSql.ScriptDom.Identifier mpi in (functionCall.CallTarget as MultiPartIdentifierCallTarget).MultiPartIdentifier.Identifiers)
-                            {
-                                son.Identifiers.Add(mpi);
-                            }
+                            findIdentifiers(expression);
                         }
-                        son.Identifiers.Add(functionCall.FunctionName);
-                        findIdentifiers(son, Identifier.IdentifierEnum.Function);
-                    }
-                    else
-                    {
-                        findIdentifiers(functionCall.FunctionName, Identifier.IdentifierEnum.Function);
-                    }
-                    foreach (ScalarExpression expression in functionCall.Parameters)
-                    {
-                        findIdentifiers(expression);
-                    }
-                    break;
+                        break;
 
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.IIfCall":
-                    findIdentifiers((scalarExpression as IIfCall).Predicate);
-                    findIdentifiers((scalarExpression as IIfCall).ElseExpression);
-                    findIdentifiers((scalarExpression as IIfCall).ThenExpression);
-                    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ConvertCall":
+                        findIdentifiers((scalarExpression as ConvertCall).Parameter);
+                        break;
 
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.LeftFunctionCall":
-                    foreach (ScalarExpression expression in (scalarExpression as LeftFunctionCall).Parameters)
-                    {
-                        findIdentifiers(expression);
-                    }
-                    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ExtractFromExpression":
+                        findIdentifiers((scalarExpression as ExtractFromExpression).Expression);
+                        break;
 
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ParenthesisExpression":
-                        findIdentifiers((scalarExpression as ParenthesisExpression).Expression);
-                    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.FunctionCall":
+                        FunctionCall functionCall = scalarExpression as FunctionCall;
+                        //ToDo:  Handle Identifiers!  
+                        if (functionCall.CallTarget != null)
+                        {
+                            SchemaObjectName son = new SchemaObjectName();
+                            if (functionCall.CallTarget is MultiPartIdentifierCallTarget)
+                            {
+                                if ((functionCall.CallTarget as MultiPartIdentifierCallTarget).MultiPartIdentifier != null)
+                                    foreach (Microsoft.SqlServer.TransactSql.ScriptDom.Identifier mpi in (functionCall.CallTarget as MultiPartIdentifierCallTarget).MultiPartIdentifier.Identifiers)
+                                    {
+                                        son.Identifiers.Add(mpi);
+                                    }
+                            }
+                            son.Identifiers.Add(functionCall.FunctionName);
+                            findIdentifiers(son, Identifier.IdentifierEnum.Function);
+                        }
+                        else
+                        {
+                            findIdentifiers(functionCall.FunctionName, Identifier.IdentifierEnum.Function);
+                        }
+                        foreach (ScalarExpression expression in functionCall.Parameters)
+                        {
+                            findIdentifiers(expression);
+                        }
+                        break;
 
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery":
-                    findIdentifiers((scalarExpression as ScalarSubquery).QueryExpression);
-                    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.IIfCall":
+                        findIdentifiers((scalarExpression as IIfCall).Predicate);
+                        findIdentifiers((scalarExpression as IIfCall).ElseExpression);
+                        findIdentifiers((scalarExpression as IIfCall).ThenExpression);
+                        break;
 
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SearchedCaseExpression":
-                    SearchedCaseExpression searchedCaseExpression = scalarExpression as SearchedCaseExpression;
-                    findIdentifiers(searchedCaseExpression.ElseExpression);
-                    foreach (WhenClause whenClause in searchedCaseExpression.WhenClauses)
-                    {
-                        findIdentifiers(whenClause.ThenExpression);
-                    }
-                    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.LeftFunctionCall":
+                        foreach (ScalarExpression expression in (scalarExpression as LeftFunctionCall).Parameters)
+                        {
+                            findIdentifiers(expression);
+                        }
+                        break;
 
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.SimpleCaseExpression":
-                    SimpleCaseExpression simpleCaseExpression = scalarExpression as SimpleCaseExpression;
-                    findIdentifiers(simpleCaseExpression.InputExpression);
-                    findIdentifiers(simpleCaseExpression.ElseExpression);
-                    foreach (WhenClause whenClause in simpleCaseExpression.WhenClauses)
-                    {
-                        findIdentifiers(whenClause.ThenExpression);
-                    }
-                    break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ParenthesisExpression":
+                            findIdentifiers((scalarExpression as ParenthesisExpression).Expression);
+                        break;
 
-                default:
-                    throw new Exception("Unhandled Statement Type in findIdentifiers(ScalarExpression scalarExpression) " + scalarExpression.GetType().FullName);
-            };
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery":
+                        findIdentifiers((scalarExpression as ScalarSubquery).QueryExpression);
+                        break;
+
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SearchedCaseExpression":
+                        SearchedCaseExpression searchedCaseExpression = scalarExpression as SearchedCaseExpression;
+                        findIdentifiers(searchedCaseExpression.ElseExpression);
+                        foreach (WhenClause whenClause in searchedCaseExpression.WhenClauses)
+                        {
+                            findIdentifiers(whenClause.ThenExpression);
+                        }
+                        break;
+
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.SimpleCaseExpression":
+                        SimpleCaseExpression simpleCaseExpression = scalarExpression as SimpleCaseExpression;
+                        findIdentifiers(simpleCaseExpression.InputExpression);
+                        findIdentifiers(simpleCaseExpression.ElseExpression);
+                        foreach (WhenClause whenClause in simpleCaseExpression.WhenClauses)
+                        {
+                            findIdentifiers(whenClause.ThenExpression);
+                        }
+                        break;
+
+                    default:
+                        throw new Exception("Unhandled Statement Type in findIdentifiers(ScalarExpression scalarExpression) " + scalarExpression.GetType().FullName);
+                };
         }
 
         private void findIdentifiers(TableReference tableSource)
@@ -2061,6 +2069,9 @@ namespace TSQLParser
                         break;
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.SchemaObjectFunctionTableReference":
                         findIdentifiers(((SchemaObjectFunctionTableReference)tableSource).SchemaObject);
+                        break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.VariableTableReference":
+                        // Not intested in Variables...
                         break;
                     //case "Microsoft.SqlServer.TransactSql.ScriptDom.VariableTableSource":
                     //    // Not intested in Variables...
