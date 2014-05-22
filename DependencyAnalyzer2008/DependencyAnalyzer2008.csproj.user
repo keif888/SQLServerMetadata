@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>/depDb:"Server=.\SQL2008R2%3bdatabase=unt0BIMetaData%3bIntegrated Security=SSPI%3b" /r- /b- /skipSSIS+ /skipSQL+ /matchDBOnly- /skipAS+ /skipRS+ /d2s:"Server=MVISQL021\SQI02%3bDatabase=int0DataScribe%3bIntegrated Security=SSPI%3b"</StartArguments>
+    <StartArguments>/depDb:"Server=MVUSQL020\SQU01%3bdatabase=unt0BIMetadata%3bIntegrated Security=SSPI%3b" /r+ /b+ /skipSSIS+ /matchDBOnly- /skipAS+ /skipRS- /rpt:"http://nereid/ReportServer%24Maps%3f/Reports/Operational Data Store"</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
     <PublishUrlHistory />

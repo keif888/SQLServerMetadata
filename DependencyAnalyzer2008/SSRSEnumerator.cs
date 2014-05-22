@@ -251,6 +251,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         {
                             dsNameToRepository.Add(ds.Name, HandleDataSource(((SSRS2010.DataSourceDefinition)ds.Item).ConnectString, ds.Name));
                         }
+                        else if (ds.Item is SSRS2010.InvalidDataSourceReference)
+                        {
+                            dsNameToRepository.Add(ds.Name, HandleDataSource(String.Empty, ds.Name));
+                        }
                     }
 
                     using (var stream = new MemoryStream(reportDefinition))
@@ -278,6 +282,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                             if (!dsNameToRepository.TryGetValue(dsName, out dsID))
                                             {
                                                 Console.WriteLine(string.Format("Unable to locate DataSourceName {0} Using First Value", dsName));
+                                                if (dsNameToRepository.Count == 0)
+                                                    dsNameToRepository.Add(dsName, HandleDataSource(String.Empty, dsName));
                                                 dsID = dsNameToRepository.ElementAt(0).Value;
                                             }
                                         }
