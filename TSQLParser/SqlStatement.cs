@@ -80,6 +80,7 @@ namespace TSQLParser
                 if (_parseErrors != null && _parseErrors.Count > 0)
                 {
                     StringBuilder sb = new StringBuilder();
+                    offsetIncrement = 0;
                     foreach (var error in _parseErrors)
                     {
                         sb.AppendLine(error.Message);
