@@ -1733,7 +1733,14 @@ namespace Microsoft.Samples.DependencyAnalyzer
             return dataSource;
         }
 
-        public int GetTable(int connectionID, string tableName)
+        /// <summary>
+        /// Gets the ID for a table, and creates it if it doesn't exist.  Also sets the description on the table.
+        /// </summary>
+        /// <param name="connectionID"></param>
+        /// <param name="tableName"></param>
+        /// <param name="Description"></param>
+        /// <returns></returns>
+        public int GetTable(int connectionID, string tableName, string Description)
         {
             int tableID = -1; // assume no table will be found
 
@@ -1749,16 +1756,36 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 {
                     Debug.Assert(relationalTableRows.Length == 1); // should be only one table in a connection with the same name
                     tableID = (int)relationalTableRows[0]["ObjectKey"];
+                    // Attempt to update the description, if there is one provided, and it's different to what's already there.
+                    if (!string.IsNullOrEmpty(Description))
+                    {
+                        String strCurrentDescription = (string)relationalTableRows[0]["ObjectDesc"];
+                        if (Description.ToLower() != strCurrentDescription.ToLower())
+                        {
+                            relationalTableRows[0]["ObjectDesc"] = Description;
+                        }
+                    }
                     break;
                 }
             }
 
             if (tableID == -1)
             {
-                tableID = AddObject(tableName, string.Empty, RelationalEnumerator.ObjectTypes.Table, connectionID);
+                tableID = AddObject(tableName, Description, RelationalEnumerator.ObjectTypes.Table, connectionID);
             }
 
             return tableID;
+        }
+
+        /// <summary>
+        /// Gets the id for the table, and creates it if it doesn't exist.
+        /// </summary>
+        /// <param name="connectionID"></param>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        public int GetTable(int connectionID, string tableName)
+        {
+            return GetTable(connectionID, tableName, string.Empty);
         }
 
         /// <summary>
@@ -1796,12 +1823,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
         }
 
         /// <summary>
-        /// Searches for an existing ID for a Function, and if not found, adds a new entry.
+        /// Searches for an existing ID for a Function, and if not found, adds a new entry, with a description.
         /// </summary>
-        /// <param name="connectionID">The connection that this Function should be found in</param>
-        /// <param name="funcName">The name of the Function</param>
-        /// <returns>the ID that belongs to the Function</returns>
-        public int GetFunction(int connectionID, string funcName)
+        /// <param name="connectionID"></param>
+        /// <param name="funcName"></param>
+        /// <param name="Description"></param>
+        /// <returns></returns>
+        public int GetFunction(int connectionID, string funcName, string Description)
         {
             int funcID = -1; // assume no Function will be found
 
@@ -1823,10 +1851,21 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
             if (funcID == -1)
             {
-                funcID = AddObject(funcName, string.Empty, RelationalEnumerator.ObjectTypes.Function, connectionID);
+                funcID = AddObject(funcName, Description, RelationalEnumerator.ObjectTypes.Function, connectionID);
             }
 
             return funcID;
+        }
+
+        /// <summary>
+        /// Searches for an existing ID for a Function, and if not found, adds a new entry.
+        /// </summary>
+        /// <param name="connectionID">The connection that this Function should be found in</param>
+        /// <param name="funcName">The name of the Function</param>
+        /// <returns>the ID that belongs to the Function</returns>
+        public int GetFunction(int connectionID, string funcName)
+        {
+            return GetFunction(connectionID, funcName, string.Empty);
         }
 
         /// <summary>

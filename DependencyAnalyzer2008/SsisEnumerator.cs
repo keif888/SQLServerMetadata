@@ -155,6 +155,42 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
 
 #endif
+#if SQL2014
+            internal const string OleDbSource = "{165A526D-D5DE-47FF-96A6-F8274C19826B}";
+            internal const string ExcelSource = "{8C084929-27D1-479F-9641-ABB7CDADF1AC}";
+            internal const string FlatFileSource = "{D23FD76B-F51D-420F-BBCB-19CBF6AC1AB4}";
+            internal const string RawFileSource = "{480C7D5A-CE63-405C-B338-3C7F26560EE3}";
+            internal const string XmlSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}"; //"Microsoft.SqlServer.Dts.Pipeline.XmlSourceAdapter, Microsoft.SqlServer.XmlSrc, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91";
+
+            internal const string OleDbDestination = "{4ADA7EAA-136C-4215-8098-D7A7C27FC0D1}";
+            internal const string SqlDestination = "{F452EAF3-5EF0-43F1-8067-09DDF0BC6316}";
+            internal const string FlatFileDest = "{8DA75FED-1B7C-407D-B2AD-2B24209CCCA4}";
+            internal const string RawFileDest = "{04762BB6-892F-4EE6-AD46-9CEB0A7EC7A2}";
+            internal const string ExcelDestination = "{1F5D5712-2FBA-4CB9-A95A-86C1F336E1DA}";
+
+            internal const string Lookup = "{671046B0-AA63-4C9F-90E4-C06E0B710CE3}";
+            internal const string FuzzyLookup = "{E4A5F949-EC93-45AB-8B36-B52936257EC2}";
+
+            internal const string ManagedComponentWrapper = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}"; //Script Component? "{2E42D45B-F83C-400F-8D77-61DDE6A7DF29}";
+
+            internal const string DerivedColumn = "{49928E82-9C4E-49F0-AABE-3812B82707EC}";
+            internal const string MultipleHash = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}"; // "Martin.SQLServer.Dts.MultipleHash, MultipleHash2012, Version=1.0.0.0, Culture=neutral, PublicKeyToken=51c551904274ab44";
+            internal const string KimballSCD = "MouldingAndMillwork.SSIS.KimballMethodSCD, KimballMethodSCD100, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8b0551303405e96c";
+            internal const string OLEDBCommand = "{93FFEC66-CBC8-4C7F-9C6A-CB1C17A7567D}";
+
+            //internal const string ADONetSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+            //internal const string CDCSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+            //internal const string DataMiningModel = "{3D9FFAE9-B89B-43D9-80C8-B97D2740C746}";
+            //internal const string DataReaderDestination = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+            //internal const string DimensionProcessing = "{2C2F0891-3AAA-4865-A676-D7476FE4CE90}";
+            //internal const string ODBCDestination = "{074B8736-CD73-40A5-822E-888215AF57DA}";
+            //internal const string ODBCSource = "{A77F5655-A006-443A-9B7E-90B6BD55CB84}";
+            //internal const string PartitionProcessing = "{DA510FB7-E3A8-4D96-9F59-55E15E67FE3D}";
+            //internal const string RecordSetDestination = "{C457FD7E-CE98-4C4B-AEFE-F3AE0044F181}";
+            //internal const string SQLServerCompactDestination = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+
+
+#endif
         }
 
         private const string objectTypePackage = "SSIS Package";

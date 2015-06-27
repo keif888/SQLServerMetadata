@@ -512,6 +512,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "SSISMeta"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "codeplex")]
         private void ParseTSqlStatement(string statement, int connectionID, int reportID)
         {
             SqlStatement toBeParsed = new SqlStatement();
