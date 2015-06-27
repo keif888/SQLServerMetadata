@@ -156,25 +156,25 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
 #endif
 #if SQL2014
-            internal const string OleDbSource = "{165A526D-D5DE-47FF-96A6-F8274C19826B}";
-            internal const string ExcelSource = "{8C084929-27D1-479F-9641-ABB7CDADF1AC}";
-            internal const string FlatFileSource = "{D23FD76B-F51D-420F-BBCB-19CBF6AC1AB4}";
+            internal const string OleDbSource = "{C8D886B3-1825-4FCC-94DE-C3F108986E21}";
+            internal const string ExcelSource = "{9F5C585F-2F02-4622-B273-F75D52419D4A}";
+            internal const string FlatFileSource = "{C4D48377-EFD6-4C95-9A0B-049219453431}";
             internal const string RawFileSource = "{480C7D5A-CE63-405C-B338-3C7F26560EE3}";
             internal const string XmlSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}"; //"Microsoft.SqlServer.Dts.Pipeline.XmlSourceAdapter, Microsoft.SqlServer.XmlSrc, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91";
 
             internal const string OleDbDestination = "{4ADA7EAA-136C-4215-8098-D7A7C27FC0D1}";
             internal const string SqlDestination = "{F452EAF3-5EF0-43F1-8067-09DDF0BC6316}";
-            internal const string FlatFileDest = "{8DA75FED-1B7C-407D-B2AD-2B24209CCCA4}";
+            internal const string FlatFileDest = "{FD4FFB90-EECF-4B5A-A3A7-DE2E1FA8052C}";
             internal const string RawFileDest = "{04762BB6-892F-4EE6-AD46-9CEB0A7EC7A2}";
-            internal const string ExcelDestination = "{1F5D5712-2FBA-4CB9-A95A-86C1F336E1DA}";
+            internal const string ExcelDestination = "{90E2E609-1207-4CB0-A8CE-CC7B8CFE2510}";
 
-            internal const string Lookup = "{671046B0-AA63-4C9F-90E4-C06E0B710CE3}";
-            internal const string FuzzyLookup = "{E4A5F949-EC93-45AB-8B36-B52936257EC2}";
+            internal const string Lookup = "{9345248B-9709-4C04-90C1-0853F8B68EE8}";
+            internal const string FuzzyLookup = "{AD9B9B83-DB60-4188-B57D-93C5155DFACC}";
 
-            internal const string ManagedComponentWrapper = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}"; //Script Component? "{2E42D45B-F83C-400F-8D77-61DDE6A7DF29}";
+            internal const string ManagedComponentWrapper = "{33D831DE-5DCF-48F0-B431-4D327B9E785D}"; //Script Component? "{2E42D45B-F83C-400F-8D77-61DDE6A7DF29}";
 
-            internal const string DerivedColumn = "{49928E82-9C4E-49F0-AABE-3812B82707EC}";
-            internal const string MultipleHash = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}"; // "Martin.SQLServer.Dts.MultipleHash, MultipleHash2012, Version=1.0.0.0, Culture=neutral, PublicKeyToken=51c551904274ab44";
+            internal const string DerivedColumn = "{18E9A11B-7393-47C5-9D47-687BE04A6B09}";
+            internal const string MultipleHash = "Martin.SQLServer.Dts.MultipleHash, MultipleHash2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=51c551904274ab44";
             internal const string KimballSCD = "MouldingAndMillwork.SSIS.KimballMethodSCD, KimballMethodSCD100, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8b0551303405e96c";
             internal const string OLEDBCommand = "{93FFEC66-CBC8-4C7F-9C6A-CB1C17A7567D}";
 
@@ -1377,7 +1377,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
             if (pipelineComponentInfos.Contains(objectTypeName) == false)
             {
-                throw new Exception(string.Format("Unknown component type encountered: {0}", objectTypeName));
+                throw new Exception(string.Format("Unknown component type encountered: {0}, {1}", objectTypeName, component.Name));
             }
 
             PipelineComponentInfo pipelineComponentInfo = pipelineComponentInfos[objectTypeName];
