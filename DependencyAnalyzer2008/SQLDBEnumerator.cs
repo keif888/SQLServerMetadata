@@ -41,6 +41,24 @@ namespace Microsoft.Samples.DependencyAnalyzer
             return success;
         }
 
+
+        private int DetermineConnection(string serverName, string databaseName)
+        {
+            connectionStringBuilder.Clear();
+            connectionStringBuilder.DataSource = serverName;
+            connectionStringBuilder.InitialCatalog = databaseName;
+            int objectConnectionID = repository.GetConnection(connectionStringBuilder.ConnectionString);
+            if (objectConnectionID == -1)
+            {
+                // Need to add a new connectionID.
+                objectConnectionID = repository.AddObject("CMD " + connectionStringBuilder.InitialCatalog, string.Empty, OLEDBGuid, repository.RootRepositoryObjectID);
+                repository.AddAttribute(objectConnectionID, Repository.Attributes.ConnectionString, connectionStringBuilder.ConnectionString);
+                repository.AddAttribute(objectConnectionID, Repository.Attributes.ConnectionServer, connectionStringBuilder.DataSource);
+                repository.AddAttribute(objectConnectionID, Repository.Attributes.ConnectionDatabase, connectionStringBuilder.InitialCatalog);
+            }
+            return objectConnectionID;
+        }
+
         public void EnumerateDatabase(string dbConnection)
         {
             string serverName = string.Empty;
@@ -98,7 +116,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 ScriptingOptions scriptOptions = new ScriptingOptions();
                 scriptOptions.AllowSystemObjects = false;
 
-                string objectName, parentName;
+                string objectName, parentName, objectServerName, objectDatabaseName;
+                int objectConnectionID = 0;
                 int tableID, parentID, arrayCounter;
                 DependencyTree dependTree;
                 DependencyTreeNode walkNode, parentNode;
@@ -214,17 +233,22 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             do
                             {
                                 parentName = "[" + walkNode.Urn.GetAttribute("Schema") + "].[" + walkNode.Urn.GetAttribute("Name") + "]";
+                                objectServerName = walkNode.Urn.Parent.Parent.GetAttribute("Name");
+                                objectDatabaseName = walkNode.Urn.Parent.GetAttribute("Name");
+                                objectConnectionID = DetermineConnection(objectServerName, objectDatabaseName);
+
                                 switch (walkNode.Urn.Type)
                                 {
+                                    case "Synonym":  // Synonym's look like tables in base T-SQL
                                     case "Table":
-                                    case "View":
-                                        parentID = repository.GetTable(connectionID, parentName);
+                                    case "View":     // View's look like tables in base T-SQL
+                                        parentID = repository.GetTable(objectConnectionID, parentName);
                                         break;
                                     case "UserDefinedFunction":
-                                        parentID = repository.GetFunction(connectionID, parentName);
+                                        parentID = repository.GetFunction(objectConnectionID, parentName);
                                         break;
                                     case "StoredProcedure":
-                                        parentID = repository.GetProcedure(connectionID, parentName);
+                                        parentID = repository.GetProcedure(objectConnectionID, parentName);
                                         break;
                                     case "PartitionScheme":
                                     case "XmlSchemaCollection":
@@ -233,16 +257,16 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                     default:
                                         if (sqlDatabase.StoredProcedures.Contains(walkNode.Urn.GetAttribute("Name"), walkNode.Urn.GetAttribute("Schema")))
                                         {
-                                            parentID = repository.GetProcedure(connectionID, parentName);
+                                            parentID = repository.GetProcedure(objectConnectionID, parentName);
                                         }
                                         else if (sqlDatabase.UserDefinedFunctions.Contains(walkNode.Urn.GetAttribute("Name"), walkNode.Urn.GetAttribute("Schema")))
                                         {
-                                            parentID = repository.GetFunction(connectionID, parentName);
+                                            parentID = repository.GetFunction(objectConnectionID, parentName);
                                         }
                                         else
                                         {
                                             Console.WriteLine("Warning: Unresolvable Dependency encountered in object {0} for object {1} of type {2}", objectName, parentName, walkNode.Urn.Type);
-                                            parentID = repository.GetTable(connectionID, parentName);
+                                            parentID = repository.GetTable(objectConnectionID, parentName);
                                         }
                                         break;
                                 }
@@ -281,7 +305,6 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     do
                     {
                         objectName = "[" + parentNode.Urn.GetAttribute("Schema") + "].[" + parentNode.Urn.GetAttribute("Name") + "]";
-                        // The following is because we don't know the type of a view in the TSQLParser...
                         tableID = repository.GetProcedure(connectionID, objectName);
                         if (parentNode.HasChildNodes)
                         {
@@ -290,17 +313,21 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             do
                             {
                                 parentName = "[" + walkNode.Urn.GetAttribute("Schema") + "].[" + walkNode.Urn.GetAttribute("Name") + "]";
+                                objectServerName = walkNode.Urn.Parent.Parent.GetAttribute("Name");
+                                objectDatabaseName = walkNode.Urn.Parent.GetAttribute("Name");
+                                objectConnectionID = DetermineConnection(objectServerName, objectDatabaseName);
                                 switch (walkNode.Urn.Type)
                                 {
+                                    case "Synonym":  // Synonym's look like tables in base T-SQL
                                     case "Table":
-                                    case "View":
-                                        parentID = repository.GetTable(connectionID, parentName);
+                                    case "View":     // View's look like tables in base T-SQL
+                                        parentID = repository.GetTable(objectConnectionID, parentName);
                                         break;
                                     case "UserDefinedFunction":
-                                        parentID = repository.GetFunction(connectionID, parentName);
+                                        parentID = repository.GetFunction(objectConnectionID, parentName);
                                         break;
                                     case "StoredProcedure":
-                                        parentID = repository.GetProcedure(connectionID, parentName);
+                                        parentID = repository.GetProcedure(objectConnectionID, parentName);
                                         break;
                                     case "PartitionScheme":
                                     case "XmlSchemaCollection":
@@ -310,16 +337,16 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                     default:
                                         if (sqlDatabase.StoredProcedures.Contains(walkNode.Urn.GetAttribute("Name"), walkNode.Urn.GetAttribute("Schema")))
                                         {
-                                            parentID = repository.GetProcedure(connectionID, parentName);
+                                            parentID = repository.GetProcedure(objectConnectionID, parentName);
                                         }
                                         else if (sqlDatabase.UserDefinedFunctions.Contains(walkNode.Urn.GetAttribute("Name"), walkNode.Urn.GetAttribute("Schema")))
                                         {
-                                            parentID = repository.GetFunction(connectionID, parentName);
+                                            parentID = repository.GetFunction(objectConnectionID, parentName);
                                         }
                                         else
                                         {
                                             Console.WriteLine("Warning: Unresolvable Dependency encountered in object {0} for object {1} of type {2}", objectName, parentName, walkNode.Urn.Type);
-                                            parentID = repository.GetTable(connectionID, parentName);
+                                            parentID = repository.GetTable(objectConnectionID, parentName);
                                         }
                                         break;
                                 }
@@ -367,17 +394,21 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             do
                             {
                                 parentName = "[" + walkNode.Urn.GetAttribute("Schema") + "].[" + walkNode.Urn.GetAttribute("Name") + "]";
+                                objectServerName = walkNode.Urn.Parent.Parent.GetAttribute("Name");
+                                objectDatabaseName = walkNode.Urn.Parent.GetAttribute("Name");
+                                objectConnectionID = DetermineConnection(objectServerName, objectDatabaseName);
                                 switch (walkNode.Urn.Type)
                                 {
+                                    case "Synonym":  // Synonym's look like tables in base T-SQL
                                     case "Table":
-                                    case "View":
-                                        parentID = repository.GetTable(connectionID, parentName);
+                                    case "View":     // View's look like tables in base T-SQL
+                                        parentID = repository.GetTable(objectConnectionID, parentName);
                                         break;
                                     case "UserDefinedFunction":
-                                        parentID = repository.GetFunction(connectionID, parentName);
+                                        parentID = repository.GetFunction(objectConnectionID, parentName);
                                         break;
                                     case "StoredProcedure":
-                                        parentID = repository.GetProcedure(connectionID, parentName);
+                                        parentID = repository.GetProcedure(objectConnectionID, parentName);
                                         break;
                                     case "PartitionScheme":
                                     case "XmlSchemaCollection":
@@ -387,16 +418,16 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                     default:
                                         if (sqlDatabase.StoredProcedures.Contains(walkNode.Urn.GetAttribute("Name"), walkNode.Urn.GetAttribute("Schema")))
                                         {
-                                            parentID = repository.GetProcedure(connectionID, parentName);
+                                            parentID = repository.GetProcedure(objectConnectionID, parentName);
                                         }
                                         else if (sqlDatabase.UserDefinedFunctions.Contains(walkNode.Urn.GetAttribute("Name"), walkNode.Urn.GetAttribute("Schema")))
                                         {
-                                            parentID = repository.GetFunction(connectionID, parentName);
+                                            parentID = repository.GetFunction(objectConnectionID, parentName);
                                         }
                                         else
                                         {
                                             Console.WriteLine("Warning: Unresolvable Dependency encountered in object {0} for object {1} of type {2}", objectName, parentName, walkNode.Urn.Type);
-                                            parentID = repository.GetTable(connectionID, parentName);
+                                            parentID = repository.GetTable(objectConnectionID, parentName);
                                         }
                                         break;
                                 }
@@ -410,6 +441,83 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     }
                     while (parentNode != null);
                 }
+
+                walkerList.Clear();
+                arrayCounter = 0;
+                foreach (Synonym sqlSynonym in sqlDatabase.Synonyms)
+                {
+                        walkerList.Add(sqlSynonym);
+                }
+                walkerArray = new SqlSmoObject[walkerList.Count];
+                foreach (SqlSmoObject smoObject in walkerList)
+                {
+                    walkerArray[arrayCounter++] = smoObject;
+                }
+
+                if (walkerArray.Length > 0)
+                {
+                    dependTree = findDepenency.DiscoverDependencies(walkerArray, DependencyType.Parents);
+                    // Walk the tree
+                    parentNode = dependTree.FirstChild;
+                    do
+                    {
+                        objectName = "[" + parentNode.Urn.GetAttribute("Schema") + "].[" + parentNode.Urn.GetAttribute("Name") + "]";
+                        // The following is because we don't know the type of a synonym in the TSQLParser...
+                        tableID = repository.GetTable(connectionID, objectName);
+                        if (parentNode.HasChildNodes)
+                        {
+                            // Point at the first dependency
+                            walkNode = parentNode.FirstChild;
+                            do
+                            {
+                                parentName = "[" + walkNode.Urn.GetAttribute("Schema") + "].[" + walkNode.Urn.GetAttribute("Name") + "]";
+                                objectServerName = walkNode.Urn.Parent.Parent.GetAttribute("Name");
+                                objectDatabaseName = walkNode.Urn.Parent.GetAttribute("Name");
+                                objectConnectionID = DetermineConnection(objectServerName, objectDatabaseName);
+                                switch (walkNode.Urn.Type)
+                                {
+                                    case "Synonym":  // Synonym's look like tables in base T-SQL
+                                    case "Table":
+                                    case "View":     // View's look like tables in base T-SQL
+                                        parentID = repository.GetTable(objectConnectionID, parentName);
+                                        break;
+                                    case "UserDefinedFunction":
+                                        parentID = repository.GetFunction(objectConnectionID, parentName);
+                                        break;
+                                    case "StoredProcedure":
+                                        parentID = repository.GetProcedure(objectConnectionID, parentName);
+                                        break;
+                                    case "PartitionScheme":
+                                    case "XmlSchemaCollection":
+                                        parentID = -1;
+                                        break;
+
+                                    default:
+                                        if (sqlDatabase.StoredProcedures.Contains(walkNode.Urn.GetAttribute("Name"), walkNode.Urn.GetAttribute("Schema")))
+                                        {
+                                            parentID = repository.GetProcedure(objectConnectionID, parentName);
+                                        }
+                                        else if (sqlDatabase.UserDefinedFunctions.Contains(walkNode.Urn.GetAttribute("Name"), walkNode.Urn.GetAttribute("Schema")))
+                                        {
+                                            parentID = repository.GetFunction(objectConnectionID, parentName);
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Warning: Unresolvable Dependency encountered in object {0} for object {1} of type {2}", objectName, parentName, walkNode.Urn.Type);
+                                            parentID = repository.GetTable(objectConnectionID, parentName);
+                                        }
+                                        break;
+                                }
+                                if (parentID > -1)
+                                    repository.AddMapping(parentID, tableID);
+                                walkNode = walkNode.NextSibling;
+                            }
+                            while (walkNode != null);
+                        }
+                        parentNode = parentNode.NextSibling;
+                    }
+                    while (parentNode != null);
+                }            
             }
             catch (Exception err)
             {
