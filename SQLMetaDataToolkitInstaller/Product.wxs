@@ -32,6 +32,9 @@
       Privileged
     </Condition>
 
+    <Icon Id="web.ico" SourceFile="$(var.DependencyViewer.ProjectDir)\Web.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="web.ico" />
+
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLDIR" Name="SQLServerMetadataToolkit">
@@ -121,7 +124,8 @@
                  Name="Dependency Executor"
                Description="GUI to control SQL Server Metadata Toolkit"
                 Target="[#DependencyExecutorExe]"
-                      WorkingDirectory="DEPENDENCYEXECUTORDIR"/>
+                      WorkingDirectory="DEPENDENCYEXECUTORDIR"
+                      Icon="web.ico"/>
             <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
             <RegistryValue Root="HKCU" Key="Software\MartinSource\SQL Server Metadata Toolkit" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
           </Component>
@@ -130,7 +134,8 @@
                  Name="Test Parser"
                Description="GUI to Test the SQL Parser"
                 Target="[#FTestParserExe]"
-                      WorkingDirectory="TESTPARSERDIR"/>
+                      WorkingDirectory="TESTPARSERDIR"
+                      Icon="web.ico"/>
             <RegistryValue Root="HKCU" Key="Software\MartinSource\SQL Server Metadata Toolkit" Name="testparser" Type="integer" Value="1" KeyPath="yes"/>
           </Component>
         </Directory>
