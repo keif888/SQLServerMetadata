@@ -16,6 +16,7 @@ namespace DependencyExecutor
         private readonly BackgroundWorker invokeAnalyser2008;
         private readonly BackgroundWorker invokeAnalyser2005;
         private readonly BackgroundWorker invokeAnalyser2012;
+        private readonly BackgroundWorker invokeAnalyser2014;
         private Process analyse;
 
         public MainForm()
@@ -34,6 +35,8 @@ namespace DependencyExecutor
             invokeAnalyser2008.DoWork += invokeAnalyser2008_DoWork;
             invokeAnalyser2012 = new BackgroundWorker();
             invokeAnalyser2012.DoWork += invokeAnalyser2012_DoWork;
+            invokeAnalyser2014 = new BackgroundWorker();
+            invokeAnalyser2014.DoWork += invokeAnalyser2014_DoWork;
         }
 
         private void rbSQL_CheckedChanged(object sender, EventArgs e)
@@ -304,6 +307,13 @@ namespace DependencyExecutor
 
             tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments());
         }
+
+        private void btAnalyze2014_MouseHover(object sender, EventArgs e)
+        {
+            string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2014\DependencyAnalyzer.exe";
+
+            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments());
+        }
         #endregion
 
         private void rbSQLDB_CheckedChanged(object sender, EventArgs e)
@@ -402,6 +412,7 @@ namespace DependencyExecutor
                 btAnalyze2005.Enabled = false;
                 btAnalyze2008.Enabled = false;
                 btAnalyze2012.Enabled = false;
+                btAnalyze2014.Enabled = false;
                 btView.Enabled = false;
                 invokeAnalyser2005.RunWorkerAsync();
             }
@@ -442,6 +453,7 @@ namespace DependencyExecutor
                 btAnalyze2005.Invoke((MethodInvoker)delegate { btAnalyze2005.Enabled = true; });
                 btAnalyze2008.Invoke((MethodInvoker)delegate { btAnalyze2008.Enabled = true; });
                 btAnalyze2012.Invoke((MethodInvoker)delegate { btAnalyze2012.Enabled = true; });
+                btAnalyze2014.Invoke((MethodInvoker)delegate { btAnalyze2014.Enabled = true; });
             }
         }
 
@@ -459,6 +471,7 @@ namespace DependencyExecutor
                 btAnalyze2005.Enabled = false;
                 btAnalyze2008.Enabled = false;
                 btAnalyze2012.Enabled = false;
+                btAnalyze2014.Enabled = false;
                 btView.Enabled = false;
                 invokeAnalyser2008.RunWorkerAsync();
             }
@@ -502,6 +515,7 @@ namespace DependencyExecutor
                 btAnalyze2005.Invoke((MethodInvoker)delegate { btAnalyze2005.Enabled = true; });
                 btAnalyze2008.Invoke((MethodInvoker)delegate { btAnalyze2008.Enabled = true; });
                 btAnalyze2012.Invoke((MethodInvoker)delegate { btAnalyze2012.Enabled = true; });
+                btAnalyze2014.Invoke((MethodInvoker)delegate { btAnalyze2014.Enabled = true; });
             }
         }
 
@@ -513,6 +527,7 @@ namespace DependencyExecutor
             btAnalyze2005.Invoke((MethodInvoker)delegate { btAnalyze2005.Enabled = true; });
             btAnalyze2008.Invoke((MethodInvoker)delegate { btAnalyze2008.Enabled = true; });
             btAnalyze2012.Invoke((MethodInvoker)delegate { btAnalyze2012.Enabled = true; });
+            btAnalyze2014.Invoke((MethodInvoker)delegate { btAnalyze2014.Enabled = true; });
         }
 
         void analyse_OutputDataReceived(object sender, DataReceivedEventArgs e)
@@ -554,12 +569,13 @@ namespace DependencyExecutor
             {
                 tbResults.Clear();
                 tcMain.SelectedTab = tbOutput;
-                string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2008\DependencyAnalyzer.exe";
+                string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2012\DependencyAnalyzer.exe";
                 tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments());
 
                 btAnalyze2005.Enabled = false;
                 btAnalyze2008.Enabled = false;
                 btAnalyze2012.Enabled = false;
+                btAnalyze2014.Enabled = false;
                 btView.Enabled = false;
                 invokeAnalyser2012.RunWorkerAsync();
             }
@@ -601,8 +617,66 @@ namespace DependencyExecutor
                 btAnalyze2005.Invoke((MethodInvoker)delegate { btAnalyze2005.Enabled = true; });
                 btAnalyze2008.Invoke((MethodInvoker)delegate { btAnalyze2008.Enabled = true; });
                 btAnalyze2012.Invoke((MethodInvoker)delegate { btAnalyze2012.Enabled = true; });
+                btAnalyze2014.Invoke((MethodInvoker)delegate { btAnalyze2014.Enabled = true; });
             }
         }
 
+        private void btAnalyze2014_Click(object sender, EventArgs e)
+        {
+            if ((tbDatabase.Text != string.Empty) && (tbSQLServer.Text != string.Empty))
+            {
+                tbResults.Clear();
+                tcMain.SelectedTab = tbOutput;
+                string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2014\DependencyAnalyzer.exe";
+                tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments());
+
+                btAnalyze2005.Enabled = false;
+                btAnalyze2008.Enabled = false;
+                btAnalyze2012.Enabled = false;
+                btAnalyze2014.Enabled = false;
+                btView.Enabled = false;
+                invokeAnalyser2014.RunWorkerAsync();
+            }
+        }
+
+        void invokeAnalyser2014_DoWork(object sender, DoWorkEventArgs e)
+        {
+            string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2014\DependencyAnalyzer.exe";
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = executable;
+            startInfo.Arguments = buildArguments();
+            //this.WindowState = FormWindowState.Minimized;
+
+            analyse = new Process();
+            analyse.StartInfo.Arguments = buildArguments();
+            analyse.StartInfo.FileName = executable;
+
+            analyse.StartInfo.UseShellExecute = false;
+            analyse.StartInfo.RedirectStandardOutput = true;
+            analyse.StartInfo.RedirectStandardError = true;
+            analyse.StartInfo.CreateNoWindow = true;
+            analyse.StartInfo.ErrorDialog = true;
+
+            analyse.OutputDataReceived += new DataReceivedEventHandler(analyse_OutputDataReceived);
+            analyse.ErrorDataReceived += new DataReceivedEventHandler(analyse_OutputDataReceived);
+            analyse.EnableRaisingEvents = true;
+            analyse.Exited += new EventHandler(analyse_Exited);
+
+            try
+            {
+                analyse.Start();
+                analyse.BeginOutputReadLine();
+                analyse.BeginErrorReadLine();
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message, "Failure when launching the Analyser", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btView.Invoke((MethodInvoker)delegate { btView.Enabled = true; });
+                btAnalyze2005.Invoke((MethodInvoker)delegate { btAnalyze2005.Enabled = true; });
+                btAnalyze2008.Invoke((MethodInvoker)delegate { btAnalyze2008.Enabled = true; });
+                btAnalyze2012.Invoke((MethodInvoker)delegate { btAnalyze2012.Enabled = true; });
+                btAnalyze2014.Invoke((MethodInvoker)delegate { btAnalyze2014.Enabled = true; });
+            }
+        }
     }
 }

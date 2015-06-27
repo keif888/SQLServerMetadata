@@ -109,10 +109,11 @@
             this.btAnalyze2005 = new System.Windows.Forms.Button();
             this.btAnalyze2008 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btAnalyze2012 = new System.Windows.Forms.Button();
             this.tbCommandLine = new System.Windows.Forms.TextBox();
             this.toolTipControl = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
-            this.btAnalyze2012 = new System.Windows.Forms.Button();
+            this.btAnalyze2014 = new System.Windows.Forms.Button();
             this.tcMain.SuspendLayout();
             this.tbRepository.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -143,7 +144,7 @@
             this.tcMain.Location = new System.Drawing.Point(0, 0);
             this.tcMain.Name = "tcMain";
             this.tcMain.SelectedIndex = 0;
-            this.tcMain.Size = new System.Drawing.Size(719, 390);
+            this.tcMain.Size = new System.Drawing.Size(894, 389);
             this.tcMain.TabIndex = 0;
             // 
             // tbRepository
@@ -160,7 +161,7 @@
             this.tbRepository.Location = new System.Drawing.Point(4, 22);
             this.tbRepository.Name = "tbRepository";
             this.tbRepository.Padding = new System.Windows.Forms.Padding(3);
-            this.tbRepository.Size = new System.Drawing.Size(711, 364);
+            this.tbRepository.Size = new System.Drawing.Size(886, 363);
             this.tbRepository.TabIndex = 0;
             this.tbRepository.Text = "Repository";
             this.tbRepository.UseVisualStyleBackColor = true;
@@ -287,7 +288,7 @@
             this.tbScanOptions.Location = new System.Drawing.Point(4, 22);
             this.tbScanOptions.Name = "tbScanOptions";
             this.tbScanOptions.Padding = new System.Windows.Forms.Padding(3);
-            this.tbScanOptions.Size = new System.Drawing.Size(611, 364);
+            this.tbScanOptions.Size = new System.Drawing.Size(711, 364);
             this.tbScanOptions.TabIndex = 1;
             this.tbScanOptions.Text = "Scan Options";
             this.tbScanOptions.UseVisualStyleBackColor = true;
@@ -415,7 +416,7 @@
             this.tbSSISFolders.Location = new System.Drawing.Point(4, 22);
             this.tbSSISFolders.Name = "tbSSISFolders";
             this.tbSSISFolders.Padding = new System.Windows.Forms.Padding(3);
-            this.tbSSISFolders.Size = new System.Drawing.Size(611, 364);
+            this.tbSSISFolders.Size = new System.Drawing.Size(711, 364);
             this.tbSSISFolders.TabIndex = 2;
             this.tbSSISFolders.Text = "SSIS Folders";
             this.tbSSISFolders.UseVisualStyleBackColor = true;
@@ -478,7 +479,7 @@
             this.tbFileFolders.Location = new System.Drawing.Point(4, 22);
             this.tbFileFolders.Name = "tbFileFolders";
             this.tbFileFolders.Padding = new System.Windows.Forms.Padding(3);
-            this.tbFileFolders.Size = new System.Drawing.Size(611, 364);
+            this.tbFileFolders.Size = new System.Drawing.Size(711, 364);
             this.tbFileFolders.TabIndex = 3;
             this.tbFileFolders.Text = "File Folders";
             this.tbFileFolders.UseVisualStyleBackColor = true;
@@ -554,7 +555,7 @@
             this.tbDatabases.Location = new System.Drawing.Point(4, 22);
             this.tbDatabases.Name = "tbDatabases";
             this.tbDatabases.Padding = new System.Windows.Forms.Padding(3);
-            this.tbDatabases.Size = new System.Drawing.Size(611, 364);
+            this.tbDatabases.Size = new System.Drawing.Size(711, 364);
             this.tbDatabases.TabIndex = 4;
             this.tbDatabases.Text = "Databases";
             this.tbDatabases.UseVisualStyleBackColor = true;
@@ -710,7 +711,7 @@
             this.tbReports.Location = new System.Drawing.Point(4, 22);
             this.tbReports.Name = "tbReports";
             this.tbReports.Padding = new System.Windows.Forms.Padding(3);
-            this.tbReports.Size = new System.Drawing.Size(611, 364);
+            this.tbReports.Size = new System.Drawing.Size(711, 364);
             this.tbReports.TabIndex = 8;
             this.tbReports.Text = "Reports";
             this.tbReports.UseVisualStyleBackColor = true;
@@ -796,7 +797,7 @@
             this.tbAnalysisServers.Location = new System.Drawing.Point(4, 22);
             this.tbAnalysisServers.Name = "tbAnalysisServers";
             this.tbAnalysisServers.Padding = new System.Windows.Forms.Padding(3);
-            this.tbAnalysisServers.Size = new System.Drawing.Size(611, 364);
+            this.tbAnalysisServers.Size = new System.Drawing.Size(711, 364);
             this.tbAnalysisServers.TabIndex = 5;
             this.tbAnalysisServers.Text = "Analysis Servers";
             this.tbAnalysisServers.UseVisualStyleBackColor = true;
@@ -876,7 +877,7 @@
             this.tbNameOverides.Location = new System.Drawing.Point(4, 22);
             this.tbNameOverides.Name = "tbNameOverides";
             this.tbNameOverides.Padding = new System.Windows.Forms.Padding(3);
-            this.tbNameOverides.Size = new System.Drawing.Size(611, 364);
+            this.tbNameOverides.Size = new System.Drawing.Size(711, 364);
             this.tbNameOverides.TabIndex = 6;
             this.tbNameOverides.Text = "Name Overrides";
             this.tbNameOverides.UseVisualStyleBackColor = true;
@@ -936,7 +937,7 @@
             this.tbOutput.Location = new System.Drawing.Point(4, 22);
             this.tbOutput.Name = "tbOutput";
             this.tbOutput.Padding = new System.Windows.Forms.Padding(3);
-            this.tbOutput.Size = new System.Drawing.Size(611, 364);
+            this.tbOutput.Size = new System.Drawing.Size(711, 364);
             this.tbOutput.TabIndex = 7;
             this.tbOutput.Text = "Output";
             this.tbOutput.UseVisualStyleBackColor = true;
@@ -948,7 +949,7 @@
             this.tbResults.Multiline = true;
             this.tbResults.Name = "tbResults";
             this.tbResults.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbResults.Size = new System.Drawing.Size(605, 358);
+            this.tbResults.Size = new System.Drawing.Size(705, 358);
             this.tbResults.TabIndex = 0;
             // 
             // btView
@@ -986,33 +987,17 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btAnalyze2014);
             this.panel1.Controls.Add(this.btAnalyze2012);
             this.panel1.Controls.Add(this.tbCommandLine);
             this.panel1.Controls.Add(this.btAnalyze2008);
             this.panel1.Controls.Add(this.btView);
             this.panel1.Controls.Add(this.btAnalyze2005);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 390);
+            this.panel1.Location = new System.Drawing.Point(0, 389);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(719, 60);
+            this.panel1.Size = new System.Drawing.Size(894, 60);
             this.panel1.TabIndex = 1;
-            // 
-            // tbCommandLine
-            // 
-            this.tbCommandLine.Location = new System.Drawing.Point(4, 32);
-            this.tbCommandLine.Name = "tbCommandLine";
-            this.tbCommandLine.ReadOnly = true;
-            this.tbCommandLine.Size = new System.Drawing.Size(711, 20);
-            this.tbCommandLine.TabIndex = 12;
-            // 
-            // toolTipControl
-            // 
-            this.toolTipControl.ToolTipTitle = "Huh?";
-            // 
-            // folderBrowser
-            // 
-            this.folderBrowser.Description = "Browse for suitable folders";
-            this.folderBrowser.ShowNewFolderButton = false;
             // 
             // btAnalyze2012
             // 
@@ -1025,17 +1010,45 @@
             this.btAnalyze2012.Click += new System.EventHandler(this.btAnalyze2012_Click);
             this.btAnalyze2012.MouseHover += new System.EventHandler(this.btAnalyze2012_MouseHover);
             // 
+            // tbCommandLine
+            // 
+            this.tbCommandLine.Location = new System.Drawing.Point(4, 32);
+            this.tbCommandLine.Name = "tbCommandLine";
+            this.tbCommandLine.ReadOnly = true;
+            this.tbCommandLine.Size = new System.Drawing.Size(878, 20);
+            this.tbCommandLine.TabIndex = 12;
+            // 
+            // toolTipControl
+            // 
+            this.toolTipControl.ToolTipTitle = "Huh?";
+            // 
+            // folderBrowser
+            // 
+            this.folderBrowser.Description = "Browse for suitable folders";
+            this.folderBrowser.ShowNewFolderButton = false;
+            // 
+            // btAnalyze2014
+            // 
+            this.btAnalyze2014.Location = new System.Drawing.Point(711, 3);
+            this.btAnalyze2014.Name = "btAnalyze2014";
+            this.btAnalyze2014.Size = new System.Drawing.Size(171, 23);
+            this.btAnalyze2014.TabIndex = 14;
+            this.btAnalyze2014.Text = "Analyse 2014";
+            this.btAnalyze2014.UseVisualStyleBackColor = true;
+            this.btAnalyze2014.Click += new System.EventHandler(this.btAnalyze2014_Click);
+            this.btAnalyze2014.MouseHover += new System.EventHandler(this.btAnalyze2014_MouseHover);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(719, 450);
+            this.ClientSize = new System.Drawing.Size(894, 449);
             this.Controls.Add(this.tcMain);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(735, 488);
-            this.MinimumSize = new System.Drawing.Size(735, 488);
+            this.MaximumSize = new System.Drawing.Size(910, 488);
+            this.MinimumSize = new System.Drawing.Size(910, 488);
             this.Name = "MainForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Dependency Executor";
@@ -1153,6 +1166,7 @@
         private System.Windows.Forms.Button btAddReport;
         private System.Windows.Forms.ListBox lbReportServer;
         private System.Windows.Forms.Button btAnalyze2012;
+        private System.Windows.Forms.Button btAnalyze2014;
     }
 }
 
