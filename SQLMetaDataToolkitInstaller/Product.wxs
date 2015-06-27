@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?define ProductVersion = "0.0.14.0"?>
+  <?define ProductVersion = "0.0.15.0"?>
   <?define UpgradeCode = "B758AA83-565F-453A-BECF-0B0B060E7023"?>
   <?define Manufacturer = "Keith Martin"?>
   <?define PackageCode = "*"?>
@@ -57,6 +57,14 @@
             </Component>
             <Component Id="DependencyAnalyzer2012Parser" Guid="{0A489594-2A5F-4677-8C0C-4EDC0A9DC002}" Win64="no">
                 <File Id="FDependencyAnalyzer2012Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
+            </Component>
+          </Directory>
+          <Directory Id="DependencyAnalyzer2014DIR" Name="Dependency Analyzer 2014">
+            <Component Id="DependencyAnalyzer2014Exe" Guid="{8C98AD26-65CE-4BA3-8954-6E98F4E5BF1D}" Win64="no">
+              <File Id="FDependencyAnalyzer2014Exe" Name="$(var.DependencyAnalyzer2014.TargetFileName)" Source="$(var.DependencyAnalyzer2014.TargetPath)" />
+            </Component>
+            <Component Id="DependencyAnalyzer2014Parser" Guid="{95C37E97-F292-4804-A9F3-097946B574F8}" Win64="no">
+              <File Id="FDependencyAnalyzer2014Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
             </Component>
           </Directory>
           <Directory Id="DEPENDENCYEXECUTORDIR" Name="Dependency Executor">
@@ -141,6 +149,10 @@
       <Feature Id="DependencyAnalyzer2012" Level="1" Title="Dependency Analyzer 2012">
         <ComponentRef Id="DependencyAnalyzer2012Exe"/>
         <ComponentRef Id="DependencyAnalyzer2012Parser"/>
+      </Feature>
+      <Feature Id="DependencyAnalyzer2014" Level="1" Title="Dependency Analyzer 2014">
+        <ComponentRef Id="DependencyAnalyzer2014Exe"/>
+        <ComponentRef Id="DependencyAnalyzer2014Parser"/>
       </Feature>
       <Feature Id="DependencyExecutor" Level="1" Title="Dependency Executor">
         <ComponentRef Id="DependencyExecutor"/>
