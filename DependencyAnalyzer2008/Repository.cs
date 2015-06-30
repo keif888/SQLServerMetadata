@@ -1989,7 +1989,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             // see if any report has our name
             foreach (DataRow row in reportChildren)
             {
-                DataRow[] dataSetRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], ReportEnumerator.ObjectTypes.Report, sdsName.Replace("'", "''")));
+                DataRow[] dataSetRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], ReportEnumerator.ObjectTypes.DataSet, sdsName.Replace("'", "''")));
 
                 if (dataSetRows.Length > 0)
                 {

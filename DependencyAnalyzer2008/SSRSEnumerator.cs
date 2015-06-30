@@ -326,7 +326,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                         while (dsReader.ReadToDescendant("SharedDataSetReference"))
                                         {
                                             sdsName = dsReader.ReadString();
-                                            repository.GetDataSet(sdsName, reportServerID);
+                                            dsID = repository.GetDataSet(sdsName, reportServerID);
+                                            if (!repository.DoesMappingExist(dsID, reportID))
+                                                repository.AddMapping(dsID, reportID);
+                                            dsID = -1;
                                         }
                                     }
                                 }
@@ -343,13 +346,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 else if (item.TypeName == "DataSet")
                 {
                     reportDefinition = reportingServer2010.GetItemDefinition(item.Path);
-
+                    reportID = repository.GetDataSet(item.Path, reportServerID);
                     dsArray = reportingServer2010.GetItemDataSources(item.Path);
                     foreach (SSRS2010.DataSource ds in dsArray)
                     {
                         if (ds.Item is SSRS2010.DataSourceReference)
                         {
-                            dsNameToRepository.Add(ds.Name, HandleDataSource(reportingServer2010, ((SSRS2010.DataSourceReference)ds.Item).Reference));
+                            dsNameToRepository.Add(((SSRS2010.DataSourceReference)ds.Item).Reference, HandleDataSource(reportingServer2010, ((SSRS2010.DataSourceReference)ds.Item).Reference));
                         }
                         else if (ds.Item is SSRS2010.DataSourceDefinition)
                         {
@@ -495,7 +498,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                         while (dsReader.ReadToDescendant("SharedDataSetReference"))
                                         {
                                             sdsName = dsReader.ReadString();
-                                            repository.GetDataSet(sdsName, reportServerID);
+                                            dsID = repository.GetDataSet(sdsName, reportServerID);
+                                            if (!repository.DoesMappingExist(dsID, reportID))
+                                                repository.AddMapping(dsID, reportID);
+                                            dsID = -1;
                                         }
                                     }
                                 }
