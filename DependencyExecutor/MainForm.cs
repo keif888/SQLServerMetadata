@@ -199,7 +199,7 @@ namespace DependencyExecutor
             return connectionString;
         }
 
-        private string buildArguments()
+        private string buildArguments(bool forDisplay)
         {
             string arguments = string.Format("/depDb:\"{0}\"", buildConnectionString());
             if (cbRecurse.Checked)
@@ -207,7 +207,7 @@ namespace DependencyExecutor
             else
                 arguments += " /r-";
 
-            if (cbBatchMode.Checked)
+            if (cbBatchMode.Checked || !forDisplay)
                 arguments += " /b+";
             else
                 arguments += " /b-";
@@ -291,28 +291,28 @@ namespace DependencyExecutor
         {
             string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2005\DependencyAnalyzer.exe";
 
-            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments());
+            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
         }
 
         private void btAnalyze2008_MouseHover(object sender, EventArgs e)
         {
             string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2008\DependencyAnalyzer.exe";
 
-            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments());
+            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
         }
 
         private void btAnalyze2012_MouseHover(object sender, EventArgs e)
         {
             string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2012\DependencyAnalyzer.exe";
 
-            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments());
+            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
         }
 
         private void btAnalyze2014_MouseHover(object sender, EventArgs e)
         {
             string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2014\DependencyAnalyzer.exe";
 
-            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments());
+            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
         }
         #endregion
 
@@ -407,7 +407,7 @@ namespace DependencyExecutor
                 tbResults.Clear();
                 tcMain.SelectedTab = tbOutput;
                 string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2005\DependencyAnalyzer.exe";
-                tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments());
+                tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
 
                 btAnalyze2005.Enabled = false;
                 btAnalyze2008.Enabled = false;
@@ -423,10 +423,10 @@ namespace DependencyExecutor
             string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyser 2005\DependencyAnalyzer.exe";
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = executable;
-            startInfo.Arguments = buildArguments();
+            startInfo.Arguments = buildArguments(false);
 
             analyse = new Process();
-            analyse.StartInfo.Arguments = buildArguments();
+            analyse.StartInfo.Arguments = buildArguments(false);
             analyse.StartInfo.FileName = executable;
 
             analyse.StartInfo.UseShellExecute = false;
@@ -466,7 +466,7 @@ namespace DependencyExecutor
                 tbResults.Clear();
                 tcMain.SelectedTab = tbOutput;
                 string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2008\DependencyAnalyzer.exe";
-                tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments());
+                tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
 
                 btAnalyze2005.Enabled = false;
                 btAnalyze2008.Enabled = false;
@@ -484,11 +484,11 @@ namespace DependencyExecutor
             string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2008\DependencyAnalyzer.exe";
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = executable;
-            startInfo.Arguments = buildArguments();
+            startInfo.Arguments = buildArguments(false);
             //this.WindowState = FormWindowState.Minimized;
 
             analyse = new Process();
-            analyse.StartInfo.Arguments = buildArguments();
+            analyse.StartInfo.Arguments = buildArguments(false);
             analyse.StartInfo.FileName = executable;
 
             analyse.StartInfo.UseShellExecute = false;
@@ -570,7 +570,7 @@ namespace DependencyExecutor
                 tbResults.Clear();
                 tcMain.SelectedTab = tbOutput;
                 string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2012\DependencyAnalyzer.exe";
-                tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments());
+                tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
 
                 btAnalyze2005.Enabled = false;
                 btAnalyze2008.Enabled = false;
@@ -586,11 +586,11 @@ namespace DependencyExecutor
             string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2012\DependencyAnalyzer.exe";
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = executable;
-            startInfo.Arguments = buildArguments();
+            startInfo.Arguments = buildArguments(false);
             //this.WindowState = FormWindowState.Minimized;
 
             analyse = new Process();
-            analyse.StartInfo.Arguments = buildArguments();
+            analyse.StartInfo.Arguments = buildArguments(false);
             analyse.StartInfo.FileName = executable;
 
             analyse.StartInfo.UseShellExecute = false;
@@ -628,7 +628,7 @@ namespace DependencyExecutor
                 tbResults.Clear();
                 tcMain.SelectedTab = tbOutput;
                 string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2014\DependencyAnalyzer.exe";
-                tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments());
+                tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
 
                 btAnalyze2005.Enabled = false;
                 btAnalyze2008.Enabled = false;
@@ -644,11 +644,11 @@ namespace DependencyExecutor
             string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2014\DependencyAnalyzer.exe";
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = executable;
-            startInfo.Arguments = buildArguments();
+            startInfo.Arguments = buildArguments(false);
             //this.WindowState = FormWindowState.Minimized;
 
             analyse = new Process();
-            analyse.StartInfo.Arguments = buildArguments();
+            analyse.StartInfo.Arguments = buildArguments(false);
             analyse.StartInfo.FileName = executable;
 
             analyse.StartInfo.UseShellExecute = false;
