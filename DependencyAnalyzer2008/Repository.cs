@@ -1457,7 +1457,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// <returns>Array of object IDs that satisfy the condition</returns>
         private int[] GetNamedObjects(string name, string type)
         {
-            DataRow[] rows = objectTable.Select(string.Format("ObjectTypeString = '{0}' AND ObjectName = '{1}'", type, name));
+            DataRow[] rows = objectTable.Select(string.Format("ObjectTypeString = '{0}' AND ObjectName = '{1}'", type, name.Replace("'", "''")));
 
             int[] ids = new int[rows.Length];
             for (int i = 0; i < ids.Length; ++i)
@@ -1500,7 +1500,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             int connectionID = -1; // assume no connection will be found
 
             // if a connection with the same string exists, return it.
-            DataRow[] rows = objectAttributesTable.Select(string.Format("ObjectAttrName = 'ConnectionString' AND ObjectAttrValue = '{0}' ", connectionString));
+            DataRow[] rows = objectAttributesTable.Select(string.Format("ObjectAttrName = 'ConnectionString' AND ObjectAttrValue = '{0}' ", connectionString.Replace("'", "''")));
             if (rows.Length > 0)
             {
                 Debug.Assert(rows.Length == 1); // should be only one because we're keeping them unique.
@@ -1804,7 +1804,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             // see if any procedure has our name
             foreach (DataRow row in connectionChildren)
             {
-                DataRow[] relationalProcedureRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], RelationalEnumerator.ObjectTypes.Procedure, procName));
+                DataRow[] relationalProcedureRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], RelationalEnumerator.ObjectTypes.Procedure, procName.Replace("'","''")));
 
                 if (relationalProcedureRows.Length > 0)
                 {
@@ -1839,7 +1839,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             // see if any Function has our name
             foreach (DataRow row in connectionChildren)
             {
-                DataRow[] relationalFunctionRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], RelationalEnumerator.ObjectTypes.Function, funcName));
+                DataRow[] relationalFunctionRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], RelationalEnumerator.ObjectTypes.Function, funcName.Replace("'", "''")));
 
                 if (relationalFunctionRows.Length > 0)
                 {
@@ -1884,7 +1884,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             // see if any table has our name
             foreach (DataRow row in connectionChildren)
             {
-                DataRow[] relationalTableRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], ColumnEnumerator.ObjectTypes.Column, columnName));
+                DataRow[] relationalTableRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], ColumnEnumerator.ObjectTypes.Column, columnName.Replace("'", "''")));
 
                 if (relationalTableRows.Length > 0)
                 {
@@ -1919,7 +1919,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             // see if any report has our name
             foreach (DataRow row in reportChildren)
             {
-                DataRow[] reportRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], ReportEnumerator.ObjectTypes.Report, reportName));
+                DataRow[] reportRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], ReportEnumerator.ObjectTypes.Report, reportName.Replace("'", "''")));
 
                 if (reportRows.Length > 0)
                 {
@@ -1989,7 +1989,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             // see if any report has our name
             foreach (DataRow row in reportChildren)
             {
-                DataRow[] dataSetRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], ReportEnumerator.ObjectTypes.Report, sdsName));
+                DataRow[] dataSetRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], ReportEnumerator.ObjectTypes.Report, sdsName.Replace("'", "''")));
 
                 if (dataSetRows.Length > 0)
                 {
