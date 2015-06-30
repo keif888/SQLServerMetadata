@@ -1750,7 +1750,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             // see if any table has our name
             foreach (DataRow row in connectionChildren)
             {
-                DataRow[] relationalTableRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], RelationalEnumerator.ObjectTypes.Table, tableName));
+                DataRow[] relationalTableRows = objectTable.Select(string.Format("ObjectKey = '{0}' AND ObjectTypeString = '{1}' AND ObjectName = '{2}'", row["TgtObjectKey"], RelationalEnumerator.ObjectTypes.Table, tableName.Replace("'","''")));
 
                 if (relationalTableRows.Length > 0)
                 {
