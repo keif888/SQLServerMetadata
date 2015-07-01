@@ -162,6 +162,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     // open a connection to the repository
                     Repository repository = InitializeRepository(dependencyArguments, commandLineArguments);
 
+                    if (repository == null)
+                    {
+                        Console.WriteLine(String.Format("Unable to open database on connection string '{0}'.  Exiting...", dependencyArguments.depDb));
+                        return;
+                    }
+
                     EnumerateRelational(dependencyArguments, repository);
                     EnumerateFile(dependencyArguments, repository);
                     EnumerateColumn(dependencyArguments, repository);
@@ -323,35 +329,43 @@ namespace Microsoft.Samples.DependencyAnalyzer
         private static Repository InitializeRepository(DependencyArguments dependencyArguments, string commandLineArguments)
         {
             Repository repository = new Repository(dependencyArguments.depDb);
-            repository.Open();
-
-            // check if this is a valid repository database
-            if (repository.IsValidRepository() == false)
+            try
             {
-                repository.CreateRepository();
-            }
+                repository.Open();
 
-            if (dependencyArguments.clearDatabase)
+                // check if this is a valid repository database
+                if (repository.IsValidRepository() == false)
+                {
+                    repository.CreateRepository();
+                }
+
+                if (dependencyArguments.clearDatabase)
+                {
+                    repository.DeleteExistingRepository();
+                }
+                else
+                {
+                    repository.LoadExisingRepository();
+                }
+
+                if (commandLineArguments.Length > 512)
+                    repository.InitialiseRepository(commandLineArguments.Substring(0, 512));
+                else
+                    repository.InitialiseRepository(commandLineArguments);
+                repository.DatabaseNameOnlyCompare = dependencyArguments.matchDBOnly;
+
+                foreach (string dbPrefix in dependencyArguments.dbPrefix)
+                {
+                    repository.DatabasePrefixExclusions.Add(dbPrefix);
+                }
+
+                return repository;
+            }
+            catch (Exception ex)
             {
-                repository.DeleteExistingRepository();
+                Console.WriteLine(string.Format("Unable to connect to Dependency Database: {0}\r\nMessage:\r\n{1}", dependencyArguments.depDb, ex.Message));
+                return null;
             }
-            else
-            {
-                repository.LoadExisingRepository();
-            }
-
-            if (commandLineArguments.Length > 512)
-                repository.InitialiseRepository(commandLineArguments.Substring(0,512));
-            else
-                repository.InitialiseRepository(commandLineArguments);
-            repository.DatabaseNameOnlyCompare = dependencyArguments.matchDBOnly;
-
-            foreach (string dbPrefix in dependencyArguments.dbPrefix)
-            {
-                repository.DatabasePrefixExclusions.Add(dbPrefix);
-            }
-
-            return repository;
         }
     }
 }
