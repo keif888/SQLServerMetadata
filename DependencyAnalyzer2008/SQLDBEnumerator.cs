@@ -110,6 +110,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     repository.AddAttribute(connectionID, Repository.Attributes.ConnectionDatabase, connectionStringBuilder.InitialCatalog);
                 }
                 sqlDatabase = sqlServer.Databases[connectionStringBuilder.InitialCatalog];
+
+                if (sqlDatabase == null)
+                {
+                    throw new Exception(String.Format("{0} database was not found on server {1}", connectionStringBuilder.InitialCatalog, sqlServer.Name));
+                }
+
                 DependencyWalker findDepenency = new DependencyWalker(sqlServer);
                 List<SqlSmoObject> walkerList = new List<SqlSmoObject>();
                 SqlSmoObject[] walkerArray;
