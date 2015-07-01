@@ -59,6 +59,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
             return objectConnectionID;
         }
 
+
+        private String FormatObjectName(Microsoft.SqlServer.Management.Sdk.Sfc.Urn ObjectURN)
+        {
+            return "[" + (String.IsNullOrEmpty(ObjectURN.GetAttribute("Schema")) ? "dbo" : ObjectURN.GetAttribute("Schema")) + "].[" + ObjectURN.GetAttribute("Name") + "]";
+        }
+
         public void EnumerateDatabase(string dbConnection)
         {
             string serverName = string.Empty;
@@ -153,7 +159,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     parentNode = dependTree.FirstChild;
                     do
                     {
-                        objectName = "[" + parentNode.Urn.GetAttribute("Schema") + "].[" + parentNode.Urn.GetAttribute("Name") + "]";
+                        objectName = FormatObjectName(parentNode.Urn); // "[" + parentNode.Urn.GetAttribute("Schema") + "].[" + parentNode.Urn.GetAttribute("Name") + "]";
                         tableID = repository.GetTable(connectionID, objectName, parentNode.Urn.Type);
                         if (parentNode.HasChildNodes)
                         {
@@ -161,7 +167,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             walkNode = parentNode.FirstChild;
                             do
                             {
-                                parentName = "[" + walkNode.Urn.GetAttribute("Schema") + "].[" + walkNode.Urn.GetAttribute("Name") + "]";
+                                parentName = FormatObjectName(walkNode.Urn); // "[" + (String.IsNullOrEmpty(walkNode.Urn.GetAttribute("Schema")) ? "dbo" : walkNode.Urn.GetAttribute("Schema")) + "].[" + walkNode.Urn.GetAttribute("Name") + "]";
                                 switch (walkNode.Urn.Type)
                                 {
                                     case "Table":
@@ -231,7 +237,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     parentNode = dependTree.FirstChild;
                     do
                     {
-                        objectName = "[" + parentNode.Urn.GetAttribute("Schema") + "].[" + parentNode.Urn.GetAttribute("Name") + "]";
+                        objectName = FormatObjectName(parentNode.Urn); // "[" + parentNode.Urn.GetAttribute("Schema") + "].[" + parentNode.Urn.GetAttribute("Name") + "]";
                         // The following is because we don't know the type of a view in the TSQLParser...
                         tableID = repository.GetTable(connectionID, objectName, parentNode.Urn.Type);
                         if (parentNode.HasChildNodes)
@@ -240,7 +246,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             walkNode = parentNode.FirstChild;
                             do
                             {
-                                parentName = "[" + walkNode.Urn.GetAttribute("Schema") + "].[" + walkNode.Urn.GetAttribute("Name") + "]";
+                                parentName = FormatObjectName(walkNode.Urn); // "[" + walkNode.Urn.GetAttribute("Schema") + "].[" + walkNode.Urn.GetAttribute("Name") + "]";
                                 objectServerName = walkNode.Urn.Parent.Parent.GetAttribute("Name");
                                 objectDatabaseName = walkNode.Urn.Parent.GetAttribute("Name");
                                 objectConnectionID = DetermineConnection(objectServerName, objectDatabaseName);
@@ -273,7 +279,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                         }
                                         else
                                         {
-                                            Console.WriteLine("Warning: Unresolvable Dependency encountered in object {0} for object {1} of type {2}", objectName, parentName, walkNode.Urn.Type);
+                                            Console.WriteLine("Warning: Unresolvable Dependency encountered in object {0} for object {1} of type {2}", objectName, walkNode.Urn, walkNode.Urn.Type);
+                                            Console.WriteLine("Attempting to locate via repository as table {0} on server {1} in database {2}", parentName, objectServerName, objectDatabaseName);
                                             parentID = repository.GetTable(objectConnectionID, parentName, "Unresolved");
                                         }
                                         break;
@@ -314,7 +321,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     parentNode = dependTree.FirstChild;
                     do
                     {
-                        objectName = "[" + parentNode.Urn.GetAttribute("Schema") + "].[" + parentNode.Urn.GetAttribute("Name") + "]";
+                        objectName = FormatObjectName(parentNode.Urn); // "[" + parentNode.Urn.GetAttribute("Schema") + "].[" + parentNode.Urn.GetAttribute("Name") + "]";
                         tableID = repository.GetProcedure(connectionID, objectName);
                         if (parentNode.HasChildNodes)
                         {
@@ -322,7 +329,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             walkNode = parentNode.FirstChild;
                             do
                             {
-                                parentName = "[" + walkNode.Urn.GetAttribute("Schema") + "].[" + walkNode.Urn.GetAttribute("Name") + "]";
+                                parentName = FormatObjectName(walkNode.Urn); // "[" + walkNode.Urn.GetAttribute("Schema") + "].[" + walkNode.Urn.GetAttribute("Name") + "]";
                                 objectServerName = walkNode.Urn.Parent.Parent.GetAttribute("Name");
                                 objectDatabaseName = walkNode.Urn.Parent.GetAttribute("Name");
                                 objectConnectionID = DetermineConnection(objectServerName, objectDatabaseName);
@@ -355,7 +362,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                         }
                                         else
                                         {
-                                            Console.WriteLine("Warning: Unresolvable Dependency encountered in object {0} for object {1} of type {2}", objectName, parentName, walkNode.Urn.Type);
+                                            Console.WriteLine("Warning: Unresolvable Dependency encountered in object {0} for object {1} of type {2}", objectName, walkNode.Urn, walkNode.Urn.Type);
+                                            Console.WriteLine("Attempting to locate via repository as table {0} on server {1} in database {2}", parentName, objectServerName, objectDatabaseName);
                                             parentID = repository.GetTable(objectConnectionID, parentName, "Unresolvable");
                                         }
                                         break;
@@ -396,7 +404,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     parentNode = dependTree.FirstChild;
                     do
                     {
-                        objectName = "[" + parentNode.Urn.GetAttribute("Schema") + "].[" + parentNode.Urn.GetAttribute("Name") + "]";
+                        objectName = FormatObjectName(parentNode.Urn); // "[" + parentNode.Urn.GetAttribute("Schema") + "].[" + parentNode.Urn.GetAttribute("Name") + "]";
                         // The following is because we don't know the type of a view in the TSQLParser...
                         tableID = repository.GetFunction(connectionID, objectName);
                         if (parentNode.HasChildNodes)
@@ -405,7 +413,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             walkNode = parentNode.FirstChild;
                             do
                             {
-                                parentName = "[" + walkNode.Urn.GetAttribute("Schema") + "].[" + walkNode.Urn.GetAttribute("Name") + "]";
+                                parentName = FormatObjectName(walkNode.Urn); // "[" + walkNode.Urn.GetAttribute("Schema") + "].[" + walkNode.Urn.GetAttribute("Name") + "]";
                                 objectServerName = walkNode.Urn.Parent.Parent.GetAttribute("Name");
                                 objectDatabaseName = walkNode.Urn.Parent.GetAttribute("Name");
                                 objectConnectionID = DetermineConnection(objectServerName, objectDatabaseName);
@@ -438,7 +446,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                         }
                                         else
                                         {
-                                            Console.WriteLine("Warning: Unresolvable Dependency encountered in object {0} for object {1} of type {2}", objectName, parentName, walkNode.Urn.Type);
+                                            Console.WriteLine("Warning: Unresolvable Dependency encountered in object {0} for object {1} of type {2}", objectName, walkNode.Urn, walkNode.Urn.Type);
+                                            Console.WriteLine("Attempting to locate via repository as table {0} on server {1} in database {2}", parentName, objectServerName, objectDatabaseName);
                                             parentID = repository.GetTable(objectConnectionID, parentName, "Unresolvable");
                                         }
                                         break;
@@ -458,10 +467,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 arrayCounter = 0;
                 foreach (Synonym sqlSynonym in sqlDatabase.Synonyms)
                 {
-                    objectName = "[" + sqlSynonym.Urn.GetAttribute("Schema") + "].[" + sqlSynonym.Urn.GetAttribute("Name") + "]";
+                    objectName = FormatObjectName(sqlSynonym.Urn); // "[" + sqlSynonym.Urn.GetAttribute("Schema") + "].[" + sqlSynonym.Urn.GetAttribute("Name") + "]";
                     // The following is because we don't know the type of a synonym in the TSQLParser...
                     tableID = repository.GetTable(connectionID, objectName, sqlSynonym.Urn.Type);
-                    parentName = "[" + sqlSynonym.BaseSchema + "].[" + sqlSynonym.BaseObject + "]";
+                    parentName = "[" + ((sqlSynonym.BaseSchema == string.Empty) ? "dbo" : sqlSynonym.BaseSchema) + "].[" + sqlSynonym.BaseObject + "]";
                     objectServerName = (sqlSynonym.BaseServer==string.Empty) ? sqlServer.Name : sqlSynonym.BaseServer;
                     objectDatabaseName = sqlSynonym.BaseDatabase;
                     objectConnectionID = DetermineConnection(objectServerName, objectDatabaseName);
