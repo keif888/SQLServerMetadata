@@ -530,7 +530,41 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 {
                     foreach (string tableName in toBeParsed.getTableNames(true))
                     {
-                        int tableID = repository.GetTable(connectionID, tableName);
+                        int tableID = -1;
+                        string[] tableParts = tableName.Split('.');
+                        switch(tableParts.Length)
+                        {
+                            case 3:
+                                String dbName = tableParts[0].Replace("[", "").Replace("]", "");
+                                String connectionString = repository.RetrieveConnectionString(connectionID);
+                                OleDbConnectionStringBuilder csBuilder = (OleDbConnectionStringBuilder)repository.GetConnectionStringBuilder(connectionString);
+                                if (csBuilder.ContainsKey(Repository.ConnectionStringProperties.InitialCatalog))
+                                {
+                                    csBuilder.Remove(Repository.ConnectionStringProperties.InitialCatalog);
+                                    csBuilder.Add(Repository.ConnectionStringProperties.InitialCatalog, dbName);
+                                    connectionString = csBuilder.ConnectionString;
+                                }
+                                else if (csBuilder.ContainsKey(Repository.ConnectionStringProperties.Database))
+                                {
+                                    csBuilder.Remove(Repository.ConnectionStringProperties.Database);
+                                    csBuilder.Add(Repository.ConnectionStringProperties.Database, dbName);
+                                    connectionString = csBuilder.ConnectionString;
+                                }
+                                int objectConnectionId = repository.GetConnection(connectionString);
+                                if (objectConnectionId == -1)
+                                {
+                                    // Need to add a new connectionID.
+                                    objectConnectionId = repository.AddObject("CMD " + dbName, string.Empty, Repository.OLEDBGuid, repository.RootRepositoryObjectID);
+                                    repository.AddAttribute(objectConnectionId, Repository.Attributes.ConnectionString, connectionString);
+                                    repository.AddAttribute(objectConnectionId, Repository.Attributes.ConnectionServer, csBuilder.DataSource);
+                                    repository.AddAttribute(objectConnectionId, Repository.Attributes.ConnectionDatabase, dbName);
+                                }
+                                tableID = repository.GetTable(objectConnectionId, String.Format("{0}.{1}", tableParts[1], tableParts[2]));
+                                break;
+                            default:
+                                tableID = repository.GetTable(connectionID, tableName);
+                                break;
+                        }
                         if (!repository.DoesMappingExist(tableID, reportID))
                             repository.AddMapping(tableID, reportID);
                     }

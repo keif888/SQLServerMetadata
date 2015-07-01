@@ -17,7 +17,11 @@ namespace Microsoft.Samples.DependencyAnalyzer
 {
     class Repository : IDisposable
     {
-
+#if SQL2005
+        public const string OLEDBGuid = "{9B5D63AB-A629-4A56-9F3E-B1044134B649}";
+#else
+        public const string OLEDBGuid = "{3BA51769-6C3C-46B2-85A1-81E58DB7DAE1}";
+#endif
         internal class Domains
         {
             internal const string SSIS = "SSIS";
@@ -1485,6 +1489,26 @@ namespace Microsoft.Samples.DependencyAnalyzer
             else
             {
                 return -1;
+            }
+        }
+
+
+        /// <summary>
+        /// Returns the connection string that is associated with a particular Connection ID
+        /// </summary>
+        /// <param name="connectionID">The ID for the connection that you want a string about.</param>
+        /// <returns></returns>
+        public string RetrieveConnectionString(int connectionID)
+        {
+            DataRow[] rows = objectAttributesTable.Select(string.Format("ObjectAttrName = 'ConnectionString' AND ObjectKey = '{0}' ", connectionID));
+            if (rows.Length > 0)
+            {
+                Debug.Assert(rows.Length == 1); // should be only one because we're keeping them unique.
+                return (string)rows[0]["ObjectAttrValue"];
+            }
+            else
+            {
+                return null;
             }
         }
 

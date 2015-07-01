@@ -15,11 +15,6 @@ namespace Microsoft.Samples.DependencyAnalyzer
         private Repository repository;
         private SqlConnectionStringBuilder connectionStringBuilder = new SqlConnectionStringBuilder();
 
-#if SQL2005
-        private const string OLEDBGuid = "{9B5D63AB-A629-4A56-9F3E-B1044134B649}";
-#else
-        private const string OLEDBGuid = "{3BA51769-6C3C-46B2-85A1-81E58DB7DAE1}";
-#endif
         public SQLDBEnumerator()
         {}
 
@@ -51,7 +46,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             if (objectConnectionID == -1)
             {
                 // Need to add a new connectionID.
-                objectConnectionID = repository.AddObject("CMD " + connectionStringBuilder.InitialCatalog, string.Empty, OLEDBGuid, repository.RootRepositoryObjectID);
+                objectConnectionID = repository.AddObject("CMD " + connectionStringBuilder.InitialCatalog, string.Empty, Repository.OLEDBGuid, repository.RootRepositoryObjectID);
                 repository.AddAttribute(objectConnectionID, Repository.Attributes.ConnectionString, connectionStringBuilder.ConnectionString);
                 repository.AddAttribute(objectConnectionID, Repository.Attributes.ConnectionServer, connectionStringBuilder.DataSource);
                 repository.AddAttribute(objectConnectionID, Repository.Attributes.ConnectionDatabase, connectionStringBuilder.InitialCatalog);
@@ -110,7 +105,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 if (connectionID == -1)
                 {
                     // Need to add a new connectionID.
-                    connectionID = repository.AddObject("CMD " + connectionStringBuilder.InitialCatalog, string.Empty, OLEDBGuid, repository.RootRepositoryObjectID);
+                    connectionID = repository.AddObject("CMD " + connectionStringBuilder.InitialCatalog, string.Empty, Repository.OLEDBGuid, repository.RootRepositoryObjectID);
                     repository.AddAttribute(connectionID, Repository.Attributes.ConnectionString, connectionStringBuilder.ConnectionString);
                     repository.AddAttribute(connectionID, Repository.Attributes.ConnectionServer, connectionStringBuilder.DataSource);
                     repository.AddAttribute(connectionID, Repository.Attributes.ConnectionDatabase, connectionStringBuilder.InitialCatalog);
