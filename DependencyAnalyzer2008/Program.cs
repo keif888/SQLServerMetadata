@@ -133,6 +133,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
             , LongName = "ReportUrl"
             , ShortName = "rpt")]
         public string[] reportURLs = null;
+
+        [Argument(ArgumentType.AtMostOnce
+            , HelpText = "Whether to store object names as three part names [dbname].[schema].[object]"
+            , LongName = "threePartNames"
+            , ShortName = "tpn"
+            , DefaultValue = false)]
+        public bool storeThreePartNames = false;
     }
     
     class Program
@@ -265,7 +272,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 foreach (string dbConnection in dependencyArguments.databasesToScan)
                 {
                     Console.WriteLine("Enumerating Database metadata for {0}.", dbConnection);
-                    enumerator.EnumerateDatabase(dbConnection);
+                    enumerator.EnumerateDatabase(dbConnection, dependencyArguments.storeThreePartNames);
                 }
             }
         }
@@ -317,7 +324,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 if (enumerator.Initialize(repository))
                 {
                     foreach (string connStr in dependencyArguments.reportURLs)
-                        enumerator.EnumerateReportingServer(connStr, dependencyArguments.recurse);
+                        enumerator.EnumerateReportingServer(connStr, dependencyArguments.recurse, dependencyArguments.storeThreePartNames);
                 }
             }
             catch (System.Exception ex)

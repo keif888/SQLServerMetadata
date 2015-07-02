@@ -18,8 +18,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         private Repository repository;
         private Dictionary<String, int> datasourceInRepository;
         private int reportServerID;
-
-        private const string oleDBTypeString = "{3BA51769-6C3C-46B2-85A1-81E58DB7DAE1}";
+        private bool threePartNames;
 
         public SSRSEnumerator()
         {
@@ -41,10 +40,11 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 success = false;
             }
 
+            threePartNames = false;
             return success;
         }
 
-        public void EnumerateReportingServer(string reportingServerURL, bool recursive)
+        public void EnumerateReportingServer(string reportingServerURL, bool recursive, bool storeThreePartNames)
         {
             Boolean isRS2010 = true, isRS2005 = false;
             Uri reportingServerUri = new Uri(reportingServerURL);
@@ -52,6 +52,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             SSRS2010.CatalogItem[] items2010 = null;
             SSRS2010.ReportingService2010 reportingServer2010 = new SSRS2010.ReportingService2010();
 
+            threePartNames = storeThreePartNames;
             if (reportingServerUri.IsDefaultPort)
             {
                 decodedURL = reportingServerUri.Scheme + "://" + reportingServerUri.Host + reportingServerUri.LocalPath;
@@ -125,7 +126,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 idValue = repository.GetConnection(dsDef.ConnectString);
                 if (idValue == -1)
                 {
-                    idValue = repository.AddObject(path, dsDef.ConnectString, oleDBTypeString, repository.RootRepositoryObjectID);
+                    idValue = repository.AddObject(path, dsDef.ConnectString, Repository.OLEDBGuid, repository.RootRepositoryObjectID);
                     repository.AddAttribute(idValue, Repository.Attributes.ConnectionString, dsDef.ConnectString);
                     DbConnectionStringBuilder connectionStringBuilder = repository.GetConnectionStringBuilder(dsDef.ConnectString);
                     string Server = repository.GetServer(connectionStringBuilder);
@@ -161,7 +162,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 idValue = repository.GetConnection(dsDef.ConnectString);
                 if (idValue == -1)
                 {
-                    idValue = repository.AddObject(path, dsDef.ConnectString, oleDBTypeString, repository.RootRepositoryObjectID);
+                    idValue = repository.AddObject(path, dsDef.ConnectString, Repository.OLEDBGuid, repository.RootRepositoryObjectID);
                     repository.AddAttribute(idValue, Repository.Attributes.ConnectionString, dsDef.ConnectString);
                     DbConnectionStringBuilder connectionStringBuilder = repository.GetConnectionStringBuilder(dsDef.ConnectString);
                     string Server = repository.GetServer(connectionStringBuilder);
@@ -190,7 +191,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 idValue = repository.GetConnection(connectionString);
                 if (idValue == -1)
                 {
-                    idValue = repository.AddObject(dsName, connectionString, oleDBTypeString, repository.RootRepositoryObjectID);
+                    idValue = repository.AddObject(dsName, connectionString, Repository.OLEDBGuid, repository.RootRepositoryObjectID);
                     repository.AddAttribute(idValue, Repository.Attributes.ConnectionString, connectionString);
                     DbConnectionStringBuilder connectionStringBuilder = repository.GetConnectionStringBuilder(connectionString);
                     string Server = repository.GetServer(connectionStringBuilder);
@@ -522,6 +523,14 @@ namespace Microsoft.Samples.DependencyAnalyzer
         private void ParseTSqlStatement(string statement, int connectionID, int reportID)
         {
             SqlStatement toBeParsed = new SqlStatement();
+            String existingDBName = String.Empty;
+            object existing;
+            String connectionString = repository.RetrieveConnectionString(connectionID);
+            OleDbConnectionStringBuilder csBuilder = (OleDbConnectionStringBuilder)repository.GetConnectionStringBuilder(connectionString);
+            if (csBuilder.TryGetValue(Repository.ConnectionStringProperties.InitialCatalog, out existing))
+                existingDBName = (String)existing;
+            else if (csBuilder.TryGetValue(Repository.ConnectionStringProperties.Database, out existing))
+                existingDBName = (String)existing;
 
             try
             {
@@ -536,8 +545,6 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         {
                             case 3:
                                 String dbName = tableParts[0].Replace("[", "").Replace("]", "");
-                                String connectionString = repository.RetrieveConnectionString(connectionID);
-                                OleDbConnectionStringBuilder csBuilder = (OleDbConnectionStringBuilder)repository.GetConnectionStringBuilder(connectionString);
                                 if (csBuilder.ContainsKey(Repository.ConnectionStringProperties.InitialCatalog))
                                 {
                                     csBuilder.Remove(Repository.ConnectionStringProperties.InitialCatalog);
@@ -559,10 +566,16 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                     repository.AddAttribute(objectConnectionId, Repository.Attributes.ConnectionServer, csBuilder.DataSource);
                                     repository.AddAttribute(objectConnectionId, Repository.Attributes.ConnectionDatabase, dbName);
                                 }
-                                tableID = repository.GetTable(objectConnectionId, String.Format("{0}.{1}", tableParts[1], tableParts[2]));
+                                if (threePartNames)
+                                    tableID = repository.GetTable(objectConnectionId, String.Format("{0}.{1}.{2}", tableParts[0], tableParts[1], tableParts[2]));
+                                else
+                                    tableID = repository.GetTable(objectConnectionId, String.Format("{0}.{1}", tableParts[1], tableParts[2]));
                                 break;
                             default:
-                                tableID = repository.GetTable(connectionID, tableName);
+                                if (threePartNames)
+                                    tableID = repository.GetTable(connectionID, String.Format("[{0}].{1}", existingDBName, tableName));
+                                else
+                                    tableID = repository.GetTable(connectionID, tableName);
                                 break;
                         }
                         if (!repository.DoesMappingExist(tableID, reportID))

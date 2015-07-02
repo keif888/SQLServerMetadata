@@ -14,6 +14,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
     {
         private Repository repository;
         private SqlConnectionStringBuilder connectionStringBuilder = new SqlConnectionStringBuilder();
+        private bool threePartNames;
 
         public SQLDBEnumerator()
         {}
@@ -33,6 +34,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 success = false;
             }
 
+            threePartNames = false;
             return success;
         }
 
@@ -57,10 +59,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
         private String FormatObjectName(Microsoft.SqlServer.Management.Sdk.Sfc.Urn ObjectURN)
         {
-            return "[" + (String.IsNullOrEmpty(ObjectURN.GetAttribute("Schema")) ? "dbo" : ObjectURN.GetAttribute("Schema")) + "].[" + ObjectURN.GetAttribute("Name") + "]";
+            if (threePartNames)
+                return String.Format("[{0}].[{1}].[{2}]", ObjectURN.GetAttribute("Name", "Database"), (String.IsNullOrEmpty(ObjectURN.GetAttribute("Schema")) ? "dbo" : ObjectURN.GetAttribute("Schema")), ObjectURN.GetAttribute("Name"));
+            else
+                return String.Format("[{0}].[{1}]", (String.IsNullOrEmpty(ObjectURN.GetAttribute("Schema")) ? "dbo" : ObjectURN.GetAttribute("Schema")), ObjectURN.GetAttribute("Name"));
         }
 
-        public void EnumerateDatabase(string dbConnection)
+        public void EnumerateDatabase(string dbConnection, bool storeThreePartNames)
         {
             string serverName = string.Empty;
             string loginName = string.Empty;
@@ -69,6 +74,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             ServerConnection sqlConnection;
             Database sqlDatabase;
 
+            threePartNames = storeThreePartNames;
             connectionStringBuilder.Clear();
             connectionStringBuilder.ConnectionString = dbConnection;
 
@@ -117,6 +123,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     throw new Exception(String.Format("{0} database was not found on server {1}", connectionStringBuilder.InitialCatalog, sqlServer.Name));
                 }
 
+                String databaseName = connectionStringBuilder.InitialCatalog;
                 DependencyWalker findDepenency = new DependencyWalker(sqlServer);
                 List<SqlSmoObject> walkerList = new List<SqlSmoObject>();
                 SqlSmoObject[] walkerArray;
@@ -465,8 +472,11 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     objectName = FormatObjectName(sqlSynonym.Urn); // "[" + sqlSynonym.Urn.GetAttribute("Schema") + "].[" + sqlSynonym.Urn.GetAttribute("Name") + "]";
                     // The following is because we don't know the type of a synonym in the TSQLParser...
                     tableID = repository.GetTable(connectionID, objectName, sqlSynonym.Urn.Type);
-                    parentName = "[" + ((sqlSynonym.BaseSchema == string.Empty) ? "dbo" : sqlSynonym.BaseSchema) + "].[" + sqlSynonym.BaseObject + "]";
-                    objectServerName = (sqlSynonym.BaseServer==string.Empty) ? sqlServer.Name : sqlSynonym.BaseServer;
+                    if (threePartNames)
+                        parentName = String.Format("[{0}].[{1}].[{2}]", databaseName, ((sqlSynonym.BaseSchema == string.Empty) ? "dbo" : sqlSynonym.BaseSchema),sqlSynonym.BaseObject);
+                    else
+                        parentName = String.Format("[{0}].[{1}]", ((sqlSynonym.BaseSchema == string.Empty) ? "dbo" : sqlSynonym.BaseSchema), sqlSynonym.BaseObject);
+                    objectServerName = (sqlSynonym.BaseServer == string.Empty) ? sqlServer.Name : sqlSynonym.BaseServer;
                     objectDatabaseName = sqlSynonym.BaseDatabase;
                     objectConnectionID = DetermineConnection(objectServerName, objectDatabaseName);
 #if SQL2005
