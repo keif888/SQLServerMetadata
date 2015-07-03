@@ -68,6 +68,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         private Repository repository;
 
         private const string dtsxPattern = "*.dtsx";
+        private bool threePartNames;
 
         /// <summary>
         /// Different component Class IDs that we understand about
@@ -235,6 +236,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 EnumerateInfos(app);
 
                 success = true;
+                threePartNames = false;
+
             }
             catch (System.Exception ex)
             {
@@ -249,8 +252,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
         ///  enumerates all packages stored off in SQL Server database
         /// </summary>
         /// <param name="sqlConnectionString"></param>
-        public void EnumerateSqlPackages(string server, string user, string pwd, string[] rootFolders)
+        public void EnumerateSqlPackages(string server, string user, string pwd, string[] rootFolders, bool storeThreePartNames)
         {
+            threePartNames = storeThreePartNames;
             try
             {
                 Queue<string> folders = new Queue<string>();
@@ -309,8 +313,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// </summary>
         /// <param name="rootFolders"></param>
         /// <param name="recurseSubFolders"></param>
-        public void EnumerateFileSystemPackages(string[] rootFolders, bool recurseSubFolders)
+        public void EnumerateFileSystemPackages(string[] rootFolders, bool recurseSubFolders, bool storeThreePartNames)
         {
+            threePartNames = storeThreePartNames;
             foreach (string rootFolder in rootFolders)
             {
                 if (System.IO.Directory.Exists(rootFolder) == false)
@@ -448,6 +453,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// <param name="taskHost">The SQL Task that is to be investigated.</param>
         private void EnumerateSqlTask(Package package, string location, int packageRepositoryID, TaskHost taskHost)
         {
+            int tableID, procID, funcID;
             if (packageRepositoryID == -1)
             {
                 // add this package to the repository
@@ -501,17 +507,35 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             {
                                 foreach (string tableName in toBeParsed.getTableNames(true))
                                 {
-                                    int tableID = repository.GetTable(connectionID, tableName);
+                                    if (threePartNames)
+                                    {
+                                        String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
+                                        tableID = repository.GetTable(connectionID, String.Format("[{0}].{1}", dbName, tableName));
+                                    }
+                                    else
+                                        tableID = repository.GetTable(connectionID, tableName);
                                     repository.AddMapping(tableID, sqlTaskRepositoryObjectID);
                                 }
                                 foreach (string procedureName in toBeParsed.getProcedureNames(true))
                                 {
-                                    int procID = repository.GetProcedure(connectionID, procedureName);
+                                    if (threePartNames)
+                                    {
+                                        String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
+                                        procID = repository.GetProcedure(connectionID, String.Format("[{0}].{1}", dbName, procedureName));
+                                    }
+                                    else
+                                        procID = repository.GetProcedure(connectionID, procedureName);
                                     repository.AddMapping(procID, sqlTaskRepositoryObjectID);
                                 }
                                 foreach (string funcName in toBeParsed.getFunctionNames(true))
                                 {
-                                    int funcID = repository.GetFunction(connectionID, funcName);
+                                    if (threePartNames)
+                                    {
+                                        String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
+                                        funcID = repository.GetFunction(connectionID, String.Format("[{0}].{1}", dbName, funcName));
+                                    }
+                                    else
+                                        funcID = repository.GetFunction(connectionID, funcName);
                                     repository.AddMapping(funcID, sqlTaskRepositoryObjectID);
                                 }
                             }
@@ -1016,24 +1040,42 @@ namespace Microsoft.Samples.DependencyAnalyzer
         private void ParseTSqlStatement(string statement, int connectionID, DTSPipelineComponentType dataFlowComponentType, bool tableOrViewSource, int componentRepositoryID)
         {
             SqlStatement toBeParsed = new SqlStatement();
-
+            int tableID, procID, funcID;
             //toBeParsed.sqlString = statement;
             toBeParsed.quotedIdentifiers = true;
             if (toBeParsed.ParseString(statement))
             {
                 foreach (string tableName in toBeParsed.getTableNames(true))
                 {
-                    int tableID = repository.GetTable(connectionID, tableName);
+                    if (threePartNames)
+                    {
+                        String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
+                        tableID = repository.GetTable(connectionID, String.Format("[{0}].{1}", dbName, tableName));
+                    }
+                    else
+                        tableID = repository.GetTable(connectionID, tableName);
                     AddTableMappings(dataFlowComponentType, tableOrViewSource, componentRepositoryID, tableID);
                 }
                 foreach (string procedureName in toBeParsed.getProcedureNames(true))
                 {
-                    int procID = repository.GetProcedure(connectionID, procedureName);
+                    if (threePartNames)
+                    {
+                        String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
+                        procID = repository.GetProcedure(connectionID, String.Format("[{0}].{1}", dbName, procedureName));
+                    }
+                    else
+                        procID = repository.GetProcedure(connectionID, procedureName);
                     AddTableMappings(dataFlowComponentType, tableOrViewSource, componentRepositoryID, procID);
                 }
                 foreach (string funcName in toBeParsed.getFunctionNames(true))
                 {
-                    int funcID = repository.GetFunction(connectionID, funcName);
+                    if (threePartNames)
+                    {
+                        String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
+                        funcID = repository.GetFunction(connectionID, String.Format("[{0}].{1}", dbName, funcName));
+                    }
+                    else
+                        funcID = repository.GetFunction(connectionID, funcName);
                     AddTableMappings(dataFlowComponentType, tableOrViewSource, componentRepositoryID, funcID);
                 }
             }
@@ -1111,7 +1153,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             if (!string.IsNullOrEmpty(tableOrViewName))
                             {
                                 // add the table to the repository for each distinct connection
-                                tableRepositoryID = repository.GetTable(connectionID, tableOrViewName);
+                                if (threePartNames)
+                                {
+                                    String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
+                                    tableRepositoryID = repository.GetTable(connectionID, String.Format("[{0}].{1}", dbName, tableOrViewName));
+                                }
+                                else
+                                    tableRepositoryID = repository.GetTable(connectionID, tableOrViewName);
                             }
                         }
                         else if (connectionManagerType == "FILE" || connectionManagerType == "FLATFILE" ||

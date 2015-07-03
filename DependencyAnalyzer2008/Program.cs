@@ -284,13 +284,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
             if (enumerator.Initialize(repository))
             {
                 Console.WriteLine("Enumerating File System Integration Services metadata.");
-                enumerator.EnumerateFileSystemPackages(dependencyArguments.folders, dependencyArguments.recurse);
+                enumerator.EnumerateFileSystemPackages(dependencyArguments.folders, dependencyArguments.recurse, dependencyArguments.storeThreePartNames);
 
                 if (dependencyArguments.skipSQL == false)
                 {
                     Console.WriteLine("Enumerating Integration Services metadata.");
                     foreach(string dbServer in dependencyArguments.isDbServer)
-                        enumerator.EnumerateSqlPackages(dbServer, dependencyArguments.isDbUser, dependencyArguments.isDbPwd, dependencyArguments.ssisFolders);
+                        enumerator.EnumerateSqlPackages(dbServer, dependencyArguments.isDbUser, dependencyArguments.isDbPwd, dependencyArguments.ssisFolders, dependencyArguments.storeThreePartNames);
                 }
             }
         }

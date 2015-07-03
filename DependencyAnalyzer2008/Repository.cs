@@ -1512,6 +1512,23 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
         }
 
+        /// <summary>
+        /// Attempts to return the database name from the connection string that the connectionID points at..
+        /// </summary>
+        /// <param name="connectionID"></param>
+        /// <returns>the database name, or an empty string.</returns>
+        public string RetrieveDatabaseNameFromConnectionID(int connectionID)
+        {
+            object existing;
+            string dbName = string.Empty;
+            String connectionString = RetrieveConnectionString(connectionID);
+            OleDbConnectionStringBuilder csBuilder = (OleDbConnectionStringBuilder)GetConnectionStringBuilder(connectionString);
+            if (csBuilder.TryGetValue(Repository.ConnectionStringProperties.InitialCatalog, out existing))
+                dbName = (String)existing;
+            else if (csBuilder.TryGetValue(Repository.ConnectionStringProperties.Database, out existing))
+                dbName = (String)existing;
+            return dbName;
+        }
 
         /// <summary>
         /// returns ID of the connection with specified connection string. -1  if there's no connection with

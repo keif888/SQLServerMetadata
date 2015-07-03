@@ -583,13 +583,89 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     }
                     foreach (string procedureName in toBeParsed.getProcedureNames(true))
                     {
-                        int procID = repository.GetProcedure(connectionID, procedureName);
+                        int procID = -1;
+                        string[] procedureParts = procedureName.Split('.');
+                        switch (procedureParts.Length)
+                        {
+                            case 3:
+                                String dbName = procedureParts[0].Replace("[", "").Replace("]", "");
+                                if (csBuilder.ContainsKey(Repository.ConnectionStringProperties.InitialCatalog))
+                                {
+                                    csBuilder.Remove(Repository.ConnectionStringProperties.InitialCatalog);
+                                    csBuilder.Add(Repository.ConnectionStringProperties.InitialCatalog, dbName);
+                                    connectionString = csBuilder.ConnectionString;
+                                }
+                                else if (csBuilder.ContainsKey(Repository.ConnectionStringProperties.Database))
+                                {
+                                    csBuilder.Remove(Repository.ConnectionStringProperties.Database);
+                                    csBuilder.Add(Repository.ConnectionStringProperties.Database, dbName);
+                                    connectionString = csBuilder.ConnectionString;
+                                }
+                                int objectConnectionId = repository.GetConnection(connectionString);
+                                if (objectConnectionId == -1)
+                                {
+                                    // Need to add a new connectionID.
+                                    objectConnectionId = repository.AddObject("CMD " + dbName, string.Empty, Repository.OLEDBGuid, repository.RootRepositoryObjectID);
+                                    repository.AddAttribute(objectConnectionId, Repository.Attributes.ConnectionString, connectionString);
+                                    repository.AddAttribute(objectConnectionId, Repository.Attributes.ConnectionServer, csBuilder.DataSource);
+                                    repository.AddAttribute(objectConnectionId, Repository.Attributes.ConnectionDatabase, dbName);
+                                }
+                                if (threePartNames)
+                                    procID = repository.GetProcedure(objectConnectionId, String.Format("{0}.{1}.{2}", procedureParts[0], procedureParts[1], procedureParts[2]));
+                                else
+                                    procID = repository.GetProcedure(objectConnectionId, String.Format("{0}.{1}", procedureParts[1], procedureParts[2]));
+                                break;
+                            default:
+                                if (threePartNames)
+                                    procID = repository.GetProcedure(connectionID, String.Format("[{0}].{1}", existingDBName, procedureName));
+                                else
+                                    procID = repository.GetProcedure(connectionID, procedureName);
+                                break;
+                        }
                         if (!repository.DoesMappingExist(procID, reportID))
                             repository.AddMapping(procID, reportID);
                     }
                     foreach (string funcName in toBeParsed.getFunctionNames(true))
                     {
-                        int funcID = repository.GetFunction(connectionID, funcName);
+                        int funcID = -1;
+                        string[] functionParts = funcName.Split('.');
+                        switch (functionParts.Length)
+                        {
+                            case 3:
+                                String dbName = functionParts[0].Replace("[", "").Replace("]", "");
+                                if (csBuilder.ContainsKey(Repository.ConnectionStringProperties.InitialCatalog))
+                                {
+                                    csBuilder.Remove(Repository.ConnectionStringProperties.InitialCatalog);
+                                    csBuilder.Add(Repository.ConnectionStringProperties.InitialCatalog, dbName);
+                                    connectionString = csBuilder.ConnectionString;
+                                }
+                                else if (csBuilder.ContainsKey(Repository.ConnectionStringProperties.Database))
+                                {
+                                    csBuilder.Remove(Repository.ConnectionStringProperties.Database);
+                                    csBuilder.Add(Repository.ConnectionStringProperties.Database, dbName);
+                                    connectionString = csBuilder.ConnectionString;
+                                }
+                                int objectConnectionId = repository.GetConnection(connectionString);
+                                if (objectConnectionId == -1)
+                                {
+                                    // Need to add a new connectionID.
+                                    objectConnectionId = repository.AddObject("CMD " + dbName, string.Empty, Repository.OLEDBGuid, repository.RootRepositoryObjectID);
+                                    repository.AddAttribute(objectConnectionId, Repository.Attributes.ConnectionString, connectionString);
+                                    repository.AddAttribute(objectConnectionId, Repository.Attributes.ConnectionServer, csBuilder.DataSource);
+                                    repository.AddAttribute(objectConnectionId, Repository.Attributes.ConnectionDatabase, dbName);
+                                }
+                                if (threePartNames)
+                                    funcID = repository.GetFunction(objectConnectionId, String.Format("{0}.{1}.{2}", functionParts[0], functionParts[1], functionParts[2]));
+                                else
+                                    funcID = repository.GetFunction(objectConnectionId, String.Format("{0}.{1}", functionParts[1], functionParts[2]));
+                                break;
+                            default:
+                                if (threePartNames)
+                                    funcID = repository.GetFunction(connectionID, String.Format("[{0}].{1}", existingDBName, funcName));
+                                else
+                                    funcID = repository.GetFunction(connectionID, funcName);
+                                break;
+                        }
                         if (!repository.DoesMappingExist(funcID, reportID))
                             repository.AddMapping(funcID, reportID);
                     }
