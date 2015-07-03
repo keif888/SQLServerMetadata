@@ -19,6 +19,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
     /// </summary>
     class SSASEnumerator
     {
+
+        private bool threePartNames;
+
         /// <summary>
         ///  For storing repository information
         /// </summary>
@@ -73,7 +76,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             AddASObjectType(ObjectTypes.DatabaseDimension, "Database Dimension");
             AddASObjectType(ObjectTypes.CubeDimension, "Cube Dimension");
             AddASObjectType(ObjectTypes.MeasureGroupDimension, "Measure Group Dimension");
-
+            threePartNames = false;
             return true;
         }
 
@@ -86,8 +89,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
         ///  Opens a connection to the Analysis Server and does the actual object model walk
         /// </summary>
         /// <param name="connectionString"></param>
-        public void EnumerateServer(string connectionString)
+        public void EnumerateServer(string connectionString, bool storeThreePartNames)
         {
+            threePartNames = storeThreePartNames;
             using (Microsoft.AnalysisServices.Server server = new Server())
             {
                 server.Connect(connectionString);
@@ -210,7 +214,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
                         // now add the table
                         string tableName = GetFullyQualifiedTableName(table);
-
+                        if (threePartNames)
+                            tableName = String.Format("[{0}].{1}", repository.RetrieveDatabaseNameFromConnectionID(connectionID), tableName);
                         int tableID = repository.GetTable(connectionID, tableName);
                         if (tableID == -1)
                         {
@@ -355,6 +360,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             TableBinding tableBinding = (TableBinding)binding;
 
                             string tableName = GetFullyQualifiedTableName(tableBinding.DbSchemaName, tableBinding.DbTableName);
+
+                            if (threePartNames)
+                                tableName = String.Format("[{0}].{1}", repository.RetrieveDatabaseNameFromConnectionID(connectionID), tableName);
 
                             // get the table name from the repository itself
                             sourceID = repository.GetTable(connectionID, tableName);

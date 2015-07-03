@@ -305,7 +305,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 if (enumerator.Initialize(repository))
                 {
                     foreach(string connStr in dependencyArguments.asCon)
-                        enumerator.EnumerateServer(connStr);
+                        enumerator.EnumerateServer(connStr, dependencyArguments.storeThreePartNames);
                 }
             }
             catch (System.Exception ex)
