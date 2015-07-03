@@ -472,13 +472,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     objectName = FormatObjectName(sqlSynonym.Urn); // "[" + sqlSynonym.Urn.GetAttribute("Schema") + "].[" + sqlSynonym.Urn.GetAttribute("Name") + "]";
                     // The following is because we don't know the type of a synonym in the TSQLParser...
                     tableID = repository.GetTable(connectionID, objectName, sqlSynonym.Urn.Type);
-                    if (threePartNames)
-                        parentName = String.Format("[{0}].[{1}].[{2}]", databaseName, ((sqlSynonym.BaseSchema == string.Empty) ? "dbo" : sqlSynonym.BaseSchema),sqlSynonym.BaseObject);
-                    else
-                        parentName = String.Format("[{0}].[{1}]", ((sqlSynonym.BaseSchema == string.Empty) ? "dbo" : sqlSynonym.BaseSchema), sqlSynonym.BaseObject);
                     objectServerName = (sqlSynonym.BaseServer == string.Empty) ? sqlServer.Name : sqlSynonym.BaseServer;
                     objectDatabaseName = sqlSynonym.BaseDatabase;
                     objectConnectionID = DetermineConnection(objectServerName, objectDatabaseName);
+                    if (threePartNames)
+                        parentName = String.Format("[{0}].[{1}].[{2}]", objectDatabaseName, ((sqlSynonym.BaseSchema == string.Empty) ? "dbo" : sqlSynonym.BaseSchema), sqlSynonym.BaseObject);
+                    else
+                        parentName = String.Format("[{0}].[{1}]", ((sqlSynonym.BaseSchema == string.Empty) ? "dbo" : sqlSynonym.BaseSchema), sqlSynonym.BaseObject);
 #if SQL2005
                     // SQL 2005 doesn't support the BaseType, so assume it's a table on the other end.
                     parentID = repository.GetTable(objectConnectionID, parentName);
