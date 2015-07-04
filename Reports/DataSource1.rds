@@ -2,7 +2,7 @@
 <RptDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="DataSource1">
   <ConnectionProperties>
     <Extension>SQL</Extension>
-    <ConnectString>Data Source=.\SQL2008R2;Initial Catalog=unt0BIMetaData</ConnectString>
+    <ConnectString>Data Source=.\SQL2012;Initial Catalog=unt0BIMetaData</ConnectString>
     <IntegratedSecurity>true</IntegratedSecurity>
   </ConnectionProperties>
   <DataSourceID>f88d90be-fff8-4e97-95e4-bec2fdce07a1</DataSourceID>

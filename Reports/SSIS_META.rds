@@ -2,7 +2,7 @@
 <RptDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SSIS_META">
   <ConnectionProperties>
     <Extension>SQL</Extension>
-    <ConnectString>Data Source=.\SQL2008R2;Initial Catalog=unt0SSISMeta</ConnectString>
+    <ConnectString>Data Source=.\SQL2012;Initial Catalog=unt0BIMetaData</ConnectString>
     <IntegratedSecurity>true</IntegratedSecurity>
   </ConnectionProperties>
   <DataSourceID>ef01b2f8-8893-40ab-bf93-88563ef9ff39</DataSourceID>

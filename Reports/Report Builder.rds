@@ -2,7 +2,7 @@
 <RptDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Report Builder">
   <ConnectionProperties>
     <Extension>RS</Extension>
-    <ConnectString>server=http://localhost/reportserver_sql2008r2;datasource=/Models/SSIS Meta</ConnectString>
+    <ConnectString>server=http://localhost/reportserver_sql2012;datasource=/Models/SSIS Meta</ConnectString>
     <IntegratedSecurity>true</IntegratedSecurity>
   </ConnectionProperties>
   <DataSourceID>585eb3bd-1978-43e7-9617-22ea2e2e3dd1</DataSourceID>
