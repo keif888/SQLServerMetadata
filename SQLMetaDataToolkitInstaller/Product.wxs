@@ -97,7 +97,14 @@
           </Directory>
           <Directory Id="ReportsDIR" Name="Reports">
             <Component Id="Reports" Guid="{0D66E98F-CEA7-4780-92D8-B9BE15CD4390}" Win64="no">
-              <File Id="ReportsDataSource" Name="DataSource1.rds" Source="$(var.SolutionDir)Reports\DataSource1.rds" />
+              <File Id="DataSource1.rds" Name="DataSource1.rds" Source="$(var.SolutionDir)Reports\DataSource1.rds" />
+              <File Id="DependencyAnalysis.rdl" Name="Dependency Analysis.rdl" Source="$(var.SolutionDir)Reports\Dependency Analysis.rdl" />
+              <File Id="ImpactAnalysis.rdl" Name="Impact Analysis.rdl" Source="$(var.SolutionDir)Reports\Impact Analysis.rdl" />
+              <File Id="PackagesandDataFlows.rdl" Name="Packages and DataFlows.rdl" Source="$(var.SolutionDir)Reports\Packages and DataFlows.rdl" />
+              <File Id="ReportBuilder.rds" Name="Report Builder.rds" Source="$(var.SolutionDir)Reports\Report Builder.rds" />
+              <File Id="SourceTableLevelLineage.rdl" Name="Source Table Level Lineage.rdl" Source="$(var.SolutionDir)Reports\Source Table Level Lineage.rdl" />
+              <File Id="SSIS_META.rds" Name="SSIS_META.rds" Source="$(var.SolutionDir)Reports\SSIS_META.rds" />
+              <File Id="TableLevelLineage.rdl" Name="Table Level Lineage.rdl" Source="$(var.SolutionDir)Reports\Table Level Lineage.rdl" />
             </Component>
           </Directory>
           <Directory Id="SourceCodeDIR" Name="SourceCode">
@@ -172,10 +179,10 @@
       <Feature Id="ReportModelSamples" Level="1" Title="Report Model Samples">
         <ComponentRef Id="ReportModelSamples"/>
       </Feature>
-      <Feature Id="Reports" Level="1" Title="Reports">
+      <Feature Id="Reports" Level="1" Title="Report Samples">
         <ComponentRef Id="Reports"/>
       </Feature>
-      <Feature Id="SourceCode" Level="1" Title="TSQL Database Scripts">
+      <Feature Id="SourceCode" Level="1" Title="TSQL Database Create Scripts">
         <ComponentRef Id="SourceCode"/>
       </Feature>
       <Feature Id="TestSQLParser" Level="1" Title="SQL Parser Test">
