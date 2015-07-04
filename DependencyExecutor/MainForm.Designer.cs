@@ -109,11 +109,12 @@
             this.btAnalyze2005 = new System.Windows.Forms.Button();
             this.btAnalyze2008 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btAnalyze2014 = new System.Windows.Forms.Button();
             this.btAnalyze2012 = new System.Windows.Forms.Button();
             this.tbCommandLine = new System.Windows.Forms.TextBox();
             this.toolTipControl = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
-            this.btAnalyze2014 = new System.Windows.Forms.Button();
+            this.cbThreePartNames = new System.Windows.Forms.CheckBox();
             this.tcMain.SuspendLayout();
             this.tbRepository.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -276,6 +277,7 @@
             // 
             // tbScanOptions
             // 
+            this.tbScanOptions.Controls.Add(this.cbThreePartNames);
             this.tbScanOptions.Controls.Add(this.cbEnableReportingServices);
             this.tbScanOptions.Controls.Add(this.cbMatchOnDB);
             this.tbScanOptions.Controls.Add(this.cbClearDatabase);
@@ -288,7 +290,7 @@
             this.tbScanOptions.Location = new System.Drawing.Point(4, 22);
             this.tbScanOptions.Name = "tbScanOptions";
             this.tbScanOptions.Padding = new System.Windows.Forms.Padding(3);
-            this.tbScanOptions.Size = new System.Drawing.Size(711, 364);
+            this.tbScanOptions.Size = new System.Drawing.Size(886, 363);
             this.tbScanOptions.TabIndex = 1;
             this.tbScanOptions.Text = "Scan Options";
             this.tbScanOptions.UseVisualStyleBackColor = true;
@@ -416,7 +418,7 @@
             this.tbSSISFolders.Location = new System.Drawing.Point(4, 22);
             this.tbSSISFolders.Name = "tbSSISFolders";
             this.tbSSISFolders.Padding = new System.Windows.Forms.Padding(3);
-            this.tbSSISFolders.Size = new System.Drawing.Size(711, 364);
+            this.tbSSISFolders.Size = new System.Drawing.Size(886, 363);
             this.tbSSISFolders.TabIndex = 2;
             this.tbSSISFolders.Text = "SSIS Folders";
             this.tbSSISFolders.UseVisualStyleBackColor = true;
@@ -479,7 +481,7 @@
             this.tbFileFolders.Location = new System.Drawing.Point(4, 22);
             this.tbFileFolders.Name = "tbFileFolders";
             this.tbFileFolders.Padding = new System.Windows.Forms.Padding(3);
-            this.tbFileFolders.Size = new System.Drawing.Size(711, 364);
+            this.tbFileFolders.Size = new System.Drawing.Size(886, 363);
             this.tbFileFolders.TabIndex = 3;
             this.tbFileFolders.Text = "File Folders";
             this.tbFileFolders.UseVisualStyleBackColor = true;
@@ -555,7 +557,7 @@
             this.tbDatabases.Location = new System.Drawing.Point(4, 22);
             this.tbDatabases.Name = "tbDatabases";
             this.tbDatabases.Padding = new System.Windows.Forms.Padding(3);
-            this.tbDatabases.Size = new System.Drawing.Size(711, 364);
+            this.tbDatabases.Size = new System.Drawing.Size(886, 363);
             this.tbDatabases.TabIndex = 4;
             this.tbDatabases.Text = "Databases";
             this.tbDatabases.UseVisualStyleBackColor = true;
@@ -711,7 +713,7 @@
             this.tbReports.Location = new System.Drawing.Point(4, 22);
             this.tbReports.Name = "tbReports";
             this.tbReports.Padding = new System.Windows.Forms.Padding(3);
-            this.tbReports.Size = new System.Drawing.Size(711, 364);
+            this.tbReports.Size = new System.Drawing.Size(886, 363);
             this.tbReports.TabIndex = 8;
             this.tbReports.Text = "Reports";
             this.tbReports.UseVisualStyleBackColor = true;
@@ -797,7 +799,7 @@
             this.tbAnalysisServers.Location = new System.Drawing.Point(4, 22);
             this.tbAnalysisServers.Name = "tbAnalysisServers";
             this.tbAnalysisServers.Padding = new System.Windows.Forms.Padding(3);
-            this.tbAnalysisServers.Size = new System.Drawing.Size(711, 364);
+            this.tbAnalysisServers.Size = new System.Drawing.Size(886, 363);
             this.tbAnalysisServers.TabIndex = 5;
             this.tbAnalysisServers.Text = "Analysis Servers";
             this.tbAnalysisServers.UseVisualStyleBackColor = true;
@@ -877,7 +879,7 @@
             this.tbNameOverides.Location = new System.Drawing.Point(4, 22);
             this.tbNameOverides.Name = "tbNameOverides";
             this.tbNameOverides.Padding = new System.Windows.Forms.Padding(3);
-            this.tbNameOverides.Size = new System.Drawing.Size(711, 364);
+            this.tbNameOverides.Size = new System.Drawing.Size(886, 363);
             this.tbNameOverides.TabIndex = 6;
             this.tbNameOverides.Text = "Name Overrides";
             this.tbNameOverides.UseVisualStyleBackColor = true;
@@ -937,7 +939,7 @@
             this.tbOutput.Location = new System.Drawing.Point(4, 22);
             this.tbOutput.Name = "tbOutput";
             this.tbOutput.Padding = new System.Windows.Forms.Padding(3);
-            this.tbOutput.Size = new System.Drawing.Size(711, 364);
+            this.tbOutput.Size = new System.Drawing.Size(886, 363);
             this.tbOutput.TabIndex = 7;
             this.tbOutput.Text = "Output";
             this.tbOutput.UseVisualStyleBackColor = true;
@@ -949,7 +951,7 @@
             this.tbResults.Multiline = true;
             this.tbResults.Name = "tbResults";
             this.tbResults.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbResults.Size = new System.Drawing.Size(705, 358);
+            this.tbResults.Size = new System.Drawing.Size(880, 357);
             this.tbResults.TabIndex = 0;
             // 
             // btView
@@ -999,6 +1001,17 @@
             this.panel1.Size = new System.Drawing.Size(894, 60);
             this.panel1.TabIndex = 1;
             // 
+            // btAnalyze2014
+            // 
+            this.btAnalyze2014.Location = new System.Drawing.Point(711, 3);
+            this.btAnalyze2014.Name = "btAnalyze2014";
+            this.btAnalyze2014.Size = new System.Drawing.Size(171, 23);
+            this.btAnalyze2014.TabIndex = 14;
+            this.btAnalyze2014.Text = "Analyse 2014";
+            this.btAnalyze2014.UseVisualStyleBackColor = true;
+            this.btAnalyze2014.Click += new System.EventHandler(this.btAnalyze2014_Click);
+            this.btAnalyze2014.MouseHover += new System.EventHandler(this.btAnalyze2014_MouseHover);
+            // 
             // btAnalyze2012
             // 
             this.btAnalyze2012.Location = new System.Drawing.Point(534, 3);
@@ -1027,16 +1040,15 @@
             this.folderBrowser.Description = "Browse for suitable folders";
             this.folderBrowser.ShowNewFolderButton = false;
             // 
-            // btAnalyze2014
+            // cbThreePartNames
             // 
-            this.btAnalyze2014.Location = new System.Drawing.Point(711, 3);
-            this.btAnalyze2014.Name = "btAnalyze2014";
-            this.btAnalyze2014.Size = new System.Drawing.Size(171, 23);
-            this.btAnalyze2014.TabIndex = 14;
-            this.btAnalyze2014.Text = "Analyse 2014";
-            this.btAnalyze2014.UseVisualStyleBackColor = true;
-            this.btAnalyze2014.Click += new System.EventHandler(this.btAnalyze2014_Click);
-            this.btAnalyze2014.MouseHover += new System.EventHandler(this.btAnalyze2014_MouseHover);
+            this.cbThreePartNames.AutoSize = true;
+            this.cbThreePartNames.Location = new System.Drawing.Point(9, 194);
+            this.cbThreePartNames.Name = "cbThreePartNames";
+            this.cbThreePartNames.Size = new System.Drawing.Size(182, 17);
+            this.cbThreePartNames.TabIndex = 9;
+            this.cbThreePartNames.Text = "Force Three Part Object Names?";
+            this.cbThreePartNames.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -1167,6 +1179,7 @@
         private System.Windows.Forms.ListBox lbReportServer;
         private System.Windows.Forms.Button btAnalyze2012;
         private System.Windows.Forms.Button btAnalyze2014;
+        private System.Windows.Forms.CheckBox cbThreePartNames;
     }
 }
 

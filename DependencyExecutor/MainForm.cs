@@ -275,6 +275,11 @@ namespace DependencyExecutor
             else
                 arguments += " /skipRS+";
 
+            if (cbThreePartNames.Checked)
+                arguments += " /tpn+";
+            else
+                arguments += " /tpn-";
+
             return arguments;
         }
 
