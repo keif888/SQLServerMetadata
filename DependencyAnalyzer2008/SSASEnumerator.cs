@@ -29,6 +29,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         }
 
         private Repository repository;
+        private bool threePartNames;
 
         /// <summary>
         /// Types of Analysis Services objects we recognise for the repository
@@ -86,8 +87,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
         ///  Opens a connection to the Analysis Server and does the actual object model walk
         /// </summary>
         /// <param name="connectionString"></param>
-        public void EnumerateServer(string connectionString)
+        public void EnumerateServer(string connectionString, bool storeThreePartNames)
         {
+            threePartNames = storeThreePartNames;
             using (Microsoft.AnalysisServices.Server server = new Server())
             {
                 server.Connect(connectionString);
@@ -211,6 +213,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         // now add the table
                         string tableName = GetFullyQualifiedTableName(table);
 
+                        if (threePartNames)
+                            tableName = String.Format("[{0}].{1}", repository.RetrieveDatabaseNameFromConnectionID(connectionID), tableName);
                         int tableID = repository.GetTable(connectionID, tableName);
                         if (tableID == -1)
                         {
@@ -356,6 +360,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
                             string tableName = GetFullyQualifiedTableName(tableBinding.DbSchemaName, tableBinding.DbTableName);
 
+                            if (threePartNames)
+                                tableName = String.Format("[{0}].{1}", repository.RetrieveDatabaseNameFromConnectionID(connectionID), tableName);
                             // get the table name from the repository itself
                             sourceID = repository.GetTable(connectionID, tableName);
 

@@ -6,7 +6,9 @@ using System.Data.SqlClient;
 using System.Data;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Common;
-
+#if !SQL2005
+using Urn = Microsoft.SqlServer.Management.Sdk.Sfc.Urn;
+#endif
 
 namespace Microsoft.Samples.DependencyAnalyzer
 {
@@ -57,7 +59,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         }
 
 
-        private String FormatObjectName(Microsoft.SqlServer.Management.Sdk.Sfc.Urn ObjectURN)
+        private String FormatObjectName(Urn ObjectURN)
         {
             if (threePartNames)
                 return String.Format("[{0}].[{1}].[{2}]", ObjectURN.GetAttribute("Name", "Database"), (String.IsNullOrEmpty(ObjectURN.GetAttribute("Schema")) ? "dbo" : ObjectURN.GetAttribute("Schema")), ObjectURN.GetAttribute("Name"));
