@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?define ProductVersion = "0.0.17.0"?>
+  <?define ProductVersion = "0.0.18.0"?>
   <?define UpgradeCode = "B758AA83-565F-453A-BECF-0B0B060E7023"?>
   <?define Manufacturer = "Keith Martin"?>
   <?define PackageCode = "*"?>
@@ -45,6 +45,9 @@
             <Component Id="DependencyAnalyzer2005Parser" Guid="{666DAD9B-DE37-4D7C-BD5C-E1F14D48BF27}" Win64="no">
               <File Id="FDependencyAnalyzer2005Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
             </Component>
+            <Component Id="ScriptDom2005" Guid="{6667AD9B-DE37-4D7C-BD5C-E1F14D48BF27}" Win64="no">
+              <File Id="FScriptDom2005" Name="Microsoft.SqlServer.TransactSql.ScriptDom.dll" Source="$(var.TSQLParser.TargetDir)Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
+            </Component>
           </Directory>
           <Directory Id="DependencyAnalyzer2008DIR" Name="Dependency Analyzer 2008">
             <Component Id="DependencyAnalyzer2008Exe" Guid="{3C0B8DCE-FEF2-4B81-9069-19F9CA146370}" Win64="no">
@@ -52,6 +55,9 @@
             </Component>
             <Component Id="DependencyAnalyzer2008Parser" Guid="{5F6E7D1F-8894-4484-B944-BDC2254781F0}" Win64="no">
                 <File Id="FDependencyAnalyzer2008Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
+            </Component>
+            <Component Id="ScriptDom2008" Guid="{5F677D1F-8894-4484-B944-BDC2254781F0}" Win64="no">
+              <File Id="FScriptDom2008" Name="Microsoft.SqlServer.TransactSql.ScriptDom.dll" Source="$(var.TSQLParser.TargetDir)Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
             </Component>
           </Directory>
           <Directory Id="DependencyAnalyzer2012DIR" Name="Dependency Analyzer 2012">
@@ -61,6 +67,9 @@
             <Component Id="DependencyAnalyzer2012Parser" Guid="{0A489594-2A5F-4677-8C0C-4EDC0A9DC002}" Win64="no">
                 <File Id="FDependencyAnalyzer2012Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
             </Component>
+            <Component Id="ScriptDom2012" Guid="{0A479594-2A5F-4677-8C0C-4EDC0A9DC002}" Win64="no">
+              <File Id="FScriptDom2012" Name="Microsoft.SqlServer.TransactSql.ScriptDom.dll" Source="$(var.TSQLParser.TargetDir)Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
+            </Component>
           </Directory>
           <Directory Id="DependencyAnalyzer2014DIR" Name="Dependency Analyzer 2014">
             <Component Id="DependencyAnalyzer2014Exe" Guid="{8C98AD26-65CE-4BA3-8954-6E98F4E5BF1D}" Win64="no">
@@ -68,6 +77,9 @@
             </Component>
             <Component Id="DependencyAnalyzer2014Parser" Guid="{95C37E97-F292-4804-A9F3-097946B574F8}" Win64="no">
               <File Id="FDependencyAnalyzer2014Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
+            </Component>
+            <Component Id="ScriptDom2014" Guid="{95C77E97-F292-4804-A9F3-097946B574F8}" Win64="no">
+              <File Id="FScriptDom2014" Name="Microsoft.SqlServer.TransactSql.ScriptDom.dll" Source="$(var.TSQLParser.TargetDir)Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
             </Component>
           </Directory>
           <Directory Id="DEPENDENCYEXECUTORDIR" Name="Dependency Executor">
@@ -120,6 +132,9 @@
             <Component Id="TestParserParser" Guid="{86B78C59-8C04-46B3-B4B6-37AE7AEADDEE}" Win64="no">
               <File Id="FTestParserParser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
             </Component>
+            <Component Id="ScriptDomTest" Guid="{86B88C59-8C04-46B3-B4B6-37AE7AEADDEE}" Win64="no">
+              <File Id="FScriptDomTest" Name="Microsoft.SqlServer.TransactSql.ScriptDom.dll" Source="$(var.TSQLParser.TargetDir)Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
+            </Component>
           </Directory>
         </Directory>
       </Directory>
@@ -130,7 +145,7 @@
             <Shortcut Id="ApplicationStartMenuShortcut"
                  Name="Dependency Executor"
                Description="GUI to control SQL Server Metadata Toolkit"
-                Target="[#DependencyExecutorExe]"
+                Target="[!DependencyExecutorExe]"
                       WorkingDirectory="DEPENDENCYEXECUTORDIR"
                       Icon="web.ico"/>
             <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
@@ -140,7 +155,7 @@
             <Shortcut Id="TestParserStartMenuShortcut"
                  Name="Test Parser"
                Description="GUI to Test the SQL Parser"
-                Target="[#FTestParserExe]"
+                Target="[!FTestParserExe]"
                       WorkingDirectory="TESTPARSERDIR"
                       Icon="web.ico"/>
             <RegistryValue Root="HKCU" Key="Software\MartinSource\SQL Server Metadata Toolkit" Name="testparser" Type="integer" Value="1" KeyPath="yes"/>
@@ -153,18 +168,22 @@
       <Feature Id="DependencyAnalyzer2005" Level="1" Title="Dependency Analyzer 2005">
         <ComponentRef Id="DependencyAnalyzer2005Exe"/>
         <ComponentRef Id="DependencyAnalyzer2005Parser"/>
+        <ComponentRef Id="ScriptDom2005"/>
       </Feature>
       <Feature Id="DependencyAnalyzer2008" Level="1" Title="Dependency Analyzer 2008">
         <ComponentRef Id="DependencyAnalyzer2008Exe"/>
         <ComponentRef Id="DependencyAnalyzer2008Parser"/>
+        <ComponentRef Id="ScriptDom2008"/>
       </Feature>
       <Feature Id="DependencyAnalyzer2012" Level="1" Title="Dependency Analyzer 2012">
         <ComponentRef Id="DependencyAnalyzer2012Exe"/>
         <ComponentRef Id="DependencyAnalyzer2012Parser"/>
+        <ComponentRef Id="ScriptDom2012"/>
       </Feature>
       <Feature Id="DependencyAnalyzer2014" Level="1" Title="Dependency Analyzer 2014">
         <ComponentRef Id="DependencyAnalyzer2014Exe"/>
         <ComponentRef Id="DependencyAnalyzer2014Parser"/>
+        <ComponentRef Id="ScriptDom2014"/>
       </Feature>
       <Feature Id="DependencyExecutor" Level="1" Title="Dependency Executor">
         <ComponentRef Id="DependencyExecutor"/>
@@ -188,6 +207,7 @@
       <Feature Id="TestSQLParser" Level="1" Title="SQL Parser Test">
         <ComponentRef Id="TestParserExe"/>
         <ComponentRef Id="TestParserParser"/>
+        <ComponentRef Id="ScriptDomTest"/>
         <ComponentRef Id="TestParserShortcut"/>
       </Feature>
 
