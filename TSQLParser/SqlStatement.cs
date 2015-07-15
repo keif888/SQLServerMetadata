@@ -23,7 +23,8 @@ namespace TSQLParser
 
         public List<string> parseErrors
         {
-            get {
+            get
+            {
                 List<string> result = new List<string>();
                 if (_parseErrors != null)
                 {
@@ -32,11 +33,11 @@ namespace TSQLParser
                         result.Add(String.Format("Error Number: {0}\r\nMessage: {1}\r\nLine: {2}\r\nOffset: {3}", parseError.Number, parseError.Message, parseError.Line, parseError.Offset));
                     }
                 }
-                return result; 
+                return result;
             }
         }
 
-        
+
 
         public SqlStatement()
         {
@@ -58,7 +59,7 @@ namespace TSQLParser
             {
                 using (StringReader sr = new StringReader(fileContent))
                 {
-                    IList<ParseError> errors = null; 
+                    IList<ParseError> errors = null;
                     //IList<TSqlParserToken> tokens = parser.GetTokenStream(sr, errors);
                     //ChildObjectName con = parser.ParseChildObjectName(sr, out errors);
                     StatementList sl = parser.ParseStatementList(sr, out errors);
@@ -98,7 +99,7 @@ namespace TSQLParser
                     if (!reParseSQL)
                     {
                         return false;
-//                        throw new ArgumentException("InvalidSQLScript", sb.ToString());
+                        //                        throw new ArgumentException("InvalidSQLScript", sb.ToString());
                     }
                 }
             }
@@ -420,7 +421,6 @@ namespace TSQLParser
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.BackwardsCompatibleDropIndexClause":
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.BeginConversationTimerStatement":
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.BeginDialogStatement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.BeginEndBlockStatement":
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.BeginTransactionStatement":
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.BinaryExpression":
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.BinaryExpressionType":
@@ -607,7 +607,6 @@ namespace TSQLParser
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareTableVariableBody":
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareTableVariableStatement":
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareVariableElement":
-                case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareVariableStatement":
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.DefaultConstraintDefinition":
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.DefaultLiteral":
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.DeleteMergeAction":
@@ -1391,17 +1390,21 @@ namespace TSQLParser
                     break;
 
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterProcedureStatement":
-                        findIdentifiers(((AlterProcedureStatement)sqlStatement).ProcedureReference.Name);
-                        findIdentifiers(((AlterProcedureStatement)sqlStatement).StatementList);
+                    findIdentifiers(((AlterProcedureStatement)sqlStatement).ProcedureReference.Name);
+                    findIdentifiers(((AlterProcedureStatement)sqlStatement).StatementList);
                     break;
 
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.AlterTableStatement":
                     findIdentifiers(((AlterTableStatement)sqlStatement).SchemaObjectName);
                     break;
 
+                case "Microsoft.SqlServer.TransactSql.ScriptDom.BeginEndBlockStatement":
+                    findIdentifiers(((BeginEndBlockStatement)sqlStatement).StatementList);
+                    break;
+
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateFunctionStatement":
-                        findIdentifiers(((CreateFunctionStatement)sqlStatement).Name, Identifier.IdentifierEnum.Function);
-                        findIdentifiers(((CreateFunctionStatement)sqlStatement).StatementList);
+                    findIdentifiers(((CreateFunctionStatement)sqlStatement).Name, Identifier.IdentifierEnum.Function);
+                    findIdentifiers(((CreateFunctionStatement)sqlStatement).StatementList);
                     break;
 
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateProcedureStatement":
@@ -1409,11 +1412,17 @@ namespace TSQLParser
                     findIdentifiers(((CreateProcedureStatement)sqlStatement).StatementList);
                     break;
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.CreateTableStatement":
-                        findIdentifiers(((CreateTableStatement)sqlStatement).SchemaObjectName);
+                    findIdentifiers(((CreateTableStatement)sqlStatement).SchemaObjectName);
                     break;
 
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareCursorStatement":
-                        findIdentifiers(((DeclareCursorStatement)sqlStatement).CursorDefinition.Select);
+                    findIdentifiers(((DeclareCursorStatement)sqlStatement).CursorDefinition.Select);
+                    break;
+
+                case "Microsoft.SqlServer.TransactSql.ScriptDom.DeclareVariableStatement":
+                    foreach (DeclareVariableElement declareVariableElement in ((DeclareVariableStatement)sqlStatement).Declarations)
+                        if (declareVariableElement.Value != null)
+                            findIdentifiers(declareVariableElement.Value);
                     break;
 
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.DeleteStatement":
@@ -1442,18 +1451,20 @@ namespace TSQLParser
                     break;
 
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.ExecuteStatement":
-                        findIdentifiers((ExecuteStatement)sqlStatement);
+                    findIdentifiers((ExecuteStatement)sqlStatement);
                     break;
 
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.FunctionStatementBody":
-                        findIdentifiers(((FunctionStatementBody)sqlStatement).StatementList);
+                    findIdentifiers(((FunctionStatementBody)sqlStatement).StatementList);
                     break;
 
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.IfStatement":
-                        if (((IfStatement)sqlStatement).ThenStatement != null)
-                            findIdentifiers(((IfStatement)sqlStatement).ThenStatement);
-                        if (((IfStatement)sqlStatement).ElseStatement != null)
-                            findIdentifiers(((IfStatement)sqlStatement).ElseStatement);
+                    if (((IfStatement)sqlStatement).ThenStatement != null)
+                        findIdentifiers(((IfStatement)sqlStatement).ThenStatement);
+                    if (((IfStatement)sqlStatement).ElseStatement != null)
+                        findIdentifiers(((IfStatement)sqlStatement).ElseStatement);
+                    if (((IfStatement)sqlStatement).Predicate != null)
+                        findIdentifiers(((IfStatement)sqlStatement).Predicate);
                     break;
 
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.InsertStatement":
@@ -1468,7 +1479,7 @@ namespace TSQLParser
                     }
                     findIdentifiers(insertStatement.InsertSpecification.Target);
                     findIdentifiers(insertStatement.InsertSpecification.InsertSource);
-                    if (insertStatement.InsertSpecification.OutputIntoClause != null) 
+                    if (insertStatement.InsertSpecification.OutputIntoClause != null)
                         findIdentifiers(insertStatement.InsertSpecification.OutputIntoClause.IntoTable);
                     break;
 
@@ -1524,14 +1535,14 @@ namespace TSQLParser
                     {
                         findIdentifiers(updateStatement.UpdateSpecification.OutputIntoClause.IntoTable);
                     }
-                    foreach(SetClause setClause in updateStatement.UpdateSpecification.SetClauses)
+                    foreach (SetClause setClause in updateStatement.UpdateSpecification.SetClauses)
                     {
                         findIdentifiers(setClause);
                     }
                     break;
 
                 case "Microsoft.SqlServer.TransactSql.ScriptDom.ViewStatementBody":
-                        findIdentifiers(((ViewStatementBody)sqlStatement).SelectStatement);
+                    findIdentifiers(((ViewStatementBody)sqlStatement).SelectStatement);
                     break;
 
                 default:
@@ -1555,7 +1566,7 @@ namespace TSQLParser
         private void findIdentifiers(ExecuteSpecification executeSpecification)
         {
             if (executeSpecification.ExecutableEntity != null)
-            { 
+            {
                 if (executeSpecification.ExecutableEntity is ExecutableProcedureReference)
                 {
                     ExecutableProcedureReference executableProcedureReference = executeSpecification.ExecutableEntity as ExecutableProcedureReference;
@@ -1604,7 +1615,7 @@ namespace TSQLParser
                     {
                         ExecutableProcedureReference executableProcedureReference = execStatement.ExecuteSpecification.ExecutableEntity as ExecutableProcedureReference;
                         findIdentifiers(executableProcedureReference.ProcedureReference.ProcedureReference.Name, Identifier.IdentifierEnum.Procedure);
-                        foreach(ExecuteParameter parm in executableProcedureReference.Parameters)
+                        foreach (ExecuteParameter parm in executableProcedureReference.Parameters)
                         {
                             //ToDo: Parse these
                             //findIdentifiers(parm);
@@ -1614,11 +1625,11 @@ namespace TSQLParser
                     {
                         ExecutableStringList executableStringList = execStatement.ExecuteSpecification.ExecutableEntity as ExecutableStringList;
 
-                        foreach(ValueExpression ve in executableStringList.Strings)
+                        foreach (ValueExpression ve in executableStringList.Strings)
                         {
                             findIdentifiers(ve);
                         }
-                        foreach(ExecuteParameter parm in executableStringList.Parameters)
+                        foreach (ExecuteParameter parm in executableStringList.Parameters)
                         {
                             //ToDo: Parse these
                             //findIdentifiers(parm);
@@ -1663,22 +1674,7 @@ namespace TSQLParser
                     findIdentifiers((QuerySpecification)queryExpression);
                     foreach (SelectElement selectElement in (queryExpression as QuerySpecification).SelectElements)
                     {
-                        if (selectElement is SelectScalarExpression)
-                        {
-                            findIdentifiers(selectElement as SelectScalarExpression);
-                        }
-                        else if (selectElement is SelectSetVariable)
-                        {
-                            findIdentifiers(selectElement as SelectSetVariable);
-                        }
-                        else if (selectElement is SelectStarExpression)
-                        {
-                            // No Identifiers on a SELECT *...
-                        }
-                        else
-                        {
-                            throw new Exception("Unhandled Statement Type in findIdentifiers(QueryExpression queryExpression) " + selectElement.GetType().FullName);
-                        }
+                        findIdentifiers(selectElement);
                     }
                 }
                 else if (queryExpression is BinaryQueryExpression)
@@ -1743,9 +1739,35 @@ namespace TSQLParser
                 {
                     findIdentifiers(tableSource);
                 }
+            if (querySpecification.SelectElements != null)
+                foreach (SelectElement element in querySpecification.SelectElements)
+                {
+                    findIdentifiers(element);
+                }
             if (querySpecification.WhereClause != null)
             {
                 findIdentifiers(querySpecification.WhereClause);
+            }
+        }
+
+
+        private void findIdentifiers(SelectElement selectElement)
+        {
+            if (selectElement is SelectScalarExpression)
+            {
+                findIdentifiers(selectElement as SelectScalarExpression);
+            }
+            else if (selectElement is SelectSetVariable)
+            {
+                findIdentifiers(selectElement as SelectSetVariable);
+            }
+            else if (selectElement is SelectStarExpression)
+            {
+                // No Identifiers on a SELECT *...
+            }
+            else
+            {
+                throw new Exception("Unhandled Statement Type in findIdentifiers(SelectElement selectElement) " + selectElement.GetType().FullName);
             }
         }
 
@@ -1883,8 +1905,8 @@ namespace TSQLParser
                         break;
 
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.BinaryExpression":
-                            findIdentifiers((scalarExpression as BinaryExpression).FirstExpression);
-                            findIdentifiers((scalarExpression as BinaryExpression).SecondExpression);
+                        findIdentifiers((scalarExpression as BinaryExpression).FirstExpression);
+                        findIdentifiers((scalarExpression as BinaryExpression).SecondExpression);
                         break;
 
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.CaseExpression":
@@ -1896,7 +1918,7 @@ namespace TSQLParser
                         break;
 
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.CoalesceExpression":
-                        foreach(ScalarExpression expression in (scalarExpression as CoalesceExpression).Expressions)
+                        foreach (ScalarExpression expression in (scalarExpression as CoalesceExpression).Expressions)
                         {
                             findIdentifiers(expression);
                         }
@@ -1951,7 +1973,7 @@ namespace TSQLParser
                         break;
 
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.ParenthesisExpression":
-                            findIdentifiers((scalarExpression as ParenthesisExpression).Expression);
+                        findIdentifiers((scalarExpression as ParenthesisExpression).Expression);
                         break;
 
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery":
