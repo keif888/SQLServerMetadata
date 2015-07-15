@@ -33,7 +33,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         public string[] ssisFolders = null;
 
         [Argument(ArgumentType.MultipleUnique
-            , HelpText = "SQL Servers where SSIS packages are stored."
+            , HelpText = "SQL Servers where SSIS packages are stored.  If you need to use different passwords per server, use \"Server=servername;User=username;Password=pwd\""
             , DefaultValue = new string[] { "localhost" }
             , LongName = "isDbServer"
             , ShortName = "i")]
@@ -289,8 +289,32 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 if (dependencyArguments.skipSQL == false)
                 {
                     Console.WriteLine("Enumerating Integration Services metadata.");
-                    foreach(string dbServer in dependencyArguments.isDbServer)
-                        enumerator.EnumerateSqlPackages(dbServer, dependencyArguments.isDbUser, dependencyArguments.isDbPwd, dependencyArguments.ssisFolders, dependencyArguments.storeThreePartNames);
+                    foreach (string dbServer in dependencyArguments.isDbServer)
+                    {
+                        if (dbServer.Contains(";"))
+                        {
+                            String dbUser = null;
+                            String dbPass = null;
+                            String ssisServer = string.Empty;
+                            int posServer = dbServer.IndexOf("server=", 0, StringComparison.InvariantCultureIgnoreCase) + "server=".Length;
+                            int posUser = dbServer.IndexOf("user=", 0, StringComparison.InvariantCultureIgnoreCase);
+                            int posPass = dbServer.IndexOf("password=", 0, StringComparison.InvariantCultureIgnoreCase);
+
+                            ssisServer = dbServer.Substring(posServer, posUser - posServer - 1);
+                            posUser += "user=".Length;
+                            dbUser = dbServer.Substring(posUser, posPass - posUser - 1);
+                            posPass += "password=".Length;
+                            dbPass = dbServer.Substring(posPass, dbServer.Length - posPass);
+                            if (String.IsNullOrEmpty(dbUser))
+                            {
+                                dbUser = null;
+                                dbPass = null;
+                            }
+                            enumerator.EnumerateSqlPackages(ssisServer, dbUser, dbPass, dependencyArguments.ssisFolders, dependencyArguments.storeThreePartNames);
+                        }
+                        else
+                            enumerator.EnumerateSqlPackages(dbServer, dependencyArguments.isDbUser, dependencyArguments.isDbPwd, dependencyArguments.ssisFolders, dependencyArguments.storeThreePartNames);
+                    }
                 }
             }
         }

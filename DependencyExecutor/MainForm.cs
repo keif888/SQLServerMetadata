@@ -24,6 +24,7 @@ namespace DependencyExecutor
             InitializeComponent();
 
             tcMain.TabPages.Remove(tbSSISFolders);
+            tcMain.TabPages.Remove(tbSSISServers);
             tcMain.TabPages.Remove(tbAnalysisServers);
             tcMain.TabPages.Remove(tbDatabases);
             tcMain.TabPages.Remove(tbNameOverides);
@@ -86,10 +87,12 @@ namespace DependencyExecutor
             if (cbEnableSQL.Checked)
             {
                 tcMain.TabPages.Add(tbSSISFolders);
+                tcMain.TabPages.Add(tbSSISServers);
             }
             else
             {
                 tcMain.TabPages.Remove(tbSSISFolders);
+                tcMain.TabPages.Remove(tbSSISServers);
             }
         }
 
@@ -227,6 +230,10 @@ namespace DependencyExecutor
                     {
                         arguments += string.Format(" /sf:\"{0}\"", ssisFolder);
                     }
+                    foreach (string ssisConnection in lbSSISServers.Items)
+                    {
+                        arguments += string.Format(" /i:\"{0}\"", ssisConnection);
+                    }
                 }
                 else
                     arguments += " /skipSQL+";
@@ -345,6 +352,21 @@ namespace DependencyExecutor
             else
             {
                 connectionString = string.Format("Server={0};Database={1};User Id={2};password={3};", tbSQLServerDB.Text, tbDatabaseDB.Text, tbUserDB.Text, tbPasswordDB.Text);
+            }
+
+            return connectionString;
+        }
+
+        private string buildSSISConnectionString()
+        {
+            string connectionString = string.Empty;
+            if (rbWindowsSSIS.Checked)
+            {
+                connectionString = string.Format("{0}", tbSSISServer.Text);
+            }
+            else
+            {
+                connectionString = string.Format("Server={0};User={1};Password={2};", tbSSISServer.Text, tbSSISUser.Text, tbSSISPassword.Text);
             }
 
             return connectionString;
@@ -681,6 +703,36 @@ namespace DependencyExecutor
                 btAnalyze2008.Invoke((MethodInvoker)delegate { btAnalyze2008.Enabled = true; });
                 btAnalyze2012.Invoke((MethodInvoker)delegate { btAnalyze2012.Enabled = true; });
                 btAnalyze2014.Invoke((MethodInvoker)delegate { btAnalyze2014.Enabled = true; });
+            }
+        }
+
+        private void btSSISServerAdd_Click(object sender, EventArgs e)
+        {
+            if (tbSSISServer.Text != string.Empty)
+            {
+                lbSSISServers.Items.Add(buildSSISConnectionString());
+            }
+        }
+
+        private void btSSISServerDelete_Click(object sender, EventArgs e)
+        {
+            if (lbSSISServers.SelectedItems.Count > 0)
+            {
+                lbSSISServers.Items.RemoveAt(lbSSISServers.SelectedIndex);
+            }
+        }
+
+        private void rbSQLSSIS_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbSQLSSIS.Checked)
+            {
+                tbSSISUser.Enabled = true;
+                tbSSISPassword.Enabled = true;
+            }
+            else
+            {
+                tbSSISUser.Enabled = false;
+                tbSSISPassword.Enabled = false;
             }
         }
     }
