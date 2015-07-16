@@ -54,6 +54,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
         public string isDbPwd = null;
 
         [Argument(ArgumentType.MultipleUnique
+            , HelpText = "Passwords to access SSIS Packages."
+            , DefaultValue = null
+            , LongName = "isPkgPwd"
+            , ShortName = "pp")]
+        public string[] isPkgPwd = null;
+
+        [Argument(ArgumentType.MultipleUnique
             , HelpText = "AMO compatible connection string to Analysis Services."
             , DefaultValue = new string[] { "Provider=msolap;Data Source=localhost;" }
             , LongName = "asCon"
@@ -284,7 +291,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             if (enumerator.Initialize(repository))
             {
                 Console.WriteLine("Enumerating File System Integration Services metadata.");
-                enumerator.EnumerateFileSystemPackages(dependencyArguments.folders, dependencyArguments.recurse, dependencyArguments.storeThreePartNames);
+                enumerator.EnumerateFileSystemPackages(dependencyArguments.folders, dependencyArguments.recurse, dependencyArguments.storeThreePartNames, dependencyArguments.isPkgPwd);
 
                 if (dependencyArguments.skipSQL == false)
                 {
@@ -310,10 +317,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                 dbUser = null;
                                 dbPass = null;
                             }
-                            enumerator.EnumerateSqlPackages(ssisServer, dbUser, dbPass, dependencyArguments.ssisFolders, dependencyArguments.storeThreePartNames);
+                            enumerator.EnumerateSqlPackages(ssisServer, dbUser, dbPass, dependencyArguments.ssisFolders, dependencyArguments.storeThreePartNames, dependencyArguments.isPkgPwd);
                         }
                         else
-                            enumerator.EnumerateSqlPackages(dbServer, dependencyArguments.isDbUser, dependencyArguments.isDbPwd, dependencyArguments.ssisFolders, dependencyArguments.storeThreePartNames);
+                            enumerator.EnumerateSqlPackages(dbServer, dependencyArguments.isDbUser, dependencyArguments.isDbPwd, dependencyArguments.ssisFolders, dependencyArguments.storeThreePartNames, dependencyArguments.isPkgPwd);
                     }
                 }
             }

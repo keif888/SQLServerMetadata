@@ -69,6 +69,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
         private const string dtsxPattern = "*.dtsx";
         private bool threePartNames;
+        private string[] packagePasswords;
 
         /// <summary>
         /// Different component Class IDs that we understand about
@@ -252,9 +253,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
         ///  enumerates all packages stored off in SQL Server database
         /// </summary>
         /// <param name="sqlConnectionString"></param>
-        public void EnumerateSqlPackages(string server, string user, string pwd, string[] rootFolders, bool storeThreePartNames)
+        public void EnumerateSqlPackages(string server, string user, string pwd, string[] rootFolders, bool storeThreePartNames, string[] storePackagePasswords)
         {
             threePartNames = storeThreePartNames;
+            packagePasswords = storePackagePasswords;
             try
             {
                 Queue<string> folders = new Queue<string>();
@@ -294,6 +296,24 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                 }
                                 Console.WriteLine("Completed Successfully.");
                             }
+                            catch (Microsoft.SqlServer.Dts.Runtime.DtsRuntimeException dtsEx)
+                            {
+                                if (dtsEx.Message.Contains("The package is encrypted with a password"))
+                                {
+                                    // The package was encrypted.  Try to decrypt the sucker!
+                                    using (Package package = LoadPackage(location, server, user, pwd, null))
+                                    {
+                                        if (package != null)
+                                            EnumeratePackage(package, location);
+                                        else
+                                            Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", location));
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
+                                }
+                            }
                             catch (System.Exception ex2)
                             {
                                 Console.WriteLine(string.Format("Error occurred: '{0}'", ex2.Message));
@@ -313,9 +333,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// </summary>
         /// <param name="rootFolders"></param>
         /// <param name="recurseSubFolders"></param>
-        public void EnumerateFileSystemPackages(string[] rootFolders, bool recurseSubFolders, bool storeThreePartNames)
+        public void EnumerateFileSystemPackages(string[] rootFolders, bool recurseSubFolders, bool storeThreePartNames, string[] storePackagePasswords)
         {
             threePartNames = storeThreePartNames;
+            packagePasswords = storePackagePasswords;
             foreach (string rootFolder in rootFolders)
             {
                 if (System.IO.Directory.Exists(rootFolder) == false)
@@ -348,11 +369,88 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
                     Console.WriteLine("Completed Successfully.");
                 }
+                catch (Microsoft.SqlServer.Dts.Runtime.DtsRuntimeException dtsEx)
+                {
+                    if (dtsEx.Message.Contains("The package is encrypted with a password"))
+                    {
+                        // The package was encrypted.  Try to decrypt the sucker!
+                        using(Package package = LoadPackage(packageFileName))
+                        {
+                            if (package != null)
+                                EnumeratePackage(package, packageFileName);
+                            else
+                                Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", packageFileName));
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
+                    }
+                }
                 catch (System.Exception ex)
                 {
                     Console.WriteLine(string.Format("Error occurred: '{0}'", ex.Message));
                 }
             }
+        }
+
+        /// <summary>
+        /// Attempt to load an ssis package utilising provided passwords.
+        /// </summary>
+        /// <param name="location"></param>
+        /// <param name="SSISServer"></param>
+        /// <param name="SSISUser"></param>
+        /// <param name="SSISPwd"></param>
+        /// <param name="Events"></param>
+        /// <returns></returns>
+        private Package LoadPackage(String location, String SSISServer, String SSISUser, String SSISPwd, IDTSEvents Events)
+        {
+            Package package = null;
+            int attempts = 1;
+            foreach (String password in packagePasswords)
+            {
+                try
+                {
+                    app.PackagePassword = password;
+                    package = app.LoadFromSqlServer(location, SSISServer, SSISUser, SSISPwd, Events);
+                    Console.WriteLine(string.Format("Password attempt {0} succeeded for package {1}", attempts++, location));
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(string.Format("Password attempt {0} failed for package {1} with message {2}", attempts++, location, ex.Message));
+                    package = null;
+                }
+            }
+            return package;
+        }
+
+
+        /// <summary>
+        ///  Attempt to load an ssis package utilising provided passwords.
+        /// </summary>
+        /// <param name="packageFileName"></param>
+        /// <returns></returns>
+        private Package LoadPackage(string packageFileName)
+        {
+            Package package = null;
+            int attempts = 1;
+            foreach (String password in packagePasswords)
+            {
+                try
+                {
+                    app.PackagePassword = password;
+                    package = app.LoadPackage(packageFileName, null);
+                    Console.WriteLine(string.Format("Password attempt {0} succeeded for package {1}", attempts++, packageFileName));
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(string.Format("Password attempt {0} failed for package {1} with message {2}", attempts++, packageFileName, ex.Message));
+                    package = null;
+                }
+            }
+            return package;
         }
 
         private void EnumerateInfos(Application app)
