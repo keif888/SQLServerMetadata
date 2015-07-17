@@ -223,6 +223,11 @@ namespace DependencyExecutor
                     arguments += string.Format(" /f:\"{0}\"", fileFolder);
                 }
 
+                foreach (PasswordString passwords in lbPkgPassword.Items)
+                {
+                    arguments += string.Format(" /pp:{0}", passwords.passwordValue);
+                }
+
                 if (cbEnableSQL.Checked)
                 {
                     arguments += " /skipSQL-";
@@ -735,5 +740,47 @@ namespace DependencyExecutor
                 tbSSISPassword.Enabled = false;
             }
         }
+
+        private void btPkgPassAdd_Click(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(tbPkgPassword.Text))
+            {
+                lbPkgPassword.Items.Add(new PasswordString(tbPkgPassword.Text));
+            }
+            tbPkgPassword.Text = String.Empty;
+        }
+
+        private void btPkgPassDelete_Click(object sender, EventArgs e)
+        {
+            if (lbPkgPassword.SelectedItems.Count > 0)
+            {
+                lbPkgPassword.Items.RemoveAt(lbPkgPassword.SelectedIndex);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Class to store a password, but show only the 1st and last characters in list box.
+    /// </summary>
+    public class PasswordString
+    {
+        public String passwordValue { get; set; }
+
+        public PasswordString(String text)
+        {
+            passwordValue = text;
+        }
+
+        public override string ToString()
+        {
+            if (String.IsNullOrEmpty(passwordValue))
+                return String.Empty;
+            if (passwordValue.Length < 3)
+                return new string('*', passwordValue.Length);
+            StringBuilder temp = new StringBuilder(passwordValue);
+            StringBuilder result = new StringBuilder();
+            return result.Append(temp[0]).Append(new string('*', passwordValue.Length - 2)).Append(temp[passwordValue.Length - 1]).ToString();
+        }
+
     }
 }

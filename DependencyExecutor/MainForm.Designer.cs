@@ -54,6 +54,19 @@
             this.cbEnableSQL = new System.Windows.Forms.CheckBox();
             this.cbBatchMode = new System.Windows.Forms.CheckBox();
             this.cbRecurse = new System.Windows.Forms.CheckBox();
+            this.tbSSISServers = new System.Windows.Forms.TabPage();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.tbSSISPassword = new System.Windows.Forms.MaskedTextBox();
+            this.tbSSISUser = new System.Windows.Forms.TextBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.rbSQLSSIS = new System.Windows.Forms.RadioButton();
+            this.rbWindowsSSIS = new System.Windows.Forms.RadioButton();
+            this.tbSSISServer = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.btSSISServerDelete = new System.Windows.Forms.Button();
+            this.btSSISServerAdd = new System.Windows.Forms.Button();
+            this.lbSSISServers = new System.Windows.Forms.ListBox();
             this.tbSSISFolders = new System.Windows.Forms.TabPage();
             this.btSSISDelete = new System.Windows.Forms.Button();
             this.btSSISAdd = new System.Windows.Forms.Button();
@@ -61,6 +74,11 @@
             this.label5 = new System.Windows.Forms.Label();
             this.tbSSISFolder = new System.Windows.Forms.TextBox();
             this.tbFileFolders = new System.Windows.Forms.TabPage();
+            this.btPkgPassDelete = new System.Windows.Forms.Button();
+            this.btPkgPassAdd = new System.Windows.Forms.Button();
+            this.lbPkgPassword = new System.Windows.Forms.ListBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.tbPkgPassword = new System.Windows.Forms.TextBox();
             this.btFileDelete = new System.Windows.Forms.Button();
             this.btFileAdd = new System.Windows.Forms.Button();
             this.lbFolders = new System.Windows.Forms.ListBox();
@@ -115,23 +133,12 @@
             this.tbCommandLine = new System.Windows.Forms.TextBox();
             this.toolTipControl = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
-            this.tbSSISServers = new System.Windows.Forms.TabPage();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.tbSSISPassword = new System.Windows.Forms.MaskedTextBox();
-            this.tbSSISUser = new System.Windows.Forms.TextBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.rbSQLSSIS = new System.Windows.Forms.RadioButton();
-            this.rbWindowsSSIS = new System.Windows.Forms.RadioButton();
-            this.tbSSISServer = new System.Windows.Forms.TextBox();
-            this.label18 = new System.Windows.Forms.Label();
-            this.btSSISServerDelete = new System.Windows.Forms.Button();
-            this.btSSISServerAdd = new System.Windows.Forms.Button();
-            this.lbSSISServers = new System.Windows.Forms.ListBox();
             this.tcMain.SuspendLayout();
             this.tbRepository.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tbScanOptions.SuspendLayout();
+            this.tbSSISServers.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.tbSSISFolders.SuspendLayout();
             this.tbFileFolders.SuspendLayout();
             this.tbDatabases.SuspendLayout();
@@ -141,8 +148,6 @@
             this.tbNameOverides.SuspendLayout();
             this.tbOutput.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.tbSSISServers.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tcMain
@@ -434,6 +439,146 @@
         "SSIS analysis.");
             this.cbRecurse.UseVisualStyleBackColor = true;
             // 
+            // tbSSISServers
+            // 
+            this.tbSSISServers.Controls.Add(this.label16);
+            this.tbSSISServers.Controls.Add(this.label17);
+            this.tbSSISServers.Controls.Add(this.tbSSISPassword);
+            this.tbSSISServers.Controls.Add(this.tbSSISUser);
+            this.tbSSISServers.Controls.Add(this.groupBox3);
+            this.tbSSISServers.Controls.Add(this.tbSSISServer);
+            this.tbSSISServers.Controls.Add(this.label18);
+            this.tbSSISServers.Controls.Add(this.btSSISServerDelete);
+            this.tbSSISServers.Controls.Add(this.btSSISServerAdd);
+            this.tbSSISServers.Controls.Add(this.lbSSISServers);
+            this.tbSSISServers.Location = new System.Drawing.Point(4, 22);
+            this.tbSSISServers.Name = "tbSSISServers";
+            this.tbSSISServers.Size = new System.Drawing.Size(886, 363);
+            this.tbSSISServers.TabIndex = 9;
+            this.tbSSISServers.Text = "SSIS Servers";
+            this.tbSSISServers.UseVisualStyleBackColor = true;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(8, 140);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(53, 13);
+            this.label16.TabIndex = 29;
+            this.label16.Text = "Password";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(8, 113);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(40, 13);
+            this.label17.TabIndex = 28;
+            this.label17.Text = "UserID";
+            // 
+            // tbSSISPassword
+            // 
+            this.tbSSISPassword.Enabled = false;
+            this.tbSSISPassword.Location = new System.Drawing.Point(99, 137);
+            this.tbSSISPassword.Name = "tbSSISPassword";
+            this.tbSSISPassword.Size = new System.Drawing.Size(171, 20);
+            this.tbSSISPassword.TabIndex = 27;
+            this.toolTipControl.SetToolTip(this.tbSSISPassword, "The password for the user above.");
+            this.tbSSISPassword.UseSystemPasswordChar = true;
+            // 
+            // tbSSISUser
+            // 
+            this.tbSSISUser.Enabled = false;
+            this.tbSSISUser.Location = new System.Drawing.Point(99, 110);
+            this.tbSSISUser.Name = "tbSSISUser";
+            this.tbSSISUser.Size = new System.Drawing.Size(171, 20);
+            this.tbSSISUser.TabIndex = 26;
+            this.toolTipControl.SetToolTip(this.tbSSISUser, "The SQL Login to use to connect to the SQL Server.");
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.rbSQLSSIS);
+            this.groupBox3.Controls.Add(this.rbWindowsSSIS);
+            this.groupBox3.Location = new System.Drawing.Point(3, 35);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(267, 69);
+            this.groupBox3.TabIndex = 25;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Authentication";
+            // 
+            // rbSQLSSIS
+            // 
+            this.rbSQLSSIS.AutoSize = true;
+            this.rbSQLSSIS.Location = new System.Drawing.Point(96, 44);
+            this.rbSQLSSIS.Name = "rbSQLSSIS";
+            this.rbSQLSSIS.Size = new System.Drawing.Size(117, 17);
+            this.rbSQLSSIS.TabIndex = 1;
+            this.rbSQLSSIS.Text = "SQL Authentication";
+            this.toolTipControl.SetToolTip(this.rbSQLSSIS, "Checked for SQL Authentication");
+            this.rbSQLSSIS.UseVisualStyleBackColor = true;
+            this.rbSQLSSIS.CheckedChanged += new System.EventHandler(this.rbSQLSSIS_CheckedChanged);
+            // 
+            // rbWindowsSSIS
+            // 
+            this.rbWindowsSSIS.AutoSize = true;
+            this.rbWindowsSSIS.Checked = true;
+            this.rbWindowsSSIS.Location = new System.Drawing.Point(96, 20);
+            this.rbWindowsSSIS.Name = "rbWindowsSSIS";
+            this.rbWindowsSSIS.Size = new System.Drawing.Size(140, 17);
+            this.rbWindowsSSIS.TabIndex = 0;
+            this.rbWindowsSSIS.TabStop = true;
+            this.rbWindowsSSIS.Text = "Windows Authentication";
+            this.toolTipControl.SetToolTip(this.rbWindowsSSIS, "Checked for Windows Authentication");
+            this.rbWindowsSSIS.UseVisualStyleBackColor = true;
+            // 
+            // tbSSISServer
+            // 
+            this.tbSSISServer.Location = new System.Drawing.Point(99, 9);
+            this.tbSSISServer.Name = "tbSSISServer";
+            this.tbSSISServer.Size = new System.Drawing.Size(171, 20);
+            this.tbSSISServer.TabIndex = 24;
+            this.toolTipControl.SetToolTip(this.tbSSISServer, "Enter the SQL Server where the Repository exists.");
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(8, 12);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(65, 13);
+            this.label18.TabIndex = 23;
+            this.label18.Text = "SSIS Server";
+            // 
+            // btSSISServerDelete
+            // 
+            this.btSSISServerDelete.Location = new System.Drawing.Point(495, 330);
+            this.btSSISServerDelete.Name = "btSSISServerDelete";
+            this.btSSISServerDelete.Size = new System.Drawing.Size(75, 23);
+            this.btSSISServerDelete.TabIndex = 22;
+            this.btSSISServerDelete.Text = "Delete";
+            this.btSSISServerDelete.UseVisualStyleBackColor = true;
+            this.btSSISServerDelete.Click += new System.EventHandler(this.btSSISServerDelete_Click);
+            // 
+            // btSSISServerAdd
+            // 
+            this.btSSISServerAdd.Location = new System.Drawing.Point(50, 331);
+            this.btSSISServerAdd.Name = "btSSISServerAdd";
+            this.btSSISServerAdd.Size = new System.Drawing.Size(75, 23);
+            this.btSSISServerAdd.TabIndex = 21;
+            this.btSSISServerAdd.Text = "Add";
+            this.btSSISServerAdd.UseVisualStyleBackColor = true;
+            this.btSSISServerAdd.Click += new System.EventHandler(this.btSSISServerAdd_Click);
+            // 
+            // lbSSISServers
+            // 
+            this.lbSSISServers.FormattingEnabled = true;
+            this.lbSSISServers.Location = new System.Drawing.Point(50, 164);
+            this.lbSSISServers.Name = "lbSSISServers";
+            this.lbSSISServers.Size = new System.Drawing.Size(521, 160);
+            this.lbSSISServers.Sorted = true;
+            this.lbSSISServers.TabIndex = 20;
+            this.toolTipControl.SetToolTip(this.lbSSISServers, "The list of folders within Integration Services to recursively look for Packages " +
+        "in.");
+            // 
             // tbSSISFolders
             // 
             this.tbSSISFolders.Controls.Add(this.btSSISDelete);
@@ -498,6 +643,11 @@
             // 
             // tbFileFolders
             // 
+            this.tbFileFolders.Controls.Add(this.btPkgPassDelete);
+            this.tbFileFolders.Controls.Add(this.btPkgPassAdd);
+            this.tbFileFolders.Controls.Add(this.lbPkgPassword);
+            this.tbFileFolders.Controls.Add(this.label19);
+            this.tbFileFolders.Controls.Add(this.tbPkgPassword);
             this.tbFileFolders.Controls.Add(this.btFileDelete);
             this.tbFileFolders.Controls.Add(this.btFileAdd);
             this.tbFileFolders.Controls.Add(this.lbFolders);
@@ -511,6 +661,51 @@
             this.tbFileFolders.TabIndex = 3;
             this.tbFileFolders.Text = "File Folders";
             this.tbFileFolders.UseVisualStyleBackColor = true;
+            // 
+            // btPkgPassDelete
+            // 
+            this.btPkgPassDelete.Location = new System.Drawing.Point(803, 331);
+            this.btPkgPassDelete.Name = "btPkgPassDelete";
+            this.btPkgPassDelete.Size = new System.Drawing.Size(75, 23);
+            this.btPkgPassDelete.TabIndex = 16;
+            this.btPkgPassDelete.Text = "Delete";
+            this.btPkgPassDelete.UseVisualStyleBackColor = true;
+            this.btPkgPassDelete.Click += new System.EventHandler(this.btPkgPassDelete_Click);
+            // 
+            // btPkgPassAdd
+            // 
+            this.btPkgPassAdd.Location = new System.Drawing.Point(716, 331);
+            this.btPkgPassAdd.Name = "btPkgPassAdd";
+            this.btPkgPassAdd.Size = new System.Drawing.Size(75, 23);
+            this.btPkgPassAdd.TabIndex = 15;
+            this.btPkgPassAdd.Text = "Add";
+            this.btPkgPassAdd.UseVisualStyleBackColor = true;
+            this.btPkgPassAdd.Click += new System.EventHandler(this.btPkgPassAdd_Click);
+            // 
+            // lbPkgPassword
+            // 
+            this.lbPkgPassword.FormattingEnabled = true;
+            this.lbPkgPassword.Location = new System.Drawing.Point(716, 34);
+            this.lbPkgPassword.Name = "lbPkgPassword";
+            this.lbPkgPassword.Size = new System.Drawing.Size(162, 290);
+            this.lbPkgPassword.TabIndex = 14;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(611, 10);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(99, 13);
+            this.label19.TabIndex = 13;
+            this.label19.Text = "Package Password";
+            // 
+            // tbPkgPassword
+            // 
+            this.tbPkgPassword.Location = new System.Drawing.Point(716, 7);
+            this.tbPkgPassword.Name = "tbPkgPassword";
+            this.tbPkgPassword.Size = new System.Drawing.Size(162, 20);
+            this.tbPkgPassword.TabIndex = 12;
+            this.tbPkgPassword.UseSystemPasswordChar = true;
             // 
             // btFileDelete
             // 
@@ -1066,146 +1261,6 @@
             this.folderBrowser.Description = "Browse for suitable folders";
             this.folderBrowser.ShowNewFolderButton = false;
             // 
-            // tbSSISServers
-            // 
-            this.tbSSISServers.Controls.Add(this.label16);
-            this.tbSSISServers.Controls.Add(this.label17);
-            this.tbSSISServers.Controls.Add(this.tbSSISPassword);
-            this.tbSSISServers.Controls.Add(this.tbSSISUser);
-            this.tbSSISServers.Controls.Add(this.groupBox3);
-            this.tbSSISServers.Controls.Add(this.tbSSISServer);
-            this.tbSSISServers.Controls.Add(this.label18);
-            this.tbSSISServers.Controls.Add(this.btSSISServerDelete);
-            this.tbSSISServers.Controls.Add(this.btSSISServerAdd);
-            this.tbSSISServers.Controls.Add(this.lbSSISServers);
-            this.tbSSISServers.Location = new System.Drawing.Point(4, 22);
-            this.tbSSISServers.Name = "tbSSISServers";
-            this.tbSSISServers.Size = new System.Drawing.Size(886, 363);
-            this.tbSSISServers.TabIndex = 9;
-            this.tbSSISServers.Text = "SSIS Servers";
-            this.tbSSISServers.UseVisualStyleBackColor = true;
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(8, 140);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(53, 13);
-            this.label16.TabIndex = 29;
-            this.label16.Text = "Password";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(8, 113);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(40, 13);
-            this.label17.TabIndex = 28;
-            this.label17.Text = "UserID";
-            // 
-            // tbSSISPassword
-            // 
-            this.tbSSISPassword.Enabled = false;
-            this.tbSSISPassword.Location = new System.Drawing.Point(99, 137);
-            this.tbSSISPassword.Name = "tbSSISPassword";
-            this.tbSSISPassword.Size = new System.Drawing.Size(171, 20);
-            this.tbSSISPassword.TabIndex = 27;
-            this.toolTipControl.SetToolTip(this.tbSSISPassword, "The password for the user above.");
-            this.tbSSISPassword.UseSystemPasswordChar = true;
-            // 
-            // tbSSISUser
-            // 
-            this.tbSSISUser.Enabled = false;
-            this.tbSSISUser.Location = new System.Drawing.Point(99, 110);
-            this.tbSSISUser.Name = "tbSSISUser";
-            this.tbSSISUser.Size = new System.Drawing.Size(171, 20);
-            this.tbSSISUser.TabIndex = 26;
-            this.toolTipControl.SetToolTip(this.tbSSISUser, "The SQL Login to use to connect to the SQL Server.");
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.rbSQLSSIS);
-            this.groupBox3.Controls.Add(this.rbWindowsSSIS);
-            this.groupBox3.Location = new System.Drawing.Point(3, 35);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(267, 69);
-            this.groupBox3.TabIndex = 25;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Authentication";
-            // 
-            // rbSQLSSIS
-            // 
-            this.rbSQLSSIS.AutoSize = true;
-            this.rbSQLSSIS.Location = new System.Drawing.Point(96, 44);
-            this.rbSQLSSIS.Name = "rbSQLSSIS";
-            this.rbSQLSSIS.Size = new System.Drawing.Size(117, 17);
-            this.rbSQLSSIS.TabIndex = 1;
-            this.rbSQLSSIS.Text = "SQL Authentication";
-            this.toolTipControl.SetToolTip(this.rbSQLSSIS, "Checked for SQL Authentication");
-            this.rbSQLSSIS.UseVisualStyleBackColor = true;
-            this.rbSQLSSIS.CheckedChanged += new System.EventHandler(this.rbSQLSSIS_CheckedChanged);
-            // 
-            // rbWindowsSSIS
-            // 
-            this.rbWindowsSSIS.AutoSize = true;
-            this.rbWindowsSSIS.Checked = true;
-            this.rbWindowsSSIS.Location = new System.Drawing.Point(96, 20);
-            this.rbWindowsSSIS.Name = "rbWindowsSSIS";
-            this.rbWindowsSSIS.Size = new System.Drawing.Size(140, 17);
-            this.rbWindowsSSIS.TabIndex = 0;
-            this.rbWindowsSSIS.TabStop = true;
-            this.rbWindowsSSIS.Text = "Windows Authentication";
-            this.toolTipControl.SetToolTip(this.rbWindowsSSIS, "Checked for Windows Authentication");
-            this.rbWindowsSSIS.UseVisualStyleBackColor = true;
-            // 
-            // tbSSISServer
-            // 
-            this.tbSSISServer.Location = new System.Drawing.Point(99, 9);
-            this.tbSSISServer.Name = "tbSSISServer";
-            this.tbSSISServer.Size = new System.Drawing.Size(171, 20);
-            this.tbSSISServer.TabIndex = 24;
-            this.toolTipControl.SetToolTip(this.tbSSISServer, "Enter the SQL Server where the Repository exists.");
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(8, 12);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(65, 13);
-            this.label18.TabIndex = 23;
-            this.label18.Text = "SSIS Server";
-            // 
-            // btSSISServerDelete
-            // 
-            this.btSSISServerDelete.Location = new System.Drawing.Point(495, 330);
-            this.btSSISServerDelete.Name = "btSSISServerDelete";
-            this.btSSISServerDelete.Size = new System.Drawing.Size(75, 23);
-            this.btSSISServerDelete.TabIndex = 22;
-            this.btSSISServerDelete.Text = "Delete";
-            this.btSSISServerDelete.UseVisualStyleBackColor = true;
-            this.btSSISServerDelete.Click += new System.EventHandler(this.btSSISServerDelete_Click);
-            // 
-            // btSSISServerAdd
-            // 
-            this.btSSISServerAdd.Location = new System.Drawing.Point(50, 331);
-            this.btSSISServerAdd.Name = "btSSISServerAdd";
-            this.btSSISServerAdd.Size = new System.Drawing.Size(75, 23);
-            this.btSSISServerAdd.TabIndex = 21;
-            this.btSSISServerAdd.Text = "Add";
-            this.btSSISServerAdd.UseVisualStyleBackColor = true;
-            this.btSSISServerAdd.Click += new System.EventHandler(this.btSSISServerAdd_Click);
-            // 
-            // lbSSISServers
-            // 
-            this.lbSSISServers.FormattingEnabled = true;
-            this.lbSSISServers.Location = new System.Drawing.Point(50, 164);
-            this.lbSSISServers.Name = "lbSSISServers";
-            this.lbSSISServers.Size = new System.Drawing.Size(521, 160);
-            this.lbSSISServers.Sorted = true;
-            this.lbSSISServers.TabIndex = 20;
-            this.toolTipControl.SetToolTip(this.lbSSISServers, "The list of folders within Integration Services to recursively look for Packages " +
-        "in.");
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1227,6 +1282,10 @@
             this.groupBox1.PerformLayout();
             this.tbScanOptions.ResumeLayout(false);
             this.tbScanOptions.PerformLayout();
+            this.tbSSISServers.ResumeLayout(false);
+            this.tbSSISServers.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.tbSSISFolders.ResumeLayout(false);
             this.tbSSISFolders.PerformLayout();
             this.tbFileFolders.ResumeLayout(false);
@@ -1245,10 +1304,6 @@
             this.tbOutput.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.tbSSISServers.ResumeLayout(false);
-            this.tbSSISServers.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1353,6 +1408,11 @@
         private System.Windows.Forms.Button btSSISServerDelete;
         private System.Windows.Forms.Button btSSISServerAdd;
         private System.Windows.Forms.ListBox lbSSISServers;
+        private System.Windows.Forms.Button btPkgPassDelete;
+        private System.Windows.Forms.Button btPkgPassAdd;
+        private System.Windows.Forms.ListBox lbPkgPassword;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox tbPkgPassword;
     }
 }
 
