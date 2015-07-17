@@ -452,7 +452,7 @@ namespace DependencyExecutor
 
         void invokeAnalyser2005_DoWork(object sender, DoWorkEventArgs e)
         {
-            string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyser 2005\DependencyAnalyzer.exe";
+            string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2005\DependencyAnalyzer.exe";
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = executable;
             startInfo.Arguments = buildArguments(false);

@@ -90,6 +90,11 @@
   <ItemGroup>
     <Compile Include="ColumnEnumerator.cs" />
     <Compile Include="CommandLineArguments.cs" />
+    <Compile Include="Properties\AssemblyInfoVersion.cs">
+      <DependentUpon>AssemblyInfoVersion.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="ReportEnumerator.cs" />
     <Compile Include="SSRS2005\ReportingService2005.cs" />
     <Compile Include="SQLDBEnumerator.cs" />
@@ -130,12 +135,21 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="License.rtf" />
+    <None Include="Properties\AssemblyInfoVersion.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AssemblyInfoVersion.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildAction="ReBuild" BuildVersion_UpdateFileVersion="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildAction="ReBuild" />
     </VisualStudio>
   </ProjectExtensions>
+  <PropertyGroup>
+    <PreBuildEvent>"$(DevEnvDir)tf.exe" checkout "$(ProjectDir)\Properties\AssemblyInfoVersion.cs"
+"%25CommonProgramFiles%25\Microsoft Shared\TextTemplating\$(VisualStudioVersion)\texttransform.exe" "$(ProjectDir)\Properties\AssemblyInfoVersion.tt"
+</PreBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -18,7 +18,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// <summary>
         /// link to the repository to write into
         /// </summary>
-        private Repository repository;
+        private Repository _repository;
 
         /// <summary>
         /// the types of objects in the relational domain
@@ -36,7 +36,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// <returns></returns>
         public bool Initialize(Repository repository)
         {
-            this.repository = repository;
+            this._repository = repository;
 
             // add types of objects to the object types table
             //AddColumnObjectType(ColumnEnumerator.ObjectTypes.Column);
@@ -50,7 +50,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// <param name="type"></param>
         private void AddColumnObjectType(string type)
         {
-            repository.AddObjectType(Repository.Domains.Relational, type);
+            _repository.AddObjectType(Repository.Domains.Relational, type);
         }
     }
 }
