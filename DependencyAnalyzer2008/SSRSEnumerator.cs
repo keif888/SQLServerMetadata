@@ -129,6 +129,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     idValue = repository.AddObject(path, dsDef.ConnectString, Repository.OLEDBGuid, repository.RootRepositoryObjectID);
                     repository.AddAttribute(idValue, Repository.Attributes.ConnectionString, dsDef.ConnectString);
                     DbConnectionStringBuilder connectionStringBuilder = repository.GetConnectionStringBuilder(dsDef.ConnectString);
+                    if (connectionStringBuilder == null)
+                    {
+                        connectionStringBuilder = repository.GetConnectionStringBuilder(string.Empty);
+                    }
                     string Server = repository.GetServer(connectionStringBuilder);
                     string Database = repository.GetDatabase(connectionStringBuilder);
 
@@ -165,6 +169,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     idValue = repository.AddObject(path, dsDef.ConnectString, Repository.OLEDBGuid, repository.RootRepositoryObjectID);
                     repository.AddAttribute(idValue, Repository.Attributes.ConnectionString, dsDef.ConnectString);
                     DbConnectionStringBuilder connectionStringBuilder = repository.GetConnectionStringBuilder(dsDef.ConnectString);
+                    if (connectionStringBuilder == null)
+                    {
+                        connectionStringBuilder = repository.GetConnectionStringBuilder(String.Empty);
+                    }
                     string Server = repository.GetServer(connectionStringBuilder);
                     string Database = repository.GetDatabase(connectionStringBuilder);
 
@@ -188,12 +196,21 @@ namespace Microsoft.Samples.DependencyAnalyzer
             int idValue;
             if (!datasourceInRepository.TryGetValue(dsName, out idValue))
             {
-                idValue = repository.GetConnection(connectionString);
+                if (String.IsNullOrEmpty(connectionString))
+                {
+                    idValue = repository.GetConnection("NULL or Empty Connection String");
+                }
+                else
+                {
+                    idValue = repository.GetConnection(connectionString);
+                }
                 if (idValue == -1)
                 {
                     idValue = repository.AddObject(dsName, connectionString, Repository.OLEDBGuid, repository.RootRepositoryObjectID);
                     repository.AddAttribute(idValue, Repository.Attributes.ConnectionString, connectionString);
                     DbConnectionStringBuilder connectionStringBuilder = repository.GetConnectionStringBuilder(connectionString);
+                    if (connectionStringBuilder == null)
+                        connectionStringBuilder = repository.GetConnectionStringBuilder(string.Empty);
                     string Server = repository.GetServer(connectionStringBuilder);
                     string Database = repository.GetDatabase(connectionStringBuilder);
 
@@ -250,7 +267,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         }
                         else if (ds.Item is SSRS2010.DataSourceDefinition)
                         {
-                            dsNameToRepository.Add(ds.Name, HandleDataSource(((SSRS2010.DataSourceDefinition)ds.Item).ConnectString, ds.Name));
+                            if (!String.IsNullOrEmpty(((SSRS2010.DataSourceDefinition)ds.Item).ConnectString))  // Don't create if there is an empty Connection String.
+                                dsNameToRepository.Add(ds.Name, HandleDataSource(((SSRS2010.DataSourceDefinition)ds.Item).ConnectString, ds.Name));
                         }
                         else if (ds.Item is SSRS2010.InvalidDataSourceReference)
                         {
@@ -263,6 +281,39 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         using (var xmlreader = new XmlTextReader(stream))
                         {
                             xmlreader.MoveToContent();
+                            // Find any DataSources
+                            if (xmlreader.ReadToDescendant("DataSource"))
+                            {
+                                do
+                                {
+                                    XmlReader dsReader = xmlreader.ReadSubtree();
+                                    dsReader.MoveToContent();
+                                    if (dsReader.IsStartElement("DataSource"))
+                                    {
+                                        dsName = dsReader.GetAttribute("Name");
+                                        while (dsReader.ReadToDescendant("ConnectString"))
+                                        {
+                                            String connectionString = dsReader.ReadString();
+                                            if (String.IsNullOrEmpty(connectionString))
+                                                connectionString = String.Empty;
+                                            if (!dsNameToRepository.TryGetValue(dsName, out dsID))
+                                            {
+                                                Console.WriteLine(string.Format("Unable to locate DataSourceName {0} Using First Value", dsName));
+                                                dsNameToRepository.Add(dsName, HandleDataSource(connectionString, dsName));
+                                            }
+                                        }
+                                    }
+                                }
+                                while (xmlreader.ReadToFollowing("DataSource"));
+                            }
+                        }
+                    }
+                    using (var stream = new MemoryStream(reportDefinition))
+                    {
+                        using (var xmlreader = new XmlTextReader(stream))
+                        {
+                            xmlreader.MoveToContent();
+                            // Now find any DataSet.
                             if (xmlreader.ReadToDescendant("DataSet"))
                             {
                                 do
@@ -282,10 +333,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                             dsID = -1;
                                             if (!dsNameToRepository.TryGetValue(dsName, out dsID))
                                             {
-                                                Console.WriteLine(string.Format("Unable to locate DataSourceName {0} Using First Value", dsName));
-                                                if (dsNameToRepository.Count == 0)
-                                                    dsNameToRepository.Add(dsName, HandleDataSource(String.Empty, dsName));
-                                                dsID = dsNameToRepository.ElementAt(0).Value;
+                                                Console.WriteLine(string.Format("Unable to locate DataSourceName {0} Creating with Empty Connection String", dsName));
+                                                dsNameToRepository.Add(dsName, HandleDataSource(String.Empty, dsName));
+                                                dsNameToRepository.TryGetValue(dsName, out dsID);
                                             }
                                         }
                                         while (dsReader.ReadToNextSibling("CommandText"))
@@ -527,10 +577,17 @@ namespace Microsoft.Samples.DependencyAnalyzer
             object existing;
             String connectionString = repository.RetrieveConnectionString(connectionID);
             OleDbConnectionStringBuilder csBuilder = (OleDbConnectionStringBuilder)repository.GetConnectionStringBuilder(connectionString);
-            if (csBuilder.TryGetValue(Repository.ConnectionStringProperties.InitialCatalog, out existing))
-                existingDBName = (String)existing;
-            else if (csBuilder.TryGetValue(Repository.ConnectionStringProperties.Database, out existing))
-                existingDBName = (String)existing;
+            if (csBuilder != null)
+            {
+                if (csBuilder.TryGetValue(Repository.ConnectionStringProperties.InitialCatalog, out existing))
+                    existingDBName = (String)existing;
+                else if (csBuilder.TryGetValue(Repository.ConnectionStringProperties.Database, out existing))
+                    existingDBName = (String)existing;
+            }
+            else
+            {
+                csBuilder = (OleDbConnectionStringBuilder)repository.GetConnectionStringBuilder(String.Empty);
+            }
 
             try
             {

@@ -1523,6 +1523,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
             string dbName = string.Empty;
             String connectionString = RetrieveConnectionString(connectionID);
             OleDbConnectionStringBuilder csBuilder = (OleDbConnectionStringBuilder)GetConnectionStringBuilder(connectionString);
+            if (csBuilder == null)
+            {
+                csBuilder = (OleDbConnectionStringBuilder)GetConnectionStringBuilder(string.Empty);
+            }
             if (csBuilder.TryGetValue(Repository.ConnectionStringProperties.InitialCatalog, out existing))
                 dbName = (String)existing;
             else if (csBuilder.TryGetValue(Repository.ConnectionStringProperties.Database, out existing))
