@@ -1,3 +1,9 @@
+#if SQL2012
+#define SQLGT2008
+#endif
+#if SQL2014
+#define SQLGT2008
+#endif
 ///
 /// Microsoft SQL Server 2008 Business Intelligence Metadata Reporting Samples
 /// Dependency Analyzer Sample
@@ -38,6 +44,14 @@ using IDTSRuntimeConnection = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSRunti
 using IDTSPath = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSPath100;
 using IDTSCustomProperty = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSCustomProperty100;
 #endif
+
+using Pre2012PackageInfo = Microsoft.SqlServer.Dts.Runtime.PackageInfo;
+
+#if SQLGT2008
+using Microsoft.SqlServer.Management.IntegrationServices;
+using Post2012PackageInfo = Microsoft.SqlServer.Management.IntegrationServices.PackageInfo;
+#endif
+
 
 namespace Microsoft.Samples.DependencyAnalyzer
 {
@@ -261,6 +275,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
             {
                 Queue<string> folders = new Queue<string>();
 
+                #region SQL Hosted Packages
+
                 foreach (string folderName in rootFolders)
                 {
                     folders.Enqueue(folderName);
@@ -276,7 +292,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     string folder = folders.Dequeue();
 
                     PackageInfos packageInfos = app.GetPackageInfos(folder, server, user, pwd);
-                    foreach (PackageInfo packageInfo in packageInfos)
+                    foreach (Pre2012PackageInfo packageInfo in packageInfos)
                     {
                         string location = packageInfo.Folder + "\\" + packageInfo.Name;
                         if (packageInfo.Flags == DTSPackageInfoFlags.Folder)
@@ -321,10 +337,153 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         }
                     }
                 } while (folders.Count > 0);
+                #endregion
+
+#if SQLGT2008NotWorking
+                #region SQL Catalog Hosted Packages
+
+                foreach (string folderName in rootFolders)
+                {
+                    folders.Enqueue(folderName);
+                }
+
+                if (folders.Count == 0)
+                {
+                    folders.Enqueue("\\"); // the root folder
+                }
+
+                do
+                {
+                    string folder = folders.Dequeue();
+
+                    System.Data.SqlClient.SqlConnection connection = new System.Data.SqlClient.SqlConnection(String.Format(@"Data Source=({0});Initial Catalog=master;", server));
+                    IntegrationServices integrationServices = new IntegrationServices(connection);
+                    foreach(Catalog catalog in integrationServices.Catalogs)
+                    {
+                        if (catalog.Folders.Contains(folder))
+                        {
+                            CatalogFolder catalogFolder = catalog.Folders[folder];
+                            foreach(ProjectInfo project in catalogFolder.Projects)
+                            {
+                                project.GetProjectBytes(); // This is how to get the Zip file that has all the packages in it.  Oh, Crap!
+                                foreach(Post2012PackageInfo packageInfo in project.Packages)
+                                {
+                                    string location = catalogFolder.Name + "\\" + packageInfo.Name;
+                                    try
+                                    {
+                                        Console.Write(string.Format("Loading Catalog package '{0}'... ", location));
+                                        using (Package package = app.LoadFromSqlServer(location, server, user, pwd, null))
+                                        {
+                                            EnumeratePackage(package, location);
+                                        }
+                                        Console.WriteLine("Completed Successfully.");
+                                    }
+                                    catch (Microsoft.SqlServer.Dts.Runtime.DtsRuntimeException dtsEx)
+                                    {
+                                        if (dtsEx.Message.Contains("The package is encrypted with a password"))
+                                        {
+                                            // The package was encrypted.  Try to decrypt the sucker!
+                                            using (Package package = LoadPackage(location, server, user, pwd, null))
+                                            {
+                                                if (package != null)
+                                                    EnumeratePackage(package, location);
+                                                else
+                                                    Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", location));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
+                                        }
+                                    }
+                                    catch (System.Exception ex2)
+                                    {
+                                        Console.WriteLine(string.Format("Error occurred: '{0}'", ex2.Message));
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+
+                } while (folders.Count > 0);
+                #endregion
+#endif
+
+                #region SSIS Hosted Packages
+                foreach (string folderName in rootFolders)
+                {
+                    folders.Enqueue(folderName);
+                }
+
+                if (folders.Count == 0)
+                {
+                    folders.Enqueue("\\"); // the root folder
+                }
+
+                do
+                {
+                    string folder = folders.Dequeue();
+                    // String the instance name from the server string, as SSIS doesn't support multiple instance.
+                    if (server.Contains("\\"))
+                    {
+                        server = server.Substring(0,server.IndexOf('\\'));
+                    }
+                    PackageInfos packageInfos = app.GetDtsServerPackageInfos(folder, server);
+                    foreach (Pre2012PackageInfo packageInfo in packageInfos)
+                    {
+                        string location = packageInfo.Folder + "\\" + packageInfo.Name;
+                        if (packageInfo.Flags == DTSPackageInfoFlags.Folder)
+                        {
+                            folders.Enqueue(location);
+                        }
+                        else
+                        {
+                            Debug.Assert(packageInfo.Flags == DTSPackageInfoFlags.Package);
+
+                            try
+                            {
+                                Console.Write(string.Format("Loading SSIS package '{0}'... ", location));
+                                using (Package package = app.LoadFromDtsServer(location, server, null))
+                                {
+                                    EnumeratePackage(package, location);
+                                }
+                                Console.WriteLine("Completed Successfully.");
+                            }
+                            catch (Microsoft.SqlServer.Dts.Runtime.DtsRuntimeException dtsEx)
+                            {
+                                if (dtsEx.Message.Contains("The package is encrypted with a password"))
+                                {
+                                    // The package was encrypted.  Try to decrypt the sucker!
+                                    using (Package package = LoadPackage(location, server, null))
+                                    {
+                                        if (package != null)
+                                            EnumeratePackage(package, location);
+                                        else
+                                            Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", location));
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
+                                }
+                            }
+                            catch (System.Exception ex2)
+                            {
+                                Console.WriteLine(string.Format("Error occurred: '{0}'", ex2.Message));
+                            }
+                        }
+                    }
+                } while (folders.Count > 0);
+                #endregion
+
+
+            
             }
             catch (System.Exception ex)
             {
                 Console.WriteLine(string.Format("Error enumerating packages on SQL Server '{0}': {1}", server, ex.Message));
+                Console.WriteLine(string.Format("Strack Trace :{0}", ex.StackTrace));
             }
         }
 
@@ -413,6 +572,37 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 {
                     app.PackagePassword = password;
                     package = app.LoadFromSqlServer(location, SSISServer, SSISUser, SSISPwd, Events);
+                    Console.WriteLine(string.Format("Password attempt {0} succeeded for package {1}", attempts++, location));
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(string.Format("Password attempt {0} failed for package {1} with message {2}", attempts++, location, ex.Message));
+                    package = null;
+                }
+            }
+            return package;
+        }
+
+        /// <summary>
+        /// Attempt to load an ssis package utilising provided passwords.
+        /// </summary>
+        /// <param name="location"></param>
+        /// <param name="SSISServer"></param>
+        /// <param name="SSISUser"></param>
+        /// <param name="SSISPwd"></param>
+        /// <param name="Events"></param>
+        /// <returns></returns>
+        private Package LoadPackage(String location, String SSISServer, IDTSEvents Events)
+        {
+            Package package = null;
+            int attempts = 1;
+            foreach (String password in packagePasswords)
+            {
+                try
+                {
+                    app.PackagePassword = password;
+                    package = app.LoadFromDtsServer(location, SSISServer, Events);
                     Console.WriteLine(string.Format("Password attempt {0} succeeded for package {1}", attempts++, location));
                     break;
                 }
