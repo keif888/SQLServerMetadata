@@ -1212,6 +1212,23 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 #endregion
                 dbVersion = 7;
             }
+            if (dbVersion == 7)
+            {
+                // Add SQL 2014 entries to allow display of relational sources.
+                #region dbVersion 7
+                using (SqlCommand sqlCommand = repositoryConnection.CreateCommand())
+                {
+                    sqlCommand.CommandText = "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{1818FF09-AF4D-4EA8-8C9D-0AB43B5775E5}', N'ODBC 2014')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{F3F3005C-C3CB-4C61-B2A9-056035E4D8F2}', N'OLEDB 2014')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{FFEDAAC9-D6BD-4E6B-90AB-D4D296B5096A}', N'ADO 2014')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{D5353B56-34DA-4C97-AC94-722B91013E89}', N'ADO.Net 2014')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{05B2302B-4C20-43FD-92B3-3A067A037436}', N'MSOLAP 2014')\r\n";
+                    sqlCommand.ExecuteNonQuery();
+                }
+
+                #endregion
+                dbVersion = 8;
+            }
         }
 
         public void LoadExisingRepository()
