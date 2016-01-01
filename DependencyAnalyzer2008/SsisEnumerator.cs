@@ -355,17 +355,27 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 do
                 {
                     string folder = folders.Dequeue();
-
-                    System.Data.SqlClient.SqlConnection connection = new System.Data.SqlClient.SqlConnection(String.Format(@"Data Source=({0});Initial Catalog=master;", server));
+                    string connectionString = @"Data Source={0};Initial Catalog=master;";
+                    if (String.IsNullOrEmpty(user))
+                    {
+                        connectionString += "Integrated Security=SSPI;";
+                    }
+                    else
+                    {
+                        connectionString += String.Format("User ID={0};Password={1};", user, pwd);
+                    }
+                    System.Data.SqlClient.SqlConnection connection = new System.Data.SqlClient.SqlConnection(String.Format(connectionString, server));
+                    connection.Open();
                     IntegrationServices integrationServices = new IntegrationServices(connection);
                     foreach(Catalog catalog in integrationServices.Catalogs)
                     {
-                        if (catalog.Folders.Contains(folder))
+                        if (catalog.Folders.Contains(folder))  // Need to handle \ as empty string
                         {
                             CatalogFolder catalogFolder = catalog.Folders[folder];
                             foreach(ProjectInfo project in catalogFolder.Projects)
                             {
-                                project.GetProjectBytes(); // This is how to get the Zip file that has all the packages in it.  Oh, Crap!
+                                byte[] projectZip = project.GetProjectBytes(); // This is how to get the Zip file that has all the packages in it.  Oh, Crap!
+
                                 foreach(Post2012PackageInfo packageInfo in project.Packages)
                                 {
                                     string location = catalogFolder.Name + "\\" + packageInfo.Name;
