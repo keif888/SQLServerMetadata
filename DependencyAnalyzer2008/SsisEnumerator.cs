@@ -16,6 +16,7 @@ using System.Data.OleDb;
 using System.Diagnostics;
 using System.Text;
 using System.Xml;
+using System.IO;
 
 
 using Microsoft.SqlServer.Dts.Runtime;
@@ -269,6 +270,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// <param name="sqlConnectionString"></param>
         public void EnumerateSqlPackages(string server, string user, string pwd, string[] rootFolders, bool storeThreePartNames, string[] storePackagePasswords)
         {
+            bool recurseSubFolders = true;
+
             threePartNames = storeThreePartNames;
             packagePasswords = storePackagePasswords;
             try
@@ -339,7 +342,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 } while (folders.Count > 0);
                 #endregion
 
-#if SQLGT2008NotWorking
+#if SQLGT2008 //NotWorking
                 #region SQL Catalog Hosted Packages
 
                 foreach (string folderName in rootFolders)
@@ -356,6 +359,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 {
                     string folder = folders.Dequeue();
                     string connectionString = @"Data Source={0};Initial Catalog=master;";
+
                     if (String.IsNullOrEmpty(user))
                     {
                         connectionString += "Integrated Security=SSPI;";
@@ -367,54 +371,43 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     System.Data.SqlClient.SqlConnection connection = new System.Data.SqlClient.SqlConnection(String.Format(connectionString, server));
                     connection.Open();
                     IntegrationServices integrationServices = new IntegrationServices(connection);
-                    foreach(Catalog catalog in integrationServices.Catalogs)
+
+                    string tempFolder = System.IO.Path.GetTempPath() + @"\SSISMD" + Guid.NewGuid().ToString();
+                    if (!System.IO.Directory.Exists(tempFolder))
                     {
-                        if (catalog.Folders.Contains(folder))  // Need to handle \ as empty string
+                        System.IO.Directory.CreateDirectory(tempFolder);
+                    }
+                    System.IO.DirectoryInfo tempDirectory = new System.IO.DirectoryInfo(tempFolder);
+
+                    // Strip the leading \ as SSISDB doesn't have a leading \...
+                    if (folder[0] == '\\')
+                    {
+                        folder = folder.Substring(1, folder.Length - 1);
+                    }
+
+                    foreach (Catalog catalog in integrationServices.Catalogs)
+                    {
+                        if (folder.Length == 0 && recurseSubFolders)
                         {
-                            CatalogFolder catalogFolder = catalog.Folders[folder];
-                            foreach(ProjectInfo project in catalogFolder.Projects)
+                            foreach (CatalogFolder catalogFolder in catalog.Folders)
                             {
-                                byte[] projectZip = project.GetProjectBytes(); // This is how to get the Zip file that has all the packages in it.  Oh, Crap!
-
-                                foreach(Post2012PackageInfo packageInfo in project.Packages)
+                                foreach (ProjectInfo project in catalogFolder.Projects)
                                 {
-                                    string location = catalogFolder.Name + "\\" + packageInfo.Name;
-                                    try
-                                    {
-                                        Console.Write(string.Format("Loading Catalog package '{0}'... ", location));
-                                        using (Package package = app.LoadFromSqlServer(location, server, user, pwd, null))
-                                        {
-                                            EnumeratePackage(package, location);
-                                        }
-                                        Console.WriteLine("Completed Successfully.");
-                                    }
-                                    catch (Microsoft.SqlServer.Dts.Runtime.DtsRuntimeException dtsEx)
-                                    {
-                                        if (dtsEx.Message.Contains("The package is encrypted with a password"))
-                                        {
-                                            // The package was encrypted.  Try to decrypt the sucker!
-                                            using (Package package = LoadPackage(location, server, user, pwd, null))
-                                            {
-                                                if (package != null)
-                                                    EnumeratePackage(package, location);
-                                                else
-                                                    Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", location));
-                                            }
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
-                                        }
-                                    }
-                                    catch (System.Exception ex2)
-                                    {
-                                        Console.WriteLine(string.Format("Error occurred: '{0}'", ex2.Message));
-                                    }
-
+                                    EnumerateProjectPackages(project, tempDirectory, server);
                                 }
                             }
                         }
+                        else if (catalog.Folders.Contains(folder))
+                        {
+                            CatalogFolder catalogFolder = catalog.Folders[folder];
+                            foreach (ProjectInfo project in catalogFolder.Projects)
+                            {
+                                EnumerateProjectPackages(project, tempDirectory, server);
+                            }
+                        }
                     }
+                    connection.Close();
+                    tempDirectory.Delete(true);
 
                 } while (folders.Count > 0);
                 #endregion
@@ -497,6 +490,53 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
         }
 
+
+#if SQLGT2008
+        /// <summary>
+        /// Using an SSIS catalog project, get all the SSIS packages that are contained, and parse them.
+        /// </summary>
+        /// <param name="project">SSIS Catalog Project</param>
+        /// <param name="tempDirectory">Directory to use for temporary files</param>
+        private void EnumerateProjectPackages(ProjectInfo project, DirectoryInfo tempDirectory, String server)
+        {
+            string projectNameFile = project.Name + ".ZIP";
+
+            // Write the project content to a zip file
+            System.IO.File.WriteAllBytes(tempDirectory.FullName + @"\" + projectNameFile, project.GetProjectBytes());
+
+            // unzip the project content
+            using (System.IO.Packaging.Package package = System.IO.Packaging.ZipPackage.Open(tempDirectory.FullName + @"\" + projectNameFile, FileMode.Open, FileAccess.Read))
+            {
+                foreach (System.IO.Packaging.PackagePart part in package.GetParts())
+                {
+                    var target = Path.GetFullPath(Path.Combine(tempDirectory.FullName + @"\" + project.Name, part.Uri.OriginalString.TrimStart('/')));
+                    var targetDir = target.Remove(target.LastIndexOf('\\'));
+
+                    if (!Directory.Exists(targetDir))
+                        Directory.CreateDirectory(targetDir);
+
+                    using (Stream source = part.GetStream(FileMode.Open, FileAccess.Read))
+                    {
+                        FileStream targetFile = File.OpenWrite(target);
+                        source.CopyTo(targetFile);
+                        targetFile.Close();
+                    }
+                }
+            } 
+
+            // Recurse all the files here
+            String locationName = server + @"\" + project.Parent.Parent.Name + @"\" + project.Parent.Name + @"\" + project.Name;
+            EnumeratePackages(tempDirectory.FullName + @"\" + project.Name, "*.dtsx", true, locationName);
+
+            // Cleanup
+            FileInfo[] files = tempDirectory.GetFiles("*.ZIP", System.IO.SearchOption.TopDirectoryOnly);
+            for (int i = 0; i < files.Length; i++)
+                files[i].Delete();
+            System.IO.Directory.Delete(tempDirectory.FullName + @"\" + project.Name, true);
+        }
+
+#endif
+
         /// <summary>
         /// Enumerates all packages that're in a directory and all sub directories if user asked us to.
         /// </summary>
@@ -513,11 +553,11 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     throw new Exception(string.Format("Root package folder '{0}' doesn't exist.", rootFolder));
                 }
 
-                EnumeratePackages(rootFolder, dtsxPattern, recurseSubFolders);
+                EnumeratePackages(rootFolder, dtsxPattern, recurseSubFolders, null);
             }
         }
 
-        private void EnumeratePackages(string rootFolder, string pattern, bool recurseSubFolders)
+        private void EnumeratePackages(string rootFolder, string pattern, bool recurseSubFolders, string locationName)
         {
             Console.Write("Enumerating packages...");
             string[] filesToInspect = System.IO.Directory.GetFiles(rootFolder, pattern, (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
@@ -533,7 +573,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     // load the package
                     using (Package package = app.LoadPackage(packageFileName, null))
                     {
-                        EnumeratePackage(package, packageFileName);
+                        if (String.IsNullOrEmpty(locationName))
+                            EnumeratePackage(package, packageFileName);
+                        else
+                            EnumeratePackage(package, locationName + @"\" + package.Name);
                     }
 
                     Console.WriteLine("Completed Successfully.");
@@ -546,7 +589,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         using(Package package = LoadPackage(packageFileName))
                         {
                             if (package != null)
-                                EnumeratePackage(package, packageFileName);
+                            {
+                                if (String.IsNullOrEmpty(locationName))
+                                    EnumeratePackage(package, packageFileName);
+                                else
+                                    EnumeratePackage(package, locationName + @"\" + package.Name);
+                            }
                             else
                                 Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", packageFileName));
                         }
