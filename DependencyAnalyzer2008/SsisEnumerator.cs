@@ -533,6 +533,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             for (int i = 0; i < files.Length; i++)
                 files[i].Delete();
             System.IO.Directory.Delete(tempDirectory.FullName + @"\" + project.Name, true);
+            System.IO.Directory.Delete(tempDirectory.FullName, true);
         }
 
 #endif
