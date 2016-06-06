@@ -34,6 +34,8 @@
             this.tvObjectList = new System.Windows.Forms.TreeView();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.graphViewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
+            this.cmGraph = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.locateObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lvObjectProperties = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -47,8 +49,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.btnLoad = new System.Windows.Forms.Button();
-            this.cmGraph = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.locateObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -57,11 +57,11 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.cmGraph.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nbAfter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nbBefore)).BeginInit();
-            this.cmGraph.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -112,6 +112,7 @@
             // 
             // graphViewer
             // 
+            this.graphViewer.ArrowheadLength = 10D;
             this.graphViewer.AsyncLayout = false;
             this.graphViewer.AutoScroll = true;
             this.graphViewer.BackwardEnabled = false;
@@ -119,16 +120,22 @@
             this.graphViewer.ContextMenuStrip = this.cmGraph;
             this.graphViewer.CurrentLayoutMethod = Microsoft.Msagl.GraphViewerGdi.LayoutMethod.SugiyamaScheme;
             this.graphViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.graphViewer.EdgeInsertButtonVisible = true;
             this.graphViewer.Enabled = false;
+            this.graphViewer.FileName = "";
             this.graphViewer.ForwardEnabled = false;
             this.graphViewer.Graph = null;
+            this.graphViewer.InsertingEdge = false;
             this.graphViewer.LayoutAlgorithmSettingsButtonVisible = true;
             this.graphViewer.LayoutEditingEnabled = true;
             this.graphViewer.Location = new System.Drawing.Point(0, 0);
+            this.graphViewer.LooseOffsetForRouting = 0.25D;
             this.graphViewer.MouseHitDistance = 0.05D;
             this.graphViewer.Name = "graphViewer";
             this.graphViewer.NavigationVisible = true;
             this.graphViewer.NeedToCalculateLayout = true;
+            this.graphViewer.OffsetForRelaxingInRouting = 0.6D;
+            this.graphViewer.PaddingForEdgeRouting = 8D;
             this.graphViewer.PanButtonPressed = false;
             this.graphViewer.SaveAsImageEnabled = true;
             this.graphViewer.SaveAsMsaglEnabled = false;
@@ -137,11 +144,30 @@
             this.graphViewer.SaveInVectorFormatEnabled = true;
             this.graphViewer.Size = new System.Drawing.Size(546, 365);
             this.graphViewer.TabIndex = 0;
+            this.graphViewer.TightOffsetForRouting = 0.125D;
             this.graphViewer.ToolBarIsVisible = true;
+            this.graphViewer.Transform = ((Microsoft.Msagl.Core.Geometry.Curves.PlaneTransformation)(resources.GetObject("graphViewer.Transform")));
+            this.graphViewer.UndoRedoButtonsVisible = true;
+            this.graphViewer.WindowZoomButtonPressed = false;
             this.graphViewer.ZoomF = 1D;
             this.graphViewer.ZoomFraction = 0.5D;
+            this.graphViewer.ZoomWhenMouseWheelScroll = true;
             this.graphViewer.ZoomWindowThreshold = 0.05D;
-            this.graphViewer.SelectionChanged += new System.EventHandler(this.graphViewer_SelectionChanged);
+            this.graphViewer.ObjectUnderMouseCursorChanged += new System.EventHandler<Microsoft.Msagl.Drawing.ObjectUnderMouseCursorChangedEventArgs>(this.graphViewer_ObjectUnderMouseCursorChanged);
+            // 
+            // cmGraph
+            // 
+            this.cmGraph.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.locateObjectToolStripMenuItem});
+            this.cmGraph.Name = "cmGraph";
+            this.cmGraph.Size = new System.Drawing.Size(148, 26);
+            // 
+            // locateObjectToolStripMenuItem
+            // 
+            this.locateObjectToolStripMenuItem.Name = "locateObjectToolStripMenuItem";
+            this.locateObjectToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.locateObjectToolStripMenuItem.Text = "Locate Object";
+            this.locateObjectToolStripMenuItem.Click += new System.EventHandler(this.locateObjectToolStripMenuItem_Click);
             // 
             // lvObjectProperties
             // 
@@ -277,20 +303,6 @@
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
-            // cmGraph
-            // 
-            this.cmGraph.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.locateObjectToolStripMenuItem});
-            this.cmGraph.Name = "cmGraph";
-            this.cmGraph.Size = new System.Drawing.Size(148, 26);
-            // 
-            // locateObjectToolStripMenuItem
-            // 
-            this.locateObjectToolStripMenuItem.Name = "locateObjectToolStripMenuItem";
-            this.locateObjectToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-            this.locateObjectToolStripMenuItem.Text = "Locate Object";
-            this.locateObjectToolStripMenuItem.Click += new System.EventHandler(this.locateObjectToolStripMenuItem_Click);
-            // 
             // MainFrom
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -309,13 +321,13 @@
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.cmGraph.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nbAfter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nbBefore)).EndInit();
-            this.cmGraph.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
