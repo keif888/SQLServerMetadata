@@ -42,13 +42,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Msagl">
-      <HintPath>..\..\..\..\Repos\automatic-graph-layout\GraphLayout\MSAGL\bin\Debug\Microsoft.Msagl.dll</HintPath>
+      <HintPath>..\..\automatic-graph-layout\GraphLayout\tools\GraphViewerGDI\bin\Debug\Microsoft.Msagl.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Msagl.Drawing">
-      <HintPath>..\..\..\..\Repos\automatic-graph-layout\GraphLayout\Drawing\bin\Debug\Microsoft.Msagl.Drawing.dll</HintPath>
+      <HintPath>..\..\automatic-graph-layout\GraphLayout\tools\GraphViewerGDI\bin\Debug\Microsoft.Msagl.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Msagl.GraphViewerGdi">
-      <HintPath>..\..\..\..\Repos\automatic-graph-layout\GraphLayout\tools\GraphViewerGDI\bin\Debug\Microsoft.Msagl.GraphViewerGdi.dll</HintPath>
+      <HintPath>..\..\automatic-graph-layout\GraphLayout\tools\GraphViewerGDI\bin\Debug\Microsoft.Msagl.GraphViewerGdi.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -125,8 +125,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PreBuildEvent>"$(DevEnvDir)tf.exe" checkout "$(ProjectDir)\Properties\AssemblyInfoVersion.cs"
-"%25CommonProgramFiles%25\Microsoft Shared\TextTemplating\$(VisualStudioVersion)\texttransform.exe" "$(ProjectDir)\Properties\AssemblyInfoVersion.tt"
+    <PreBuildEvent>"%25CommonProgramFiles%25\Microsoft Shared\TextTemplating\14.0\texttransform.exe" "$(ProjectDir)\Properties\AssemblyInfoVersion.tt"
 </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -92,10 +92,10 @@
               <File Id="FDependencyViewerExe" Name="$(var.DependencyViewer.TargetFileName)" Source="$(var.DependencyViewer.TargetPath)" />
             </Component>
             <Component Id="DependencyViewerGraphViewerGDI" Guid="{8B66B147-A42C-46E0-B157-628BACE58CAE}" Win64="no">
-                <File Id="FDependencyViewerGraphViewerGDI" Name="$(var.GraphViewerGDI.TargetFileName)" Source="$(var.GraphViewerGDI.TargetPath)" />
+                <File Id="FDependencyViewerGraphViewerGDI" Name="Microsoft.Msagl.GraphViewerGdi.dll" Source="$(var.DependencyViewer.TargetDir)Microsoft.Msagl.GraphViewerGdi.dll" />
             </Component>
             <Component Id="DependencyViewerDrawing" Guid="{8D8360C9-01F9-4DCF-AD05-43C62AC3F63A}" Win64="no">
-              <File Id="FDependencyViewerDrawing" Name="$(var.Drawing.TargetFileName)" Source="$(var.Drawing.TargetPath)" />
+              <File Id="FDependencyViewerDrawing" Name="Microsoft.Msagl.Drawing.dll" Source="$(var.DependencyViewer.TargetDir)Microsoft.Msagl.Drawing.dll" />
             </Component>
             <Component Id="DependencyViewerMSAGL" Guid="{3E6A8ED5-1575-4A12-BF7F-2630B27AB88F}" Win64="no">
               <File Id="FDependencyViewerMSAGL" Name="Microsoft.Msagl.dll" Source="$(var.DependencyViewer.TargetDir)Microsoft.Msagl.dll" />

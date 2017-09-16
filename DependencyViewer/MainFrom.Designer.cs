@@ -150,8 +150,8 @@
             this.graphViewer.UndoRedoButtonsVisible = true;
             this.graphViewer.WindowZoomButtonPressed = false;
             this.graphViewer.ZoomF = 1D;
-            this.graphViewer.ZoomFraction = 0.5D;
-            this.graphViewer.ZoomWhenMouseWheelScroll = true;
+//            this.graphViewer.ZoomFraction = 0.5D;
+//            this.graphViewer.ZoomWhenMouseWheelScroll = true;
             this.graphViewer.ZoomWindowThreshold = 0.05D;
             this.graphViewer.ObjectUnderMouseCursorChanged += new System.EventHandler<Microsoft.Msagl.Drawing.ObjectUnderMouseCursorChangedEventArgs>(this.graphViewer_ObjectUnderMouseCursorChanged);
             // 

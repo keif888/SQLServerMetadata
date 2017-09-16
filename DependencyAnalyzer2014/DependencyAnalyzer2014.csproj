@@ -139,6 +139,7 @@
       <Link>License.rtf</Link>
     </None>
     <None Include="App.config" />
+    <None Include="packages.config" />
     <None Include="Properties\AssemblyInfoVersion.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AssemblyInfoVersion.cs</LastGenOutput>
@@ -152,9 +153,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(DevEnvDir)tf.exe" checkout "$(ProjectDir)\Properties\AssemblyInfoVersion.cs"
-"%25CommonProgramFiles%25\Microsoft Shared\TextTemplating\$(VisualStudioVersion)\texttransform.exe" "$(ProjectDir)\Properties\AssemblyInfoVersion.tt"
-</PreBuildEvent>
+    <PreBuildEvent>"%25CommonProgramFiles%25\Microsoft Shared\TextTemplating\14.0\texttransform.exe" "$(ProjectDir)\Properties\AssemblyInfoVersion.tt"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
