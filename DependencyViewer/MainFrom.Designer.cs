@@ -146,7 +146,7 @@
             this.graphViewer.TabIndex = 0;
             this.graphViewer.TightOffsetForRouting = 0.125D;
             this.graphViewer.ToolBarIsVisible = true;
-            this.graphViewer.Transform = ((Microsoft.Msagl.Core.Geometry.Curves.PlaneTransformation)(resources.GetObject("graphViewer.Transform")));
+            //this.graphViewer.Transform = ((Microsoft.Msagl.Core.Geometry.Curves.PlaneTransformation)(resources.GetObject("graphViewer.Transform")));
             this.graphViewer.UndoRedoButtonsVisible = true;
             this.graphViewer.WindowZoomButtonPressed = false;
             this.graphViewer.ZoomF = 1D;
