@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            Microsoft.Msagl.Core.Geometry.Curves.PlaneTransformation planeTransformation1 = new Microsoft.Msagl.Core.Geometry.Curves.PlaneTransformation();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFrom));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tvObjectList = new System.Windows.Forms.TreeView();
@@ -120,7 +121,7 @@
             this.graphViewer.ContextMenuStrip = this.cmGraph;
             this.graphViewer.CurrentLayoutMethod = Microsoft.Msagl.GraphViewerGdi.LayoutMethod.SugiyamaScheme;
             this.graphViewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphViewer.EdgeInsertButtonVisible = true;
+            this.graphViewer.EdgeInsertButtonVisible = false;
             this.graphViewer.Enabled = false;
             this.graphViewer.FileName = "";
             this.graphViewer.ForwardEnabled = false;
@@ -138,7 +139,7 @@
             this.graphViewer.PaddingForEdgeRouting = 8D;
             this.graphViewer.PanButtonPressed = false;
             this.graphViewer.SaveAsImageEnabled = true;
-            this.graphViewer.SaveAsMsaglEnabled = false;
+            this.graphViewer.SaveAsMsaglEnabled = true;
             this.graphViewer.SaveButtonVisible = true;
             this.graphViewer.SaveGraphButtonVisible = true;
             this.graphViewer.SaveInVectorFormatEnabled = true;
@@ -146,12 +147,10 @@
             this.graphViewer.TabIndex = 0;
             this.graphViewer.TightOffsetForRouting = 0.125D;
             this.graphViewer.ToolBarIsVisible = true;
-            //this.graphViewer.Transform = ((Microsoft.Msagl.Core.Geometry.Curves.PlaneTransformation)(resources.GetObject("graphViewer.Transform")));
+            this.graphViewer.Transform = planeTransformation1;
             this.graphViewer.UndoRedoButtonsVisible = true;
             this.graphViewer.WindowZoomButtonPressed = false;
             this.graphViewer.ZoomF = 1D;
-//            this.graphViewer.ZoomFraction = 0.5D;
-//            this.graphViewer.ZoomWhenMouseWheelScroll = true;
             this.graphViewer.ZoomWindowThreshold = 0.05D;
             this.graphViewer.ObjectUnderMouseCursorChanged += new System.EventHandler<Microsoft.Msagl.Drawing.ObjectUnderMouseCursorChangedEventArgs>(this.graphViewer_ObjectUnderMouseCursorChanged);
             // 
