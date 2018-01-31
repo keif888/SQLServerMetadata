@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\bin\debug\Dependency Analyzer 2016\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SQL2016;SQLGT2008</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SQL2016</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
