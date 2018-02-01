@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EB8581AC-69EF-4B02-B59D-646E091DB268}</ProjectGuid>
+    <ProjectGuid>{515C04CC-CE3C-4877-822C-E6D93918D663}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>DependencyAnalyzer</RootNamespace>
     <AssemblyName>DependencyAnalyzer</AssemblyName>
@@ -12,14 +12,29 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\debug\Dependency Analyzer 2016\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SQL2016</DefineConstants>
+    <OutputPath>..\bin\debug\Dependency Analyzer 2017\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SQL2017</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -28,52 +43,52 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;SQL2016</DefineConstants>
+    <DefineConstants>TRACE;SQL2017</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.AnalysisServices, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.AnalysisServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\SQL2016DLLs\Microsoft.AnalysisServices.DLL</HintPath>
+      <HintPath>..\..\SQL2017DLLs\Microsoft.AnalysisServices.DLL</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AnalysisServices.Core, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.AnalysisServices.Core, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\SQL2016DLLs\Microsoft.AnalysisServices.Core.DLL</HintPath>
+      <HintPath>..\..\SQL2017DLLs\Microsoft.AnalysisServices.Core.DLL</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=14.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=15.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\SQL2016DLLs\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
+      <HintPath>..\..\SQL2017DLLs\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SQLServer.DTSPipelineWrap, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SQLServer.DTSPipelineWrap, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\SQL2016DLLs\Microsoft.SQLServer.DTSPipelineWrap.dll</HintPath>
+      <HintPath>..\..\SQL2017DLLs\Microsoft.SQLServer.DTSPipelineWrap.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SQLServer.DTSRuntimeWrap, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=x86">
+    <Reference Include="Microsoft.SQLServer.DTSRuntimeWrap, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\SQL2016DLLs\Microsoft.SQLServer.DTSRuntimeWrap.dll</HintPath>
+      <HintPath>..\..\SQL2017DLLs\Microsoft.SQLServer.DTSRuntimeWrap.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.ManagedDTS, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.ManagedDTS, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\SQL2016DLLs\Microsoft.SqlServer.ManagedDTS.dll</HintPath>
+      <HintPath>..\..\SQL2017DLLs\Microsoft.SqlServer.ManagedDTS.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.Management.IntegrationServices, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.Management.IntegrationServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\SQL2016DLLs\Microsoft.SqlServer.Management.IntegrationServices.dll</HintPath>
+      <HintPath>..\..\SQL2017DLLs\Microsoft.SqlServer.Management.IntegrationServices.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=14.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=15.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\SQL2016DLLs\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
+      <HintPath>..\..\SQL2017DLLs\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.Smo, Version=14.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.Smo, Version=15.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\SQL2016DLLs\Microsoft.SqlServer.Smo.dll</HintPath>
+      <HintPath>..\..\SQL2017DLLs\Microsoft.SqlServer.Smo.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.SqlEnum, Version=14.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.SqlEnum, Version=15.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\SQL2016DLLs\Microsoft.SqlServer.SqlEnum.dll</HintPath>
+      <HintPath>..\..\SQL2017DLLs\Microsoft.SqlServer.SqlEnum.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -153,6 +168,18 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AssemblyInfoVersion.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
