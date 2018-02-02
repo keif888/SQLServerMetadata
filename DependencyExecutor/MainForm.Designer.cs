@@ -125,11 +125,9 @@
             this.tbOutput = new System.Windows.Forms.TabPage();
             this.tbResults = new System.Windows.Forms.TextBox();
             this.btView = new System.Windows.Forms.Button();
-            this.btAnalyze2005 = new System.Windows.Forms.Button();
-            this.btAnalyze2008 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btAnalyze2014 = new System.Windows.Forms.Button();
-            this.btAnalyze2012 = new System.Windows.Forms.Button();
+            this.btnAnalyse = new System.Windows.Forms.Button();
+            this.cbSQLVersion = new System.Windows.Forms.ComboBox();
             this.tbCommandLine = new System.Windows.Forms.TextBox();
             this.toolTipControl = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
@@ -1186,63 +1184,45 @@
             this.btView.Click += new System.EventHandler(this.btView_Click);
             this.btView.MouseHover += new System.EventHandler(this.btView_MouseHover);
             // 
-            // btAnalyze2005
-            // 
-            this.btAnalyze2005.Location = new System.Drawing.Point(180, 3);
-            this.btAnalyze2005.Name = "btAnalyze2005";
-            this.btAnalyze2005.Size = new System.Drawing.Size(171, 23);
-            this.btAnalyze2005.TabIndex = 10;
-            this.btAnalyze2005.Text = "Analyse 2005";
-            this.btAnalyze2005.UseVisualStyleBackColor = true;
-            this.btAnalyze2005.Click += new System.EventHandler(this.btAnalyze2005_Click);
-            this.btAnalyze2005.MouseHover += new System.EventHandler(this.btAnalyze2005_MouseHover);
-            // 
-            // btAnalyze2008
-            // 
-            this.btAnalyze2008.Location = new System.Drawing.Point(357, 3);
-            this.btAnalyze2008.Name = "btAnalyze2008";
-            this.btAnalyze2008.Size = new System.Drawing.Size(171, 23);
-            this.btAnalyze2008.TabIndex = 11;
-            this.btAnalyze2008.Text = "Analyse 2008";
-            this.btAnalyze2008.UseVisualStyleBackColor = true;
-            this.btAnalyze2008.Click += new System.EventHandler(this.btAnalyze2008_Click);
-            this.btAnalyze2008.MouseHover += new System.EventHandler(this.btAnalyze2008_MouseHover);
-            // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.btAnalyze2014);
-            this.panel1.Controls.Add(this.btAnalyze2012);
+            this.panel1.Controls.Add(this.btnAnalyse);
+            this.panel1.Controls.Add(this.cbSQLVersion);
             this.panel1.Controls.Add(this.tbCommandLine);
-            this.panel1.Controls.Add(this.btAnalyze2008);
             this.panel1.Controls.Add(this.btView);
-            this.panel1.Controls.Add(this.btAnalyze2005);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 389);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(894, 60);
             this.panel1.TabIndex = 1;
             // 
-            // btAnalyze2014
+            // btnAnalyse
             // 
-            this.btAnalyze2014.Location = new System.Drawing.Point(711, 3);
-            this.btAnalyze2014.Name = "btAnalyze2014";
-            this.btAnalyze2014.Size = new System.Drawing.Size(171, 23);
-            this.btAnalyze2014.TabIndex = 14;
-            this.btAnalyze2014.Text = "Analyse 2014";
-            this.btAnalyze2014.UseVisualStyleBackColor = true;
-            this.btAnalyze2014.Click += new System.EventHandler(this.btAnalyze2014_Click);
-            this.btAnalyze2014.MouseHover += new System.EventHandler(this.btAnalyze2014_MouseHover);
+            this.btnAnalyse.Location = new System.Drawing.Point(280, 3);
+            this.btnAnalyse.Name = "btnAnalyse";
+            this.btnAnalyse.Size = new System.Drawing.Size(112, 23);
+            this.btnAnalyse.TabIndex = 16;
+            this.btnAnalyse.Text = "Analyse";
+            this.btnAnalyse.UseVisualStyleBackColor = true;
+            this.btnAnalyse.Click += new System.EventHandler(this.btnAnalyse_Click);
+            this.btnAnalyse.MouseHover += new System.EventHandler(this.btnAnalyse_MouseHover);
             // 
-            // btAnalyze2012
+            // cbSQLVersion
             // 
-            this.btAnalyze2012.Location = new System.Drawing.Point(534, 3);
-            this.btAnalyze2012.Name = "btAnalyze2012";
-            this.btAnalyze2012.Size = new System.Drawing.Size(171, 23);
-            this.btAnalyze2012.TabIndex = 13;
-            this.btAnalyze2012.Text = "Analyse 2012";
-            this.btAnalyze2012.UseVisualStyleBackColor = true;
-            this.btAnalyze2012.Click += new System.EventHandler(this.btAnalyze2012_Click);
-            this.btAnalyze2012.MouseHover += new System.EventHandler(this.btAnalyze2012_MouseHover);
+            this.cbSQLVersion.FormattingEnabled = true;
+            this.cbSQLVersion.Items.AddRange(new object[] {
+            "2005",
+            "2008",
+            "2012",
+            "2014",
+            "2016",
+            "2017"});
+            this.cbSQLVersion.Location = new System.Drawing.Point(181, 5);
+            this.cbSQLVersion.Name = "cbSQLVersion";
+            this.cbSQLVersion.Size = new System.Drawing.Size(93, 21);
+            this.cbSQLVersion.Sorted = true;
+            this.cbSQLVersion.TabIndex = 15;
+            this.cbSQLVersion.Text = "2016";
             // 
             // tbCommandLine
             // 
@@ -1325,8 +1305,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabPage tbScanOptions;
         private System.Windows.Forms.Button btView;
-        private System.Windows.Forms.Button btAnalyze2008;
-        private System.Windows.Forms.Button btAnalyze2005;
         private System.Windows.Forms.CheckBox cbRecurse;
         private System.Windows.Forms.ToolTip toolTipControl;
         private System.Windows.Forms.Panel panel1;
@@ -1392,8 +1370,6 @@
         private System.Windows.Forms.Button btDeleteReport;
         private System.Windows.Forms.Button btAddReport;
         private System.Windows.Forms.ListBox lbReportServer;
-        private System.Windows.Forms.Button btAnalyze2012;
-        private System.Windows.Forms.Button btAnalyze2014;
         private System.Windows.Forms.CheckBox cbThreePartNames;
         private System.Windows.Forms.TabPage tbSSISServers;
         private System.Windows.Forms.Label label16;
@@ -1413,6 +1389,8 @@
         private System.Windows.Forms.ListBox lbPkgPassword;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.TextBox tbPkgPassword;
+        private System.Windows.Forms.Button btnAnalyse;
+        private System.Windows.Forms.ComboBox cbSQLVersion;
     }
 }
 
