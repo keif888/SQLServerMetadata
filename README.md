@@ -2,20 +2,21 @@
 
 # Project Description
 
-MSDN's SQL 2005 tool kit updated to 2008, 2012 and 2014 for detecting metadata in SQL Server, SSIS, SSRS and SSAS.
-
+MSDN's SQL 2005 tool kit updated to 2008, 2012, 2014, 2016 and 2017 for detecting metadata in SQL Server, SSIS, SSRS and SSAS.
 
 This project is an update on the project released on MSDN Code Gallery  [SQL Server Metadata Toolkit](http://code.msdn.microsoft.com/SqlServerMetadata)
 
-It has the ability to scan the following versions 2005, 2008, 2008 R2, 2012 and 2014...
+It has the ability to scan the following versions 2005, 2008, 2008 R2, 2012, 2014, 2016 and 2017...
 
-Please note that support for features that have been introduced since SQL 2008 R2 is limited.
+Please note that support for features that have been introduced since SQL 2008 R2 is still limited.
 
 It can scan SSIS, SSAS, SQL Server Databases, and Reporting Services.
 
 It has an "Executor", which allows the user to use a GUI to run the various analysers.  If you hover over the buttons at the bottom, the actual command will be shown in the status bar, and you can then copy that command if you so desire...
 
 # Release Notes
+
+**Beta 20** Corrects issues with SSIS Catalog capabilites, adds SQL 2016 and 2017, and utlises the latest MSAGL libraries
 
 **Alpha 19** Adds SSIS Catalog capabilities
 

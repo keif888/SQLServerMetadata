@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		BIMetaDataApp.vsmdi = BIMetaDataApp.vsmdi
 		Local.testsettings = Local.testsettings
 		SQL\MetadataModel.mwb = SQL\MetadataModel.mwb
+		README.md = README.md
 		SQL\SSIS_Meta_creation.sql = SQL\SSIS_Meta_creation.sql
 		SQL\SSIS_Meta_creation_2005.sql = SQL\SSIS_Meta_creation_2005.sql
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
