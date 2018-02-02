@@ -13,10 +13,7 @@ namespace DependencyExecutor
     public partial class MainForm : Form
     {
 
-        private readonly BackgroundWorker invokeAnalyser2008;
-        private readonly BackgroundWorker invokeAnalyser2005;
-        private readonly BackgroundWorker invokeAnalyser2012;
-        private readonly BackgroundWorker invokeAnalyser2014;
+        private readonly BackgroundWorker invokeAnalyser;
         private Process analyse;
 
         public MainForm()
@@ -30,14 +27,8 @@ namespace DependencyExecutor
             tcMain.TabPages.Remove(tbNameOverides);
             tcMain.TabPages.Remove(tbReports);
 
-            invokeAnalyser2005 = new BackgroundWorker();
-            invokeAnalyser2005.DoWork += invokeAnalyser2005_DoWork;
-            invokeAnalyser2008 = new BackgroundWorker();
-            invokeAnalyser2008.DoWork += invokeAnalyser2008_DoWork;
-            invokeAnalyser2012 = new BackgroundWorker();
-            invokeAnalyser2012.DoWork += invokeAnalyser2012_DoWork;
-            invokeAnalyser2014 = new BackgroundWorker();
-            invokeAnalyser2014.DoWork += invokeAnalyser2014_DoWork;
+            invokeAnalyser = new BackgroundWorker();
+            invokeAnalyser.DoWork += invokeAnalyser_DoWork;
         }
 
         private void rbSQL_CheckedChanged(object sender, EventArgs e)
@@ -304,33 +295,6 @@ namespace DependencyExecutor
             tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, arguments);
         }
 
-        private void btAnalyze2005_MouseHover(object sender, EventArgs e)
-        {
-            string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2005\DependencyAnalyzer.exe";
-
-            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
-        }
-
-        private void btAnalyze2008_MouseHover(object sender, EventArgs e)
-        {
-            string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2008\DependencyAnalyzer.exe";
-
-            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
-        }
-
-        private void btAnalyze2012_MouseHover(object sender, EventArgs e)
-        {
-            string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2012\DependencyAnalyzer.exe";
-
-            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
-        }
-
-        private void btAnalyze2014_MouseHover(object sender, EventArgs e)
-        {
-            string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2014\DependencyAnalyzer.exe";
-
-            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
-        }
         #endregion
 
         private void rbSQLDB_CheckedChanged(object sender, EventArgs e)
@@ -432,30 +396,12 @@ namespace DependencyExecutor
                 lbASServers.Items.RemoveAt(lbASServers.SelectedIndex);
         }
 
-        private void btAnalyze2005_Click(object sender, EventArgs e)
-        {
-            if ((tbDatabase.Text != string.Empty) && (tbSQLServer.Text != string.Empty))
-            {
-                tbResults.Clear();
-                tcMain.SelectedTab = tbOutput;
-                string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2005\DependencyAnalyzer.exe";
-                tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
 
-                btAnalyze2005.Enabled = false;
-                btAnalyze2008.Enabled = false;
-                btAnalyze2012.Enabled = false;
-                btAnalyze2014.Enabled = false;
-                btView.Enabled = false;
-                invokeAnalyser2005.RunWorkerAsync();
-            }
-        }
+        #region invokes
 
-        void invokeAnalyser2005_DoWork(object sender, DoWorkEventArgs e)
+        void invokeAnalyser_DoWork(object sender, DoWorkEventArgs e)
         {
-            string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2005\DependencyAnalyzer.exe";
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = executable;
-            startInfo.Arguments = buildArguments(false);
+            string executable = e.Argument.ToString(); //string.Format(@"{0}\..\Dependency Analyzer {1}\DependencyAnalyzer.exe", System.Windows.Forms.Application.StartupPath, cbSQLVersion.Text);
 
             analyse = new Process();
             analyse.StartInfo.Arguments = buildArguments(false);
@@ -482,84 +428,21 @@ namespace DependencyExecutor
             {
                 MessageBox.Show(err.Message, "Failure when launching the Analyser", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 btView.Invoke((MethodInvoker)delegate { btView.Enabled = true; });
-                btAnalyze2005.Invoke((MethodInvoker)delegate { btAnalyze2005.Enabled = true; });
-                btAnalyze2008.Invoke((MethodInvoker)delegate { btAnalyze2008.Enabled = true; });
-                btAnalyze2012.Invoke((MethodInvoker)delegate { btAnalyze2012.Enabled = true; });
-                btAnalyze2014.Invoke((MethodInvoker)delegate { btAnalyze2014.Enabled = true; });
+                cbSQLVersion.Invoke((MethodInvoker)delegate { cbSQLVersion.Enabled = true; });
+                btnAnalyse.Invoke((MethodInvoker)delegate { btnAnalyse.Enabled = true; });
             }
         }
 
 
-
-        private void btAnalyze2008_Click(object sender, EventArgs e)
-        {
-            if ((tbDatabase.Text != string.Empty) && (tbSQLServer.Text != string.Empty))
-            {
-                tbResults.Clear();
-                tcMain.SelectedTab = tbOutput;
-                string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2008\DependencyAnalyzer.exe";
-                tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
-
-                btAnalyze2005.Enabled = false;
-                btAnalyze2008.Enabled = false;
-                btAnalyze2012.Enabled = false;
-                btAnalyze2014.Enabled = false;
-                btView.Enabled = false;
-                invokeAnalyser2008.RunWorkerAsync();
-            }
-        }
-
-
-
-        void invokeAnalyser2008_DoWork(object sender, DoWorkEventArgs e)
-        {
-            string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2008\DependencyAnalyzer.exe";
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = executable;
-            startInfo.Arguments = buildArguments(false);
-            //this.WindowState = FormWindowState.Minimized;
-
-            analyse = new Process();
-            analyse.StartInfo.Arguments = buildArguments(false);
-            analyse.StartInfo.FileName = executable;
-
-            analyse.StartInfo.UseShellExecute = false;
-            analyse.StartInfo.RedirectStandardOutput = true;
-            analyse.StartInfo.RedirectStandardError = true;
-            analyse.StartInfo.CreateNoWindow = true;
-            analyse.StartInfo.ErrorDialog = true;
-
-            analyse.OutputDataReceived += new DataReceivedEventHandler(analyse_OutputDataReceived);
-            analyse.ErrorDataReceived += new DataReceivedEventHandler(analyse_OutputDataReceived);
-            analyse.EnableRaisingEvents = true;
-            analyse.Exited += new EventHandler(analyse_Exited);
-
-            try
-            {
-                analyse.Start();
-                analyse.BeginOutputReadLine();
-                analyse.BeginErrorReadLine();
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message, "Failure when launching the Analyser", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                btView.Invoke((MethodInvoker)delegate { btView.Enabled = true; });
-                btAnalyze2005.Invoke((MethodInvoker)delegate { btAnalyze2005.Enabled = true; });
-                btAnalyze2008.Invoke((MethodInvoker)delegate { btAnalyze2008.Enabled = true; });
-                btAnalyze2012.Invoke((MethodInvoker)delegate { btAnalyze2012.Enabled = true; });
-                btAnalyze2014.Invoke((MethodInvoker)delegate { btAnalyze2014.Enabled = true; });
-            }
-        }
+        #endregion
 
         void analyse_Exited(object sender, EventArgs e)
         {
             analyse.CancelErrorRead();
             analyse.CancelOutputRead();
             btView.Invoke((MethodInvoker)delegate { btView.Enabled = true; });
-            btAnalyze2005.Invoke((MethodInvoker)delegate { btAnalyze2005.Enabled = true; });
-            btAnalyze2008.Invoke((MethodInvoker)delegate { btAnalyze2008.Enabled = true; });
-            btAnalyze2012.Invoke((MethodInvoker)delegate { btAnalyze2012.Enabled = true; });
-            btAnalyze2014.Invoke((MethodInvoker)delegate { btAnalyze2014.Enabled = true; });
+            btnAnalyse.Invoke((MethodInvoker)delegate { btnAnalyse.Enabled = true; });
+            cbSQLVersion.Invoke((MethodInvoker)delegate { cbSQLVersion.Enabled = true; });
         }
 
         void analyse_OutputDataReceived(object sender, DataReceivedEventArgs e)
@@ -595,122 +478,7 @@ namespace DependencyExecutor
             }
         }
 
-        private void btAnalyze2012_Click(object sender, EventArgs e)
-        {
-            if ((tbDatabase.Text != string.Empty) && (tbSQLServer.Text != string.Empty))
-            {
-                tbResults.Clear();
-                tcMain.SelectedTab = tbOutput;
-                string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2012\DependencyAnalyzer.exe";
-                tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
-
-                btAnalyze2005.Enabled = false;
-                btAnalyze2008.Enabled = false;
-                btAnalyze2012.Enabled = false;
-                btAnalyze2014.Enabled = false;
-                btView.Enabled = false;
-                invokeAnalyser2012.RunWorkerAsync();
-            }
-        }
-
-        void invokeAnalyser2012_DoWork(object sender, DoWorkEventArgs e)
-        {
-            string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2012\DependencyAnalyzer.exe";
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = executable;
-            startInfo.Arguments = buildArguments(false);
-            //this.WindowState = FormWindowState.Minimized;
-
-            analyse = new Process();
-            analyse.StartInfo.Arguments = buildArguments(false);
-            analyse.StartInfo.FileName = executable;
-
-            analyse.StartInfo.UseShellExecute = false;
-            analyse.StartInfo.RedirectStandardOutput = true;
-            analyse.StartInfo.RedirectStandardError = true;
-            analyse.StartInfo.CreateNoWindow = true;
-            analyse.StartInfo.ErrorDialog = true;
-
-            analyse.OutputDataReceived += new DataReceivedEventHandler(analyse_OutputDataReceived);
-            analyse.ErrorDataReceived += new DataReceivedEventHandler(analyse_OutputDataReceived);
-            analyse.EnableRaisingEvents = true;
-            analyse.Exited += new EventHandler(analyse_Exited);
-
-            try
-            {
-                analyse.Start();
-                analyse.BeginOutputReadLine();
-                analyse.BeginErrorReadLine();
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message, "Failure when launching the Analyser", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                btView.Invoke((MethodInvoker)delegate { btView.Enabled = true; });
-                btAnalyze2005.Invoke((MethodInvoker)delegate { btAnalyze2005.Enabled = true; });
-                btAnalyze2008.Invoke((MethodInvoker)delegate { btAnalyze2008.Enabled = true; });
-                btAnalyze2012.Invoke((MethodInvoker)delegate { btAnalyze2012.Enabled = true; });
-                btAnalyze2014.Invoke((MethodInvoker)delegate { btAnalyze2014.Enabled = true; });
-            }
-        }
-
-        private void btAnalyze2014_Click(object sender, EventArgs e)
-        {
-            if ((tbDatabase.Text != string.Empty) && (tbSQLServer.Text != string.Empty))
-            {
-                tbResults.Clear();
-                tcMain.SelectedTab = tbOutput;
-                string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2014\DependencyAnalyzer.exe";
-                tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
-
-                btAnalyze2005.Enabled = false;
-                btAnalyze2008.Enabled = false;
-                btAnalyze2012.Enabled = false;
-                btAnalyze2014.Enabled = false;
-                btView.Enabled = false;
-                invokeAnalyser2014.RunWorkerAsync();
-            }
-        }
-
-        void invokeAnalyser2014_DoWork(object sender, DoWorkEventArgs e)
-        {
-            string executable = System.Windows.Forms.Application.StartupPath + @"\..\Dependency Analyzer 2014\DependencyAnalyzer.exe";
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = executable;
-            startInfo.Arguments = buildArguments(false);
-            //this.WindowState = FormWindowState.Minimized;
-
-            analyse = new Process();
-            analyse.StartInfo.Arguments = buildArguments(false);
-            analyse.StartInfo.FileName = executable;
-
-            analyse.StartInfo.UseShellExecute = false;
-            analyse.StartInfo.RedirectStandardOutput = true;
-            analyse.StartInfo.RedirectStandardError = true;
-            analyse.StartInfo.CreateNoWindow = true;
-            analyse.StartInfo.ErrorDialog = true;
-
-            analyse.OutputDataReceived += new DataReceivedEventHandler(analyse_OutputDataReceived);
-            analyse.ErrorDataReceived += new DataReceivedEventHandler(analyse_OutputDataReceived);
-            analyse.EnableRaisingEvents = true;
-            analyse.Exited += new EventHandler(analyse_Exited);
-
-            try
-            {
-                analyse.Start();
-                analyse.BeginOutputReadLine();
-                analyse.BeginErrorReadLine();
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message, "Failure when launching the Analyser", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                btView.Invoke((MethodInvoker)delegate { btView.Enabled = true; });
-                btAnalyze2005.Invoke((MethodInvoker)delegate { btAnalyze2005.Enabled = true; });
-                btAnalyze2008.Invoke((MethodInvoker)delegate { btAnalyze2008.Enabled = true; });
-                btAnalyze2012.Invoke((MethodInvoker)delegate { btAnalyze2012.Enabled = true; });
-                btAnalyze2014.Invoke((MethodInvoker)delegate { btAnalyze2014.Enabled = true; });
-            }
-        }
-
+        
         private void btSSISServerAdd_Click(object sender, EventArgs e)
         {
             if (tbSSISServer.Text != string.Empty)
@@ -756,6 +524,26 @@ namespace DependencyExecutor
             {
                 lbPkgPassword.Items.RemoveAt(lbPkgPassword.SelectedIndex);
             }
+        }
+
+        private void btnAnalyse_Click(object sender, EventArgs e)
+        {
+            if ((tbDatabase.Text != string.Empty) && (tbSQLServer.Text != string.Empty))
+            {
+                tbResults.Clear();
+                tcMain.SelectedTab = tbOutput;
+                btnAnalyse_MouseHover(sender, e);
+                btnAnalyse.Enabled = false;
+                btView.Enabled = false;
+                cbSQLVersion.Enabled = false;
+                invokeAnalyser.RunWorkerAsync(string.Format(@"{0}\..\Dependency Analyzer {1}\DependencyAnalyzer.exe", System.Windows.Forms.Application.StartupPath, cbSQLVersion.Text));
+            }
+        }
+
+        private void btnAnalyse_MouseHover(object sender, EventArgs e)
+        {
+            string executable = string.Format(@"{0}\..\Dependency Analyzer {1}\DependencyAnalyzer.exe", System.Windows.Forms.Application.StartupPath, cbSQLVersion.Text);
+            tbCommandLine.Text = string.Format("\"{0}\" {1}", executable, buildArguments(true));
         }
     }
 

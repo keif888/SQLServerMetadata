@@ -60,6 +60,22 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
+    <ProjectReference Include="..\DependencyAnalyzer2016\DependencyAnalyzer2016.csproj">
+      <Name>DependencyAnalyzer2016</Name>
+      <Project>{eb8581ac-69ef-4b02-b59d-646e091db268}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\DependencyAnalyzer2017\DependencyAnalyzer2017.csproj">
+      <Name>DependencyAnalyzer2017</Name>
+      <Project>{515c04cc-ce3c-4877-822c-e6d93918d663}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\DependencyExecutor\DependencyExecutor.csproj">
       <Name>DependencyExecutor</Name>
       <Project>{509b2e77-2895-488b-8973-74a284d1d2af}</Project>
@@ -71,22 +87,6 @@
     <ProjectReference Include="..\DependencyViewer\DependencyViewer.csproj">
       <Name>DependencyViewer</Name>
       <Project>{2ddce6a2-a784-4a66-900f-7485dfceefd6}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-    <ProjectReference Include="..\DrawingAndGraphViewerGdi\Drawing\Drawing.csproj">
-      <Name>Drawing</Name>
-      <Project>{c205ac5b-1ff7-434f-9dd7-e40c16eabcc3}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-    <ProjectReference Include="..\DrawingAndGraphViewerGdi\GraphViewerGdi\GraphViewerGDI.csproj">
-      <Name>GraphViewerGDI</Name>
-      <Project>{5a0da990-f31c-463e-b58f-1e6bf1996234}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>

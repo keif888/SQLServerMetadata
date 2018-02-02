@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?define ProductVersion = "0.19.0.0"?>
+  <?define ProductVersion = "0.20.0.0"?>
   <?define UpgradeCode = "B758AA83-565F-453A-BECF-0B0B060E7023"?>
   <?define Manufacturer = "Keith Martin"?>
   <?define PackageCode = "*"?>
@@ -82,6 +82,28 @@
               <File Id="FScriptDom2014" Name="Microsoft.SqlServer.TransactSql.ScriptDom.dll" Source="$(var.TSQLParser.TargetDir)Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
             </Component>
           </Directory>
+          <Directory Id="DependencyAnalyzer2016DIR" Name="Dependency Analyzer 2016">
+            <Component Id="DependencyAnalyzer2016Exe" Guid="{8C98AD26-65CE-2016-8954-6E98F4E5BF1D}" Win64="no">
+              <File Id="FDependencyAnalyzer2016Exe" Name="$(var.DependencyAnalyzer2016.TargetFileName)" Source="$(var.DependencyAnalyzer2016.TargetPath)" />
+            </Component>
+            <Component Id="DependencyAnalyzer2016Parser" Guid="{95C37E97-F292-2016-A9F3-097946B574F8}" Win64="no">
+              <File Id="FDependencyAnalyzer2016Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
+            </Component>
+            <Component Id="ScriptDom2016" Guid="{95C77E97-F292-2016-A9F3-097946B574F8}" Win64="no">
+              <File Id="FScriptDom2016" Name="Microsoft.SqlServer.TransactSql.ScriptDom.dll" Source="$(var.TSQLParser.TargetDir)Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
+            </Component>
+          </Directory>
+          <Directory Id="DependencyAnalyzer2017DIR" Name="Dependency Analyzer 2017">
+            <Component Id="DependencyAnalyzer2017Exe" Guid="{8C98AD26-65CE-2017-8954-6E98F4E5BF1D}" Win64="no">
+              <File Id="FDependencyAnalyzer2017Exe" Name="$(var.DependencyAnalyzer2017.TargetFileName)" Source="$(var.DependencyAnalyzer2017.TargetPath)" />
+            </Component>
+            <Component Id="DependencyAnalyzer2017Parser" Guid="{95C37E97-F292-2017-A9F3-097946B574F8}" Win64="no">
+              <File Id="FDependencyAnalyzer2017Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
+            </Component>
+            <Component Id="ScriptDom2017" Guid="{95C77E97-F292-2017-A9F3-097946B574F8}" Win64="no">
+              <File Id="FScriptDom2017" Name="Microsoft.SqlServer.TransactSql.ScriptDom.dll" Source="$(var.TSQLParser.TargetDir)Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
+            </Component>
+          </Directory>
           <Directory Id="DEPENDENCYEXECUTORDIR" Name="Dependency Executor">
             <Component Id="DependencyExecutor" Guid="{39F20A67-354B-4503-9CBD-F4DFA06C5484}" Win64="no">
               <File Id="DependencyExecutorExe" Name="$(var.DependencyExecutor.TargetFileName)" Source="$(var.DependencyExecutor.TargetPath)" />
@@ -92,10 +114,10 @@
               <File Id="FDependencyViewerExe" Name="$(var.DependencyViewer.TargetFileName)" Source="$(var.DependencyViewer.TargetPath)" />
             </Component>
             <Component Id="DependencyViewerGraphViewerGDI" Guid="{8B66B147-A42C-46E0-B157-628BACE58CAE}" Win64="no">
-                <File Id="FDependencyViewerGraphViewerGDI" Name="$(var.GraphViewerGDI.TargetFileName)" Source="$(var.GraphViewerGDI.TargetPath)" />
+                <File Id="FDependencyViewerGraphViewerGDI" Name="Microsoft.Msagl.GraphViewerGdi.dll" Source="$(var.DependencyViewer.TargetDir)Microsoft.Msagl.GraphViewerGdi.dll" />
             </Component>
             <Component Id="DependencyViewerDrawing" Guid="{8D8360C9-01F9-4DCF-AD05-43C62AC3F63A}" Win64="no">
-              <File Id="FDependencyViewerDrawing" Name="$(var.Drawing.TargetFileName)" Source="$(var.Drawing.TargetPath)" />
+              <File Id="FDependencyViewerDrawing" Name="Microsoft.Msagl.Drawing.dll" Source="$(var.DependencyViewer.TargetDir)Microsoft.Msagl.Drawing.dll" />
             </Component>
             <Component Id="DependencyViewerMSAGL" Guid="{3E6A8ED5-1575-4A12-BF7F-2630B27AB88F}" Win64="no">
               <File Id="FDependencyViewerMSAGL" Name="Microsoft.Msagl.dll" Source="$(var.DependencyViewer.TargetDir)Microsoft.Msagl.dll" />
@@ -184,6 +206,16 @@
         <ComponentRef Id="DependencyAnalyzer2014Exe"/>
         <ComponentRef Id="DependencyAnalyzer2014Parser"/>
         <ComponentRef Id="ScriptDom2014"/>
+      </Feature>
+      <Feature Id="DependencyAnalyzer2016" Level="1" Title="Dependency Analyzer 2016">
+        <ComponentRef Id="DependencyAnalyzer2016Exe"/>
+        <ComponentRef Id="DependencyAnalyzer2016Parser"/>
+        <ComponentRef Id="ScriptDom2016"/>
+      </Feature>
+      <Feature Id="DependencyAnalyzer2017" Level="1" Title="Dependency Analyzer 2017">
+        <ComponentRef Id="DependencyAnalyzer2017Exe"/>
+        <ComponentRef Id="DependencyAnalyzer2017Parser"/>
+        <ComponentRef Id="ScriptDom2017"/>
       </Feature>
       <Feature Id="DependencyExecutor" Level="1" Title="Dependency Executor">
         <ComponentRef Id="DependencyExecutor"/>

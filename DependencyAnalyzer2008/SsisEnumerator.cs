@@ -156,7 +156,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
             internal const string DerivedColumn = "{49928E82-9C4E-49F0-AABE-3812B82707EC}";
             internal const string MultipleHash = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}"; // "Martin.SQLServer.Dts.MultipleHash, MultipleHash2012, Version=1.0.0.0, Culture=neutral, PublicKeyToken=51c551904274ab44";
-            internal const string KimballSCD = "MouldingAndMillwork.SSIS.KimballMethodSCD, KimballMethodSCD100, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8b0551303405e96c";
+            internal const string KimballSCD = "MouldingAndMillwork.SSIS.KimballMethodSCD, KimballMethodSCD110, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8b0551303405e96c";
             internal const string OLEDBCommand = "{93FFEC66-CBC8-4C7F-9C6A-CB1C17A7567D}";
 
             //internal const string ADONetSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
@@ -177,10 +177,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
             internal const string ExcelSource = "{9F5C585F-2F02-4622-B273-F75D52419D4A}";
             internal const string FlatFileSource = "{C4D48377-EFD6-4C95-9A0B-049219453431}";
             internal const string RawFileSource = "{480C7D5A-CE63-405C-B338-3C7F26560EE3}";
-            internal const string XmlSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}"; //"Microsoft.SqlServer.Dts.Pipeline.XmlSourceAdapter, Microsoft.SqlServer.XmlSrc, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91";
+            internal const string XmlSource = "{33D831DE-5DCF-48F0-B431-4D327B9E785D}"; // same as Managed Component Wrapper. //"Microsoft.SqlServer.Dts.Pipeline.XmlSourceAdapter, Microsoft.SqlServer.XmlSrc, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91";
 
             internal const string OleDbDestination = "{4ADA7EAA-136C-4215-8098-D7A7C27FC0D1}";
-            internal const string SqlDestination = "{F452EAF3-5EF0-43F1-8067-09DDF0BC6316}";
+            internal const string SqlDestination = "{E6CBD480-2E7E-4419-A475-07A015FA2FF6}";
             internal const string FlatFileDest = "{FD4FFB90-EECF-4B5A-A3A7-DE2E1FA8052C}";
             internal const string RawFileDest = "{04762BB6-892F-4EE6-AD46-9CEB0A7EC7A2}";
             internal const string ExcelDestination = "{90E2E609-1207-4CB0-A8CE-CC7B8CFE2510}";
@@ -192,7 +192,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
             internal const string DerivedColumn = "{18E9A11B-7393-47C5-9D47-687BE04A6B09}";
             internal const string MultipleHash = "Martin.SQLServer.Dts.MultipleHash, MultipleHash2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=51c551904274ab44";
-            internal const string KimballSCD = "MouldingAndMillwork.SSIS.KimballMethodSCD, KimballMethodSCD100, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8b0551303405e96c";
+            internal const string KimballSCD = "MouldingAndMillwork.SSIS.KimballMethodSCD, KimballMethodSCD120, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8b0551303405e96c";
             internal const string OLEDBCommand = "{93FFEC66-CBC8-4C7F-9C6A-CB1C17A7567D}";
 
             //internal const string ADONetSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
@@ -208,6 +208,79 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
 
 #endif
+#if SQL2016
+            internal const string OleDbSource = "{657B7EBE-0A54-4C0E-A80E-7A5BD9886C25}";
+            internal const string ExcelSource = "{99E18AC3-6E6A-4BF9-AFB2-93D139E6CAAF}";
+            internal const string FlatFileSource = "{E32A96E1-7118-4CB5-A338-AC69E815CB13}";
+            internal const string RawFileSource = "{036C7941-58DF-4CD3-BF13-E5373258D001}";
+            internal const string XmlSource = "{4F885D04-B578-47B7-94A0-DE9C7DA25EE2}";
+
+            internal const string OleDbDestination = "{7B729B0A-4EA5-4A0D-871A-B6E7618E9CFB}";
+            internal const string SqlDestination = "{8AA67354-E39A-4951-8F52-D80D057E7BDC}";
+            internal const string FlatFileDest = "{44152846-E5A6-4EDB-8B8E-7072209A7662}";
+            internal const string RawFileDest = "{953B7879-214C-4AB8-AA79-AEA630F35C46}";
+            internal const string ExcelDestination = "{EDFD5EC4-D128-423D-B962-B586F33F0125}";
+
+            internal const string Lookup = "{EDED6488-9C19-496D-9F1D-99E1DB55AF77}";
+            internal const string FuzzyLookup = "{760D7EC0-AEC6-4BEA-9CC5-E591884B6ED5}";
+
+            internal const string ManagedComponentWrapper = "{4F885D04-B578-47B7-94A0-DE9C7DA25EE2}"; //Script Component? "{2E42D45B-F83C-400F-8D77-61DDE6A7DF29}";
+
+            internal const string DerivedColumn = "{A2034F5D-D283-4218-A4AF-AE11AD34B886}";
+            internal const string MultipleHash = "Martin.SQLServer.Dts.MultipleHash, MultipleHash2016, Version=1.0.0.0, Culture=neutral, PublicKeyToken=51c551904274ab44";
+            internal const string KimballSCD = "MouldingAndMillwork.SSIS.KimballMethodSCD, KimballMethodSCD130, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8b0551303405e96c";
+            internal const string OLEDBCommand = "{97720936-CE0C-4D46-8CEC-89977421806C}";
+
+            //internal const string ADONetSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+            //internal const string CDCSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+            //internal const string DataMiningModel = "{3D9FFAE9-B89B-43D9-80C8-B97D2740C746}";
+            //internal const string DataReaderDestination = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+            //internal const string DimensionProcessing = "{2C2F0891-3AAA-4865-A676-D7476FE4CE90}";
+            //internal const string ODBCDestination = "{074B8736-CD73-40A5-822E-888215AF57DA}";
+            //internal const string ODBCSource = "{A77F5655-A006-443A-9B7E-90B6BD55CB84}";
+            //internal const string PartitionProcessing = "{DA510FB7-E3A8-4D96-9F59-55E15E67FE3D}";
+            //internal const string RecordSetDestination = "{C457FD7E-CE98-4C4B-AEFE-F3AE0044F181}";
+            //internal const string SQLServerCompactDestination = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+
+
+#endif
+#if SQL2017
+            internal const string OleDbSource = "{B1E5F848-DF04-4E9B-83EA-1D7D9FAFEF4C}";
+            internal const string ExcelSource = "{E5E85051-985D-4599-9FC9-AFA26099D5C4}";
+            internal const string FlatFileSource = "{84CD7B6C-16B8-4D90-AC2D-17ED3E4B1155}";
+            internal const string RawFileSource = "{682BA583-31D4-47D3-99B9-54018E35C093}";
+            internal const string XmlSource = "{8DC69D45-2AD5-40C6-AAEC-25722F92D6FC}"; //"Microsoft.SqlServer.Dts.Pipeline.XmlSourceAdapter, Microsoft.SqlServer.XmlSrc, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91";
+
+            internal const string OleDbDestination = "{FF6D802E-67E2-439D-9CBC-695EB22CDA4A}";
+            internal const string SqlDestination = "{85B8BCCA-5D6A-49A6-8C9B-B1AE7B8DD5E6}";
+            internal const string FlatFileDest = "{0667D728-1E5F-4BB6-863D-B29D3F405706}";
+            internal const string RawFileDest = "{8E8B85F7-B7D4-4E21-BBDF-8090E532BBF9}";
+            internal const string ExcelDestination = "{AE305C05-EB10-4C73-A293-4CF3A2B15169}";
+
+            internal const string Lookup = "{728A46CB-3AB1-4141-B8C9-BA93A3901FBC}";
+            internal const string FuzzyLookup = "{BC1E1984-30EB-43A6-81C1-748B3FDFA286}";
+
+            internal const string ManagedComponentWrapper = "{8DC69D45-2AD5-40C6-AAEC-25722F92D6FC}"; //Script Component? "{2E42D45B-F83C-400F-8D77-61DDE6A7DF29}";
+
+            internal const string DerivedColumn = "{692A88CF-7641-45B7-8E01-7BEE602D40EE}";
+            internal const string MultipleHash = "Martin.SQLServer.Dts.MultipleHash, MultipleHash2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=51c551904274ab44";
+            internal const string KimballSCD = "MouldingAndMillwork.SSIS.KimballMethodSCD, KimballMethodSCD100, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8b0551303405e96c";
+            internal const string OLEDBCommand = "{1E21FD10-A6DF-4280-A583-4E3A87002286}";
+
+            //internal const string ADONetSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+            //internal const string CDCSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+            //internal const string DataMiningModel = "{3D9FFAE9-B89B-43D9-80C8-B97D2740C746}";
+            //internal const string DataReaderDestination = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+            //internal const string DimensionProcessing = "{2C2F0891-3AAA-4865-A676-D7476FE4CE90}";
+            //internal const string ODBCDestination = "{074B8736-CD73-40A5-822E-888215AF57DA}";
+            //internal const string ODBCSource = "{A77F5655-A006-443A-9B7E-90B6BD55CB84}";
+            //internal const string PartitionProcessing = "{DA510FB7-E3A8-4D96-9F59-55E15E67FE3D}";
+            //internal const string RecordSetDestination = "{C457FD7E-CE98-4C4B-AEFE-F3AE0044F181}";
+            //internal const string SQLServerCompactDestination = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+
+
+#endif
+
         }
 
         private const string objectTypePackage = "SSIS Package";
@@ -407,7 +480,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         }
                     }
                     connection.Close();
-                    tempDirectory.Delete(true);
+                    if (tempDirectory.Exists)
+                        tempDirectory.Delete(true);
 
                 } while (folders.Count > 0);
                 #endregion
@@ -529,11 +603,19 @@ namespace Microsoft.Samples.DependencyAnalyzer
             EnumeratePackages(tempDirectory.FullName + @"\" + project.Name, "*.dtsx", true, locationName);
 
             // Cleanup
-            FileInfo[] files = tempDirectory.GetFiles("*.ZIP", System.IO.SearchOption.TopDirectoryOnly);
-            for (int i = 0; i < files.Length; i++)
-                files[i].Delete();
-            System.IO.Directory.Delete(tempDirectory.FullName + @"\" + project.Name, true);
-            System.IO.Directory.Delete(tempDirectory.FullName, true);
+            //FileInfo[] files = tempDirectory.GetFiles("*.ZIP", System.IO.SearchOption.TopDirectoryOnly);
+            //for (int i = 0; i < files.Length; i++)
+            //    files[i].Delete();
+            try
+            {
+                System.IO.File.Delete(projectNameFile);
+                System.IO.Directory.Delete(tempDirectory.FullName + @"\" + project.Name, true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(string.Format("Error {0} occurred whilst attempting to cleanup temporary files.\r\n{1}\r\n{2}\r\nWith stack trace {3}.", ex.Message, projectNameFile, tempDirectory.FullName + @"\" + project.Name, ex.StackTrace));
+            }
+            //System.IO.Directory.Delete(tempDirectory.FullName, true);
         }
 
 #endif

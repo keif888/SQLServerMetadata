@@ -9,13 +9,13 @@ using System.Windows.Forms;
 using System.Data.SqlClient;
 using Microsoft.Msagl.GraphViewerGdi;
 using Microsoft.Msagl.Drawing;
-using CurveFactory = Microsoft.Msagl.Splines.CurveFactory;
-using P2 = Microsoft.Msagl.Point;
-using GeomNode = Microsoft.Msagl.Node;
-using GeomEdge = Microsoft.Msagl.Edge;
+using CurveFactory = Microsoft.Msagl.Core.Geometry.Curves.CurveFactory;
+using P2 = Microsoft.Msagl.Core.Geometry.Point;
+using GeomNode = Microsoft.Msagl.Core.Layout.Node;
+using GeomEdge = Microsoft.Msagl.Core.Layout.Edge;
 using DrawingEdge = Microsoft.Msagl.Drawing.Edge;
 using DrawingNode = Microsoft.Msagl.Drawing.Node;
-
+using Microsoft.Msagl.Layout.Layered;
 
 namespace DependencyViewer
 {
@@ -368,6 +368,14 @@ namespace DependencyViewer
             }
         }
 
+
+        /// <summary>
+        /// loads the data from the repository into the MSAGL graph.
+        /// This uses the default graphing and displaying, instead of geometry graph (previous version),
+        /// as I have been unable to get the arrows to work using geometry graph in the latest MSAGL.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void tvObjectList_AfterSelect(object sender, TreeViewEventArgs e)
         {
             try
@@ -384,10 +392,6 @@ namespace DependencyViewer
                     //create the normal graph.
                     Graph newGraph = new Graph(objectName, objectID.ToString());
                     newGraph.Attr.LayerDirection = GetDirection();
-                    //create the geom graph
-                    //Microsoft.Msagl.GeometryGraph geomGraph = new Microsoft.Msagl.GeometryGraph();
-                    newGraph.CreateGeometryGraph();
-                    Microsoft.Msagl.GeometryGraph geomGraph = newGraph.GeometryGraph;
 
                     Dictionary<int, Node> idToNodeMap = new Dictionary<int, Node>();
                     // get a list of nodes that depend on us
@@ -406,22 +410,10 @@ namespace DependencyViewer
                             {
                                 node.Attr.FillColor = Microsoft.Msagl.Drawing.Color.White;
                             }
-
                             node.Attr.Color = Microsoft.Msagl.Drawing.Color.Blue;
 
-                            node.DrawNodeDelegate = new DelegateToOverrideNodeRendering(this.DrawNode);
-                            float width = 0, height = 0;
-                            System.Drawing.Size textSize = TextRenderer.MeasureText(objectIDToNameMap[dependency], new Font("Arial", 14, FontStyle.Regular));
-                            width = textSize.Width;
-                            height = textSize.Height;
-                            textSize = TextRenderer.MeasureText(objectIDToTypeMap[dependency], new Font("Arial", 10, FontStyle.Regular));
-                            if (textSize.Width > width)
-                                width = textSize.Width;
-                            height += textSize.Height;
-                            height += 10;  // 10 extra pixels...
-                            GeomNode geomNode = new Microsoft.Msagl.Node(dependency.ToString(), CurveFactory.CreateBox(width, height, new P2()));
-                            geomGraph.AddNode(geomNode);
-                            node.Attr.GeometryNode = geomNode;
+                            node.LabelText = String.Format("{0}\r\n{1}", objectIDToNameMap[dependency], objectIDToTypeMap[dependency]);
+                            node.Label.FontColor = Microsoft.Msagl.Drawing.Color.Blue;
                             idToNodeMap.Add(dependency, node);
                         }
                     }
@@ -438,14 +430,8 @@ namespace DependencyViewer
                             if (idToNodeMap.ContainsKey(directDependency))
                             {
                                 Node toNode = idToNodeMap[directDependency];
-
                                 // add an edge
-                                Edge edge = newGraph.AddEdge(fromNode.Id, toNode.Id);
-                                GeomEdge geomEdge = new GeomEdge(geomGraph.FindNode(currentNode.ToString()), geomGraph.FindNode(directDependency.ToString()));
-                                // Arrow?
-                                geomEdge.ArrowheadLength = 20;
-                                geomGraph.AddEdge(geomEdge);
-                                edge.Attr.GeometryEdge = geomEdge;
+                                newGraph.AddEdge(fromNode.Id, toNode.Id);
                             }
                         }
                     }
@@ -466,20 +452,8 @@ namespace DependencyViewer
                                 node.Attr.FillColor = Microsoft.Msagl.Drawing.Color.White;
                             }
                             node.Attr.Color = Microsoft.Msagl.Drawing.Color.Blue;
-
-                            node.DrawNodeDelegate = new DelegateToOverrideNodeRendering(this.DrawNode);
-                            float width = 0, height = 0;
-                            System.Drawing.Size textSize = TextRenderer.MeasureText(objectIDToNameMap[lineage], new Font("Arial", 14, FontStyle.Regular));
-                            width = textSize.Width;
-                            height = textSize.Height;
-                            textSize = TextRenderer.MeasureText(objectIDToTypeMap[lineage], new Font("Arial", 10, FontStyle.Regular));
-                            if (textSize.Width > width)
-                                width = textSize.Width;
-                            height += textSize.Height;
-                            height += 10;  // 10 extra pixels...
-                            GeomNode geomNode = new Microsoft.Msagl.Node(lineage.ToString(), CurveFactory.CreateBox(width, height, new P2()));
-                            geomGraph.AddNode(geomNode);
-                            node.Attr.GeometryNode = geomNode;
+                            node.LabelText = String.Format("{0}\r\n{1}", objectIDToNameMap[lineage], objectIDToTypeMap[lineage]);
+                            node.Label.FontColor = Microsoft.Msagl.Drawing.Color.Blue;
                             idToNodeMap.Add(lineage, node);
                         }
                     }
@@ -496,26 +470,14 @@ namespace DependencyViewer
                             if (idToNodeMap.ContainsKey(directLineage))
                             {
                                 Node fromNode = idToNodeMap[directLineage];
-
                                 // add an edge
-                                Edge edge = newGraph.AddEdge(fromNode.Id, toNode.Id);
-                                GeomEdge geomEdge = new GeomEdge(geomGraph.FindNode(directLineage.ToString()), geomGraph.FindNode(currentNode.ToString()));
-                                // Arrow?
-                                geomEdge.ArrowheadLength = 20;
-                                geomGraph.AddEdge(geomEdge);
-                                edge.Attr.GeometryEdge = geomEdge;
+                                newGraph.AddEdge(fromNode.Id, toNode.Id);
                             }
                         }
                     }
 
-                    //impactAnalysisGraphCtrl1.DrawMap(objectID, numberInbound, numberOutbound);
-                    newGraph.GeometryGraph = geomGraph;
-                    //geomGraph.LayoutAlgorithmSettings = new Microsoft.Msagl.LayoutAlgorithmSettings();
-                    
-                    geomGraph.CalculateLayout();
-                    graphViewer.NeedToCalculateLayout = false;
+                    graphViewer.NeedToCalculateLayout = true;
                     graphViewer.Graph = newGraph;
-                    graphViewer.LocalScale = 1.0;  // ToDo: Work out why scaling isn't doing what I expect.  Need to setup "Minimum Zoom" so that Very Large graphs don't crash.
                 }
                 else
                 {
@@ -529,52 +491,6 @@ namespace DependencyViewer
         }
         #endregion
 
-
-        bool DrawNode(DrawingNode node, object graphics)
-        {
-            Graphics g = (Graphics)graphics;
-            Pen p = new Pen(System.Drawing.Color.Blue, (float)1);
-
-            if (node.Attr.Color != Microsoft.Msagl.Drawing.Color.Blue)
-            {
-                p.Color = System.Drawing.Color.DarkRed;
-            }
-
-            // Draw the bounding box
-            if (node.Attr.FillColor == Microsoft.Msagl.Drawing.Color.LightGreen)
-            {
-                g.FillRectangle(Brushes.LightGreen, (float)node.Attr.GeometryNode.BoundingBox.LeftBottom.X, (float)node.Attr.GeometryNode.BoundingBox.LeftBottom.Y, (float)node.Attr.GeometryNode.BoundingBox.Width, (float)node.Attr.GeometryNode.BoundingBox.Height);
-            }
-            else if (node.Attr.FillColor == Microsoft.Msagl.Drawing.Color.LightSalmon)
-            {
-                g.FillRectangle(Brushes.LightSalmon, (float)node.Attr.GeometryNode.BoundingBox.LeftBottom.X, (float)node.Attr.GeometryNode.BoundingBox.LeftBottom.Y, (float)node.Attr.GeometryNode.BoundingBox.Width, (float)node.Attr.GeometryNode.BoundingBox.Height);
-            }
-            g.DrawRectangle(p, (float)node.Attr.GeometryNode.BoundingBox.LeftBottom.X, (float)node.Attr.GeometryNode.BoundingBox.LeftBottom.Y, (float)node.Attr.GeometryNode.BoundingBox.Width, (float)node.Attr.GeometryNode.BoundingBox.Height);
-
-            using (System.Drawing.Drawing2D.Matrix m = g.Transform)
-            {
-                using (System.Drawing.Drawing2D.Matrix saveM = m.Clone())
-                {
-                    float c = (float)node.Attr.GeometryNode.Center.Y;
-
-                    using (System.Drawing.Drawing2D.Matrix m2 = new System.Drawing.Drawing2D.Matrix(1, 0, 0, -1, 0, 2 * c))
-                        m.Multiply(m2);
-
-                    g.Transform = m;
-
-                    string textToShow = objectIDToNameMap[Int32.Parse(node.Id)];
-                    g.DrawString(textToShow, new Font("Arial", 14, FontStyle.Regular), Brushes.Blue, (float)node.Attr.GeometryNode.BoundingBox.LeftBottom.X, (float)node.Attr.GeometryNode.BoundingBox.LeftBottom.Y);
-                    System.Drawing.Size textSize = TextRenderer.MeasureText(g, objectIDToTypeMap[Int32.Parse(node.Id)], new Font("Arial", 10, FontStyle.Regular));
-                    g.DrawString(objectIDToTypeMap[Int32.Parse(node.Id)], new Font("Arial", 10, FontStyle.Regular), Brushes.Blue, (float)node.Attr.GeometryNode.BoundingBox.LeftBottom.X, (float)node.Attr.GeometryNode.BoundingBox.LeftBottom.Y + textSize.Height + 10);
-                    g.Transform = saveM;
-                }
-            }
-
-            return true;//returning false would enable the default rendering
-        }
-
-
-        static internal PointF PointF(P2 p) { return new PointF((float)p.X, (float)p.Y); }
 
         private void nbBefore_ValueChanged(object sender, EventArgs e)
         {
@@ -651,7 +567,7 @@ namespace DependencyViewer
                 // if OS does not support groups, we need to create a list view item, since groups are ignored
                 ListViewItem grp = new ListViewItem(this.objectIDToNameMap[objectID]);
                 grp.SubItems.Add(string.Format("[{0}] [ID: {1}]", objectType, objectID));
-                grp.Font = new Font(this.lvObjectProperties.Font, FontStyle.Bold);
+                grp.Font = new Font(this.lvObjectProperties.Font, System.Drawing.FontStyle.Bold);
                 this.lvObjectProperties.Items.Add(grp);
             }
 
@@ -715,7 +631,7 @@ namespace DependencyViewer
         }
 
 
-        private void graphViewer_SelectionChanged(object sender, EventArgs e)
+        private void graphViewer_ObjectUnderMouseCursorChanged(object sender, ObjectUnderMouseCursorChangedEventArgs e)
         {
             if (graphViewer.SelectedObject != null)
             {
