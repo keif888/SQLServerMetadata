@@ -480,7 +480,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         }
                     }
                     connection.Close();
-                    tempDirectory.Delete(true);
+                    if (tempDirectory.Exists)
+                        tempDirectory.Delete(true);
 
                 } while (folders.Count > 0);
                 #endregion
@@ -602,11 +603,19 @@ namespace Microsoft.Samples.DependencyAnalyzer
             EnumeratePackages(tempDirectory.FullName + @"\" + project.Name, "*.dtsx", true, locationName);
 
             // Cleanup
-            FileInfo[] files = tempDirectory.GetFiles("*.ZIP", System.IO.SearchOption.TopDirectoryOnly);
-            for (int i = 0; i < files.Length; i++)
-                files[i].Delete();
-            System.IO.Directory.Delete(tempDirectory.FullName + @"\" + project.Name, true);
-            System.IO.Directory.Delete(tempDirectory.FullName, true);
+            //FileInfo[] files = tempDirectory.GetFiles("*.ZIP", System.IO.SearchOption.TopDirectoryOnly);
+            //for (int i = 0; i < files.Length; i++)
+            //    files[i].Delete();
+            try
+            {
+                System.IO.File.Delete(projectNameFile);
+                System.IO.Directory.Delete(tempDirectory.FullName + @"\" + project.Name, true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(string.Format("Error {0} occurred whilst attempting to cleanup temporary files.\r\n{1}\r\n{2}\r\nWith stack trace {3}.", ex.Message, projectNameFile, tempDirectory.FullName + @"\" + project.Name, ex.StackTrace));
+            }
+            //System.IO.Directory.Delete(tempDirectory.FullName, true);
         }
 
 #endif

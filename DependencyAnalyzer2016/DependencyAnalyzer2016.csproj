@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\bin\debug\Dependency Analyzer 2016\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SQL2016</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SQL2016;SQLGT2008</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -28,7 +28,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;SQL2016</DefineConstants>
+    <DefineConstants>TRACE;SQL2016;SQLGT2008</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
