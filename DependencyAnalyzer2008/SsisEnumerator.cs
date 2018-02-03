@@ -574,33 +574,46 @@ namespace Microsoft.Samples.DependencyAnalyzer
         private void EnumerateProjectPackages(ProjectInfo project, DirectoryInfo tempDirectory, String server)
         {
             string projectNameFile = project.Name + ".ZIP";
+            String locationName = server + @"\" + project.Parent.Parent.Name + @"\" + project.Parent.Name + @"\" + project.Name;
 
             // Write the project content to a zip file
             System.IO.File.WriteAllBytes(tempDirectory.FullName + @"\" + projectNameFile, project.GetProjectBytes());
 
-            // unzip the project content
-            using (System.IO.Packaging.Package package = System.IO.Packaging.ZipPackage.Open(tempDirectory.FullName + @"\" + projectNameFile, FileMode.Open, FileAccess.Read))
+            Project ssisProject = Project.OpenProject(tempDirectory.FullName + @"\" + projectNameFile);
+
+            foreach (PackageItem pi in ssisProject.PackageItems)
             {
-                foreach (System.IO.Packaging.PackagePart part in package.GetParts())
-                {
-                    var target = Path.GetFullPath(Path.Combine(tempDirectory.FullName + @"\" + project.Name, part.Uri.OriginalString.TrimStart('/')));
-                    var targetDir = target.Remove(target.LastIndexOf('\\'));
+                Console.Write(string.Format("Processing Project package '{0}'... ", pi.Package.Name));
+                EnumeratePackage(pi.Package, locationName + @"\" + pi.Package.Name);
+                Console.WriteLine("Completed Successfully.");
+            }
 
-                    if (!Directory.Exists(targetDir))
-                        Directory.CreateDirectory(targetDir);
+//            ssisProject.
+            
 
-                    using (Stream source = part.GetStream(FileMode.Open, FileAccess.Read))
-                    {
-                        FileStream targetFile = File.OpenWrite(target);
-                        source.CopyTo(targetFile);
-                        targetFile.Close();
-                    }
-                }
-            } 
+            // unzip the project content
+            //using (System.IO.Packaging.Package package = System.IO.Packaging.ZipPackage.Open(tempDirectory.FullName + @"\" + projectNameFile, FileMode.Open, FileAccess.Read))
+            //{
+            //    foreach (System.IO.Packaging.PackagePart part in package.GetParts())
+            //    {
+            //        var target = Path.GetFullPath(Path.Combine(tempDirectory.FullName + @"\" + project.Name, part.Uri.OriginalString.TrimStart('/')));
+            //        var targetDir = target.Remove(target.LastIndexOf('\\'));
+
+            //        if (!Directory.Exists(targetDir))
+            //            Directory.CreateDirectory(targetDir);
+
+            //        using (Stream source = part.GetStream(FileMode.Open, FileAccess.Read))
+            //        {
+            //            FileStream targetFile = File.OpenWrite(target);
+            //            source.CopyTo(targetFile);
+            //            targetFile.Close();
+            //        }
+            //    }
+            //} 
 
             // Recurse all the files here
-            String locationName = server + @"\" + project.Parent.Parent.Name + @"\" + project.Parent.Name + @"\" + project.Name;
-            EnumeratePackages(tempDirectory.FullName + @"\" + project.Name, "*.dtsx", true, locationName);
+            //String locationName = server + @"\" + project.Parent.Parent.Name + @"\" + project.Parent.Name + @"\" + project.Name;
+            //EnumeratePackages(tempDirectory.FullName + @"\" + project.Name, "*.dtsx", true, locationName);
 
             // Cleanup
             //FileInfo[] files = tempDirectory.GetFiles("*.ZIP", System.IO.SearchOption.TopDirectoryOnly);
@@ -642,8 +655,15 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
         private void EnumeratePackages(string rootFolder, string pattern, bool recurseSubFolders, string locationName)
         {
+#if SQLGT2008
+            Console.Write("Enumerating packages, connection managers, and parameters...");
+            string[] filesToInspect = System.IO.Directory.GetFiles(rootFolder, pattern, (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
+            string[] paramFiles = System.IO.Directory.GetFiles(rootFolder, "*.params", (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
+            string[] conmgrFiles = System.IO.Directory.GetFiles(rootFolder, "*.conmgr", (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
+#else
             Console.Write("Enumerating packages...");
             string[] filesToInspect = System.IO.Directory.GetFiles(rootFolder, pattern, (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
+#endif
 
             Console.WriteLine("done.");
 
@@ -656,6 +676,33 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     // load the package
                     using (Package package = app.LoadPackage(packageFileName, null))
                     {
+//#if SQLGT2008
+//                        // Check for configuration file usage.
+//                        foreach (string paramFile in paramFiles)
+//                        {
+                            
+//                            using (Package ssisParams = app.LoadPackage(paramFile, null))
+//                            {
+//                                //Project.OpenProject()
+//                                foreach (Parameter ssisParam in ssisParams.Parameters)
+//                                {
+//                                    package.Parameters.Join(ssisParam);
+//                                }
+//                            }
+//                        }
+//                            // package.ImportConfigurationFile(paramFile);
+//                        foreach (string conmgrFile in conmgrFiles)
+//                        {
+//                            using (Package ssisConnections = app.LoadPackage(conmgrFile, null))
+//                            {
+//                                foreach (ConnectionManager ssisConMgr in ssisConnections.Connections )
+//                                {
+//                                    package.Connections.Join(ssisConMgr);
+//                                }
+//                            }
+//                        }
+//                            //package.ImportConfigurationFile(conmgrFile);
+//#endif
                         if (String.IsNullOrEmpty(locationName))
                             EnumeratePackage(package, packageFileName);
                         else
