@@ -12,7 +12,7 @@ namespace TSQLParser
 {
     public class SqlStatement
     {
-        private TSql100Parser parser;
+        private TSql130Parser parser;
         private TSqlFragment fragment;
         private bool reParseSQL;
         private IList<ParseError> _parseErrors;
@@ -46,7 +46,7 @@ namespace TSQLParser
             _parseErrors = null;
             reParseSQL = true;
             // sqlString = string.Empty;
-            parser = new TSql100Parser(quotedIdentifiers);
+            parser = new TSql130Parser(quotedIdentifiers);
             _identifiers = new Dictionary<string, Identifier>();
         }
 
