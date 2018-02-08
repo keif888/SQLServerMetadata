@@ -1102,7 +1102,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             {
                                 if (localIColumn.CustomPropertyCollection.Count == 2)
                                 {
-                                    repository.AddAttribute(componentRepositoryID, localInput.Name + " [" + localIColumn.Name + "] [ID: " + localIColumn.ID.ToString() + "]", "From [" + localIColumn.UpstreamComponentName + "] " + FormatColumnDescription(localIColumn.Name, localIColumn.DataType, localIColumn.Length, localIColumn.Precision, localIColumn.Scale) + " Expression " + localIColumn.CustomPropertyCollection["FriendlyExpression"].Value.ToString());
+                                    repository.AddAttribute(componentRepositoryID, localInput.Name + " [" + localIColumn.Name + "] [ID: " + localIColumn.ID.ToString() + "]", "From [" + localIColumn.UpstreamComponentName + "] " + FormatColumnDescription(localIColumn.Name, localIColumn.DataType, localIColumn.Length, localIColumn.Precision, localIColumn.Scale) + " Expression " +
+                                        localIColumn.CustomPropertyCollection["FriendlyExpression"].Value != null ? localIColumn.CustomPropertyCollection["FriendlyExpression"].Value.ToString() : "Not Available"
+                                        );
                                 }
                                 else
                                 {
@@ -1120,7 +1122,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             {
                                 if (localOColumn.CustomPropertyCollection.Count == 2)
                                 {
-                                    repository.AddAttribute(componentRepositoryID, localOutput.Name + " [" + localOColumn.Name + "] [ID: " + localOColumn.ID.ToString() + "]", FormatColumnDescription(localOColumn.Name, localOColumn.DataType, localOColumn.Length, localOColumn.Precision, localOColumn.Scale) + " Expression " + localOColumn.CustomPropertyCollection["FriendlyExpression"].Value.ToString());
+                                    repository.AddAttribute(componentRepositoryID, localOutput.Name + " [" + localOColumn.Name + "] [ID: " + localOColumn.ID.ToString() + "]", FormatColumnDescription(localOColumn.Name, localOColumn.DataType, localOColumn.Length, localOColumn.Precision, localOColumn.Scale) + " Expression " +
+                                        localOColumn.CustomPropertyCollection["FriendlyExpression"].Value != null ? localOColumn.CustomPropertyCollection["FriendlyExpression"].Value.ToString() : "Not Available"
+                                        );
                                 }
                                 //repository.AddObject(localOColumn.Name, "", ColumnEnumerator.ObjectTypes.Column, componentRepositoryID);
                                 //ToDo: Add connection from Input to Output Column.
@@ -1138,7 +1142,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             {
                                 if (localIColumn.CustomPropertyCollection.Count == 2)
                                 {
-                                    repository.AddAttribute(componentRepositoryID, localInput.Name + " [" + localIColumn.Name + "] [ID: " + localIColumn.ID.ToString() + "]", "From [" + localIColumn.UpstreamComponentName + "] " + FormatColumnDescription(localIColumn.Name, localIColumn.DataType, localIColumn.Length, localIColumn.Precision, localIColumn.Scale) + " Reference Column [" + localIColumn.CustomPropertyCollection["JoinToReferenceColumn"].Value.ToString() + "]");
+                                    repository.AddAttribute(componentRepositoryID, localInput.Name + " [" + localIColumn.Name + "] [ID: " + localIColumn.ID.ToString() + "]", "From [" + localIColumn.UpstreamComponentName + "] " + FormatColumnDescription(localIColumn.Name, localIColumn.DataType, localIColumn.Length, localIColumn.Precision, localIColumn.Scale) + " Reference Column [" + 
+                                        localIColumn.CustomPropertyCollection["JoinToReferenceColumn"].Value != null ? localIColumn.CustomPropertyCollection["JoinToReferenceColumn"].Value.ToString() : "Not Available"   // Address Issue #13.  Although why a lookup component wouldn't have a column to reference I don't know.
+                                        + "]");
                                 }
                                 else
                                 {
@@ -1156,7 +1162,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             {
                                 if (localOColumn.CustomPropertyCollection.Count == 1)
                                 {
-                                    repository.AddAttribute(componentRepositoryID, localOutput.Name + " [" + localOColumn.Name + "] [ID: " + localOColumn.ID.ToString() + "]", FormatColumnDescription(localOColumn.Name, localOColumn.DataType, localOColumn.Length, localOColumn.Precision, localOColumn.Scale) + " Return Column [" + localOColumn.CustomPropertyCollection["CopyFromReferenceColumn"].Value.ToString() + "]");
+                                    repository.AddAttribute(componentRepositoryID, localOutput.Name + " [" + localOColumn.Name + "] [ID: " + localOColumn.ID.ToString() + "]", FormatColumnDescription(localOColumn.Name, localOColumn.DataType, localOColumn.Length, localOColumn.Precision, localOColumn.Scale) + " Return Column [" + 
+                                        localOColumn.CustomPropertyCollection["CopyFromReferenceColumn"].Value != null ? localOColumn.CustomPropertyCollection["CopyFromReferenceColumn"].Value.ToString() : "Not Available"  // Make sure that Issue #13 can't happen here!
+                                        + "]");
                                 }
                                 //repository.AddObject(localOColumn.Name, "", ColumnEnumerator.ObjectTypes.Column, componentRepositoryID);
                             }
@@ -1175,7 +1183,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                 {
                                     if (localIColumn.CustomPropertyCollection["JoinToReferenceColumn"].Value != null)
                                     {
-                                        repository.AddAttribute(componentRepositoryID, localInput.Name + " [" + localIColumn.Name + "] [ID: " + localIColumn.ID.ToString() + "]", "From [" + localIColumn.UpstreamComponentName + "] " + FormatColumnDescription(localIColumn.Name, localIColumn.DataType, localIColumn.Length, localIColumn.Precision, localIColumn.Scale) + " Reference Column [" + localIColumn.CustomPropertyCollection["JoinToReferenceColumn"].Value.ToString() + "]");
+                                        repository.AddAttribute(componentRepositoryID, localInput.Name + " [" + localIColumn.Name + "] [ID: " + localIColumn.ID.ToString() + "]", "From [" + localIColumn.UpstreamComponentName + "] " + FormatColumnDescription(localIColumn.Name, localIColumn.DataType, localIColumn.Length, localIColumn.Precision, localIColumn.Scale) + " Reference Column [" +
+                                            localIColumn.CustomPropertyCollection["JoinToReferenceColumn"].Value != null ? localIColumn.CustomPropertyCollection["JoinToReferenceColumn"].Value.ToString() : "Not Available"
+                                            + "]");
                                     }
                                     else
                                     {
@@ -1200,7 +1210,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                 {
                                     if (localOColumn.CustomPropertyCollection["CopyFromReferenceColumn"].Value != null)
                                     {
-                                        repository.AddAttribute(componentRepositoryID, localOutput.Name + " [" + localOColumn.Name + "] [ID: " + localOColumn.ID.ToString() + "]", FormatColumnDescription(localOColumn.Name, localOColumn.DataType, localOColumn.Length, localOColumn.Precision, localOColumn.Scale) + " Return Column [" + localOColumn.CustomPropertyCollection["CopyFromReferenceColumn"].Value.ToString() + "]");
+                                        repository.AddAttribute(componentRepositoryID, localOutput.Name + " [" + localOColumn.Name + "] [ID: " + localOColumn.ID.ToString() + "]", FormatColumnDescription(localOColumn.Name, localOColumn.DataType, localOColumn.Length, localOColumn.Precision, localOColumn.Scale) + " Return Column [" +
+                                            localOColumn.CustomPropertyCollection["CopyFromReferenceColumn"].Value != null ? localOColumn.CustomPropertyCollection["CopyFromReferenceColumn"].Value.ToString() : "Not Available"
+                                            + "]");
                                     }
                                     else
                                     {
@@ -1240,7 +1252,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                     if (localOColumn.CustomPropertyCollection.Count == 2)
                                     {
                                         string localResults = "";
-                                        if (localOColumn.CustomPropertyCollection["InputColumnLineageIDs"].Value.ToString().Length > 0)
+                                        if (localOColumn.CustomPropertyCollection["InputColumnLineageIDs"].Value.ToString().Length > 0)  // If this fails then the use of the component is not valid, and the package is corrupt.
                                         {
                                             foreach (string localIDs in localOColumn.CustomPropertyCollection["InputColumnLineageIDs"].Value.ToString().Split(','))
                                             {
