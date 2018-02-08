@@ -1108,5 +1108,24 @@ Month(am.theDate) ASC;";
              }
          }
 
+        [TestMethod()]
+        public void updateTableAlias()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @"update a set a.UnitofMeasurement=b.UnitofMeasurement, a.UnitofMeasurementText=b.UnitofMeasurementText from [Ods].[DimUnit] a join  [Ods].[DimUnitUpdate] b on a.UnitKey=b.UnitKey;";  // ToDo: Handle String Literals for re-parsing.
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[Ods].[DimUnit]");
+            lstrexpected.Add("[Ods].[DimUnitUpdate]");
+            lstractual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
     }
 }

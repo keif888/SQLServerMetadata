@@ -50,6 +50,12 @@ namespace TestParser
                 {
                     tbTarget.Text += tableName + "\r\n";
                 }
+                tbTarget.Text += "\r\nAlias Names\r\n";
+                lstractual = target.getAliasNames();
+                foreach (string tableName in lstractual)
+                {
+                    tbTarget.Text += tableName + "\r\n";
+                }
 
             }
             else

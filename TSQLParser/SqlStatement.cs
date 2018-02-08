@@ -111,6 +111,28 @@ namespace TSQLParser
                 {
                     findIdentifiers(sqlBatch);
                 }
+
+                Dictionary<string, Identifier> tempIdentifiers = new Dictionary<string, Identifier>();
+                foreach(Identifier item in _identifiers.Values)
+                {
+                    tempIdentifiers.Add(item.ToString(false, true), item);
+                }
+
+                    foreach (Identifier item in tempIdentifiers.Values)
+                {
+                    if (item.IdentifierType == Identifier.IdentifierEnum.Table)
+                    {
+                        if (_identifiers.ContainsKey(string.Format("{0}|{1}", Identifier.IdentifierEnum.Alias, item.ToString(false))))
+                        {
+                            _identifiers.Remove(item.ToString(false, true));
+                        }
+                        else if (_identifiers.ContainsKey(string.Format("{0}|{1}", Identifier.IdentifierEnum.CommonTableExpression, item.ToString(false))))
+                        {
+                            _identifiers.Remove(item.ToString(false, true));
+                        }
+                    }
+                }
+
                 return (parseErrors.Count == 0);
             }
             else
@@ -121,22 +143,7 @@ namespace TSQLParser
 
         public List<string> getTableNames()
         {
-            List<string> tableNames = new List<string>();
-            if (fragment is TSqlScript)
-            {
-                foreach (Identifier foundID in _identifiers.Values)
-                {
-                    if (foundID.IdentifierType == Identifier.IdentifierEnum.Table)
-                    {
-                        tableNames.Add(foundID.ToString());
-                    }
-                }
-            }
-            else
-            {
-                throw new Exception("Unhandled Fragment Type " + fragment.GetType().FullName);
-            }
-            return tableNames;
+            return getTableNames(false);
         }
 
         public List<string> getTableNames(bool forceSchemaQualified)
@@ -159,17 +166,21 @@ namespace TSQLParser
             return tableNames;
         }
 
-
-        public List<string> getProcedureNames()
+        public List<string> getAliasNames()
         {
-            List<string> procNames = new List<string>();
+            return getAliasNames(false);
+        }
+
+        public List<string> getAliasNames(bool forceSchemaQualified)
+        {
+            List<string> aliasNames = new List<string>();
             if (fragment is TSqlScript)
             {
                 foreach (Identifier foundID in _identifiers.Values)
                 {
-                    if (foundID.IdentifierType == Identifier.IdentifierEnum.Procedure)
+                    if (foundID.IdentifierType == Identifier.IdentifierEnum.Alias)
                     {
-                        procNames.Add(foundID.ToString());
+                        aliasNames.Add(foundID.ToString(forceSchemaQualified));
                     }
                 }
             }
@@ -177,7 +188,12 @@ namespace TSQLParser
             {
                 throw new Exception("Unhandled Fragment Type " + fragment.GetType().FullName);
             }
-            return procNames;
+            return aliasNames;
+        }
+
+        public List<string> getProcedureNames()
+        {
+            return getProcedureNames(false);
         }
 
 
@@ -204,22 +220,7 @@ namespace TSQLParser
 
         public List<string> getFunctionNames()
         {
-            List<string> funcNames = new List<string>();
-            if (fragment is TSqlScript)
-            {
-                foreach (Identifier foundID in _identifiers.Values)
-                {
-                    if (foundID.IdentifierType == Identifier.IdentifierEnum.Function)
-                    {
-                        funcNames.Add(foundID.ToString());
-                    }
-                }
-            }
-            else
-            {
-                throw new Exception("Unhandled Fragment Type " + fragment.GetType().FullName);
-            }
-            return funcNames;
+            return getFunctionNames(false);
         }
 
 
@@ -242,6 +243,7 @@ namespace TSQLParser
             }
             return funcNames;
         }
+
         #region findIdentifiers
 
         private void findIdentifiers(TSqlBatch sqlBatch)
@@ -2004,6 +2006,7 @@ namespace TSQLParser
                 };
         }
 
+
         private void findIdentifiers(TableReference tableSource)
         {
             if (tableSource != null)
@@ -2013,6 +2016,8 @@ namespace TSQLParser
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.NamedTableReference":
                         // These are sometimes CTE's.  How do you tell the difference?
                         findIdentifiers((tableSource as NamedTableReference).SchemaObject);
+                        if ((tableSource as NamedTableReference).Alias != null)
+                            findIdentifiers((tableSource as NamedTableReference).Alias);
                         // Ignore these as they are CTE names...
                         break;
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.JoinParenthesisTableReference":
@@ -2107,6 +2112,19 @@ namespace TSQLParser
             }
         }
 
+        /// <summary>
+        /// Finds alias' when they show up.
+        /// </summary>
+        /// <param name="aliasSource"></param>
+        private void findIdentifiers(Microsoft.SqlServer.TransactSql.ScriptDom.Identifier aliasSource)
+        {
+            Identifier foundID = new Identifier(string.Empty, string.Empty, string.Empty, aliasSource.Value, Identifier.IdentifierEnum.Alias);
+            if (!_identifiers.ContainsKey(foundID.ToString(false, true)))
+            {
+                _identifiers.Add(foundID.ToString(false, true), foundID);
+            }
+        }
+
         private void findIdentifiers(SchemaObjectName schemaObject)
         {
             Identifier foundID;
@@ -2121,9 +2139,9 @@ namespace TSQLParser
                 default: foundID = new Identifier(string.Empty, string.Empty, string.Empty, schemaObject.BaseIdentifier.Value, Identifier.IdentifierEnum.Table);
                     break;
             }
-            if (!_identifiers.ContainsKey(foundID.ToString()))
+            if (!_identifiers.ContainsKey(foundID.ToString(false, true)))
             {
-                _identifiers.Add(foundID.ToString(), foundID);
+                _identifiers.Add(foundID.ToString(false, true), foundID);
             }
         }
 
@@ -2141,18 +2159,18 @@ namespace TSQLParser
                 default: foundID = new Identifier(string.Empty, string.Empty, string.Empty, schemaObject.BaseIdentifier.Value, objectType);
                     break;
             }
-            if (!_identifiers.ContainsKey(foundID.ToString()))
+            if (!_identifiers.ContainsKey(foundID.ToString(false, true)))
             {
-                _identifiers.Add(foundID.ToString(), foundID);
+                _identifiers.Add(foundID.ToString(false, true), foundID);
             }
         }
 
         private void findIdentifiers(Microsoft.SqlServer.TransactSql.ScriptDom.Identifier objectName, Identifier.IdentifierEnum objectType)
         {
             Identifier foundID = new Identifier(string.Empty, string.Empty, string.Empty, objectName.Value, objectType);
-            if (!_identifiers.ContainsKey(foundID.ToString()))
+            if (!_identifiers.ContainsKey(foundID.ToString(false, true)))
             {
-                _identifiers.Add(foundID.ToString(), foundID);
+                _identifiers.Add(foundID.ToString(false, true), foundID);
             }
         }
         #endregion

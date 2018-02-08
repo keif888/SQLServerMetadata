@@ -15,6 +15,7 @@ namespace TSQLParser
             ,View
             ,CommonTableExpression
             ,Unknown
+            ,Alias
         }
 
         public string ServerIdentifier { get; private set; }
@@ -143,5 +144,13 @@ namespace TSQLParser
             result += "[" + BaseIdentifier + "]";
             return result;
         }    
+
+        public string ToString(bool forceSchemaQualified, bool asIdentfier)
+        {
+            if (asIdentfier)
+                return string.Format("{0}|{1}", this.IdentifierType, this.ToString(forceSchemaQualified));
+            else
+                return this.ToString(forceSchemaQualified);
+        }
     }
 }
