@@ -55,10 +55,15 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\References\SQL2016DLLs\Microsoft.SQLServer.DTSRuntimeWrap.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.SqlServer.ManagedDTS">
+      <HintPath>$(VS140COMNTOOLS)\..\IDE\PrivateAssemblies\Microsoft.SqlServer.ManagedDTS.dll</HintPath>
+    </Reference>
+    <!--
     <Reference Include="Microsoft.SqlServer.ManagedDTS, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\SQL2016DLLs\Microsoft.SqlServer.ManagedDTS.dll</HintPath>
     </Reference>
+    -->
     <Reference Include="Microsoft.SqlServer.Management.IntegrationServices, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\SQL2016DLLs\Microsoft.SqlServer.Management.IntegrationServices.dll</HintPath>
@@ -75,6 +80,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\SQL2016DLLs\Microsoft.SqlServer.SqlEnum.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.DataTransformationServices.VsIntegration">
+      <HintPath>$(VS140COMNTOOLS)\..\IDE\PrivateAssemblies\Microsoft.DataTransformationServices.VsIntegration.DLL</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DataWarehouse.VsIntegration">
+      <HintPath>$(VS140COMNTOOLS)\..\IDE\PrivateAssemblies\Microsoft.DataWarehouse.VsIntegration.DLL</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Services" />
@@ -128,6 +140,9 @@
     </Compile>
     <Compile Include="..\DependencyAnalyzer2008\SSRSEnumerator.cs">
       <Link>SSRSEnumerator.cs</Link>
+    </Compile>
+    <Compile Include="..\DependencyAnalyzer2012\Serialization.cs">
+      <Link>Serialization.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\AssemblyInfoVersion.cs">

@@ -36,7 +36,6 @@ using IDTSPath = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSPath90;
 using IDTSCustomProperty = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSCustomProperty90;
 #else
 using IDTSComponentMetaData = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSComponentMetaData100;
-using IDTSPipeline = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSPipeline100;
 using IDTSInput = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSInput100;
 using IDTSInputColumn = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSInputColumn100;
 using IDTSOutput = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSOutput100;
@@ -45,12 +44,32 @@ using IDTSRuntimeConnection = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSRunti
 using IDTSPath = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSPath100;
 using IDTSCustomProperty = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSCustomProperty100;
 #endif
+#if SQL2008
+using IDTSPipeline = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSPipeline100;
+#endif
+#if SQL2012
+using IDTSPipeline = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSPipeline100;
+#endif
+#if SQL2014
+using IDTSPipeline = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSPipeline100;
+#endif
+#if SQL2016
+using IDTSPipeline = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSPipeline130;
+#endif
+#if SQL2017
+using IDTSPipeline = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSPipeline130;
+#endif
 
 using Pre2012PackageInfo = Microsoft.SqlServer.Dts.Runtime.PackageInfo;
 
 #if SQLGT2008
 using Microsoft.SqlServer.Management.IntegrationServices;
 using Post2012PackageInfo = Microsoft.SqlServer.Management.IntegrationServices.PackageInfo;
+using Microsoft.DataTransformationServices.Project;
+using Microsoft.DataTransformationServices.Project.ComponentModel;
+using Microsoft.DataTransformationServices.Project.Serialization;
+using Microsoft.DataWarehouse.VsIntegration.Shell.Project.Configuration;
+using System.Xml.Serialization;
 #endif
 
 
@@ -573,23 +592,14 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// <param name="tempDirectory">Directory to use for temporary files</param>
         private void EnumerateProjectPackages(ProjectInfo project, DirectoryInfo tempDirectory, String server)
         {
-            string projectNameFile = tempDirectory.FullName + @"\" + project.Name + ".ZIP";
+            string projectNameFile = tempDirectory.FullName + @"\" + project.Name + ".ispac";
             String locationName = server + @"\" + project.Parent.Parent.Name + @"\" + project.Parent.Name + @"\" + project.Name;
 
             // Write the project content to a zip file
             System.IO.File.WriteAllBytes(projectNameFile, project.GetProjectBytes());
 
             // Load the project content.
-            using (Project ssisProject = Project.OpenProject(projectNameFile))
-            {
-                // Parse each and every package in the project.
-                foreach (PackageItem pi in ssisProject.PackageItems)
-                {
-                    Console.Write(string.Format("Processing Project package '{0}'... ", pi.Package.Name));
-                    EnumeratePackage(pi.Package, locationName + @"\" + pi.Package.Name);
-                    Console.WriteLine("Completed Successfully.");
-                }
-            }
+            EnumerateIntegrationServicePack(projectNameFile, locationName);
 
             // Cleanup
             try
@@ -599,6 +609,33 @@ namespace Microsoft.Samples.DependencyAnalyzer
             catch (Exception ex)
             {
                 Console.WriteLine(string.Format("Error {0} occurred whilst attempting to cleanup temporary files.\r\n{1}\r\n{2}\r\nWith stack trace {3}.", ex.Message, projectNameFile, tempDirectory.FullName + @"\" + project.Name, ex.StackTrace));
+            }
+        }
+
+        /// <summary>
+        /// Loads the ispac file that is referenced by name, and stores an overidable location (to handle file system of SSIS store)
+        /// </summary>
+        /// <param name="integrationServicePack">the file name and location on the file system</param>
+        /// <param name="locationName">the logical location that the package came from.  Either the SSIS Server, or file system</param>
+        private void EnumerateIntegrationServicePack(string integrationServicePack, string locationName)
+        {
+            try
+            {
+                // Load the project content.
+                using (Project ssisProject = Project.OpenProject(integrationServicePack))
+                {
+                    // Parse each and every package in the project.
+                    foreach (PackageItem pi in ssisProject.PackageItems)
+                    {
+                        Console.Write(string.Format("Processing Project package '{0}'... ", pi.Package.Name));
+                        EnumeratePackage(pi.Package, locationName + @"\" + pi.Package.Name);
+                        Console.WriteLine("Completed Successfully.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(string.Format("Error {0} occurred whilst attempting to handle ispac {1}\r\nWith stack trace {2}.", ex.Message, integrationServicePack, ex.StackTrace));
             }
         }
 
@@ -624,59 +661,239 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
         }
 
+        /// <summary>
+        /// Enumerates all the packages in the rootFolder.  Will attempt to determine if there is a folder of Project Deployment
+        /// pacakges, and handle these appropriately.
+        /// </summary>
+        /// <param name="rootFolder"></param>
+        /// <param name="pattern"></param>
+        /// <param name="recurseSubFolders"></param>
+        /// <param name="locationName"></param>
         private void EnumeratePackages(string rootFolder, string pattern, bool recurseSubFolders, string locationName)
         {
-            Console.Write("Enumerating packages...");
-            string[] filesToInspect = System.IO.Directory.GetFiles(rootFolder, pattern, (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
-
+            string[] filesToInspect;
+            Console.Write("Enumerating parameters and connection managers...");
+            string[] configsToAttach = System.IO.Directory.GetFiles(rootFolder, "*.params", (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
+            string[] connectionsToAttach = System.IO.Directory.GetFiles(rootFolder, "*.conmgr", (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
             Console.WriteLine("done.");
 
-            foreach (string packageFileName in filesToInspect)
+            if ((configsToAttach.Length > 0) || (connectionsToAttach.Length > 0))
             {
-                try
-                {
-                    Console.Write(string.Format("Loading file package '{0}'... ", packageFileName));
+                // Assume that we are in Project Deployment Mode.
+                // But this has to check each folder, as there may be a mix of project and package deployment based on folder locations :-(
+                Console.WriteLine("Parameters or connection managers detected.  Switch to hybrid project mode...");
+                Console.Write("Enumerate directories...");
+                List<string> directoriesToEnumerate = new List<string>();
+                directoriesToEnumerate.Add(rootFolder);
+                string[] foldersToEnumerate = System.IO.Directory.GetDirectories(rootFolder, "*.*", (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
+                foreach (string folderPath in foldersToEnumerate)
+                    directoriesToEnumerate.Add(folderPath);
+                Console.WriteLine("done.");
+                //string tempFolder = System.IO.Path.GetTempPath() + @"\SSISMD" + Guid.NewGuid().ToString();
+                //if (!System.IO.Directory.Exists(tempFolder))
+                //{
+                //    System.IO.Directory.CreateDirectory(tempFolder);
+                //}
+                //System.IO.DirectoryInfo tempDirectory = new System.IO.DirectoryInfo(tempFolder);
 
-                    // load the package
-                    using (Package package = app.LoadPackage(packageFileName, null))
-                    {
-                        if (String.IsNullOrEmpty(locationName))
-                            EnumeratePackage(package, packageFileName);
-                        else
-                            EnumeratePackage(package, locationName + @"\" + package.Name);
-                    }
-
-                    Console.WriteLine("Completed Successfully.");
-                }
-                catch (Microsoft.SqlServer.Dts.Runtime.DtsRuntimeException dtsEx)
+                foreach (string folderPath in directoriesToEnumerate)
                 {
-                    if (dtsEx.Message.Contains("The package is encrypted with a password"))
+                    Console.Write(string.Format("Enumerate directory {0}...", folderPath));
+                    configsToAttach = System.IO.Directory.GetFiles(folderPath, "*.params", System.IO.SearchOption.TopDirectoryOnly);
+                    connectionsToAttach = System.IO.Directory.GetFiles(folderPath, "*.conmgr", System.IO.SearchOption.TopDirectoryOnly);
+                    filesToInspect = System.IO.Directory.GetFiles(rootFolder, pattern, System.IO.SearchOption.TopDirectoryOnly);
+                    Console.WriteLine("done.");
+                    if ((configsToAttach.Length > 0) || (connectionsToAttach.Length > 0))
                     {
-                        // The package was encrypted.  Try to decrypt the sucker!
-                        using(Package package = LoadPackage(packageFileName))
+#if SQLGT2008
+                        DirectoryInfo folderInfo = new DirectoryInfo(folderPath);
+                        // string projectFileName = tempDirectory.FullName + @"\" + folderInfo.Name + ".ispac";
+                        using (Project ssisProject = Project.CreateProject())
                         {
-                            if (package != null)
+                            ssisProject.OfflineMode = true;
+                            ssisProject.Name = folderInfo.Name;
+                            ssisProject.VersionMajor = 1;
+                            ssisProject.VersionMinor = 0;
+                            ssisProject.VersionBuild = 0;
+                            ssisProject.ProtectionLevel = DTSProtectionLevel.DontSaveSensitive;
+#if SQL2012
+                            ssisProject.TargetServerVersion = DTSTargetServerVersion.SQLServer2012;
+#endif
+#if SQL2014
+                            ssisProject.TargetServerVersion = DTSTargetServerVersion.SQLServer2014;
+#endif
+#if SQL2016
+                            ssisProject.TargetServerVersion = DTSTargetServerVersion.SQLServer2016;
+#endif
+#if SQL2017
+                            ssisProject.TargetServerVersion = DTSTargetServerVersion.SQLServer2017;
+#endif
+                            // Load the parameters into the project
+                            // ToDo: Load the parameters.  Not needed for analysis?
+
+                            // Load the connection details into the project
+                            var connectionManagerSerializer = new XmlSerializer(typeof(ProjectConnectionManager));
+                            foreach (string connectionFile in connectionsToAttach)
                             {
-                                if (String.IsNullOrEmpty(locationName))
-                                    EnumeratePackage(package, packageFileName);
-                                else
-                                    EnumeratePackage(package, locationName + @"\" + package.Name);
+                                FileInfo connectionInfo = new FileInfo(connectionFile);
+                                var cmXml = File.ReadAllText(connectionFile);
+                                var connMgr = (ProjectConnectionManager)connectionManagerSerializer.Deserialize(new StringReader(cmXml));
+
+                                var cm = ssisProject.ConnectionManagerItems.Add(connMgr.CreationName, connectionInfo.Name);
+
+                                cm.Load(null, File.OpenRead(connectionFile));
                             }
-                            else
-                                Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", packageFileName));
+
+                            foreach (string packageFileName in filesToInspect)
+                            {
+                                FileInfo ssisPackage = new FileInfo(packageFileName);
+                                IDTSEvents eventResults = new PackageEventHandler();
+
+                                //string xml = File.ReadAllText(packageFileName);
+                                //using (Package package = new Package { IgnoreConfigurationsOnLoad = true, CheckSignatureOnLoad = false, OfflineMode = true})
+                                //{
+                                //    package.LoadFromXML(xml, eventResults);
+                                //    package.ProtectionLevel = DTSProtectionLevel.DontSaveSensitive;
+                                //    // Remove the package, to see what happens.
+                                //    ssisProject.PackageItems.Add(package, ssisPackage.Name);
+                                //}
+
+                                try
+                                {
+                                    Console.Write(string.Format("Loading file package '{0}'... ", packageFileName));
+
+                                    // load the package
+                                    using (Package package = app.LoadPackage(packageFileName, eventResults))
+                                    {
+                                        ssisProject.PackageItems.Add(package, ssisPackage.Name);
+                                    }
+
+                                    Console.WriteLine("Completed Successfully.");
+                                }
+                                catch (Microsoft.SqlServer.Dts.Runtime.DtsRuntimeException dtsEx)
+                                {
+                                    if (dtsEx.Message.Contains("The package is encrypted with a password"))
+                                    {
+                                        // The package was encrypted.  Try to decrypt the sucker!
+                                        using (Package package = LoadPackage(packageFileName))
+                                        {
+                                            if (package != null)
+                                            {
+                                                ssisProject.PackageItems.Add(package, ssisPackage.Name);
+                                            }
+                                            else
+                                                Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", packageFileName));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
+                                    }
+                                }
+                                catch (System.Exception ex)
+                                {
+                                    Console.WriteLine(string.Format("Error occurred: '{0}'", ex.Message));
+                                }
+                            }
+                            // Ok, in theory we have a Project now.
+                            try
+                            {
+                                foreach (PackageItem pi in ssisProject.PackageItems)
+                                {
+                                    Console.Write(string.Format("Processing Project package '{0}'... ", pi.Package.Name));
+                                    EnumeratePackage(pi.Package, locationName + @"\" + pi.Package.Name);
+                                    Console.WriteLine("Completed Successfully.");
+                                }
+                                // This keeps failing. But do we need to save the project at all?
+                                // ssisProject.SaveTo(projectFileName);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(string.Format("Error occurred: '{0}'\r\nStack Trace {1}", ex.Message, ex.StackTrace));
+                            }
                         }
+                        //EnumerateIntegrationServicePack(projectFileName, locationName);
+
+#else
+                        Console.WriteLine(string.Format("Directory {0} has connection manager or configuration, which is not compatible with this edition of SQL Server...", folderPath));
+#endif
                     }
                     else
                     {
-                        Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
+                        foreach (string packageFileName in filesToInspect)
+                        {
+                            EnumerateFilePackage(packageFileName, locationName);
+                        }
                     }
                 }
-                catch (System.Exception ex)
+                // Remove the temporary directory and it's contents.
+                //tempDirectory.Delete(true);
+            }
+            else
+            { 
+
+                Console.Write("Enumerating packages...");
+                filesToInspect = System.IO.Directory.GetFiles(rootFolder, pattern, (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
+                Console.WriteLine("done.");
+
+                foreach (string packageFileName in filesToInspect)
                 {
-                    Console.WriteLine(string.Format("Error occurred: '{0}'", ex.Message));
+                    EnumerateFilePackage(packageFileName, locationName);
                 }
             }
         }
+
+        /// <summary>
+        /// Enumerates the specific package, whilst checking for encryption
+        /// </summary>
+        /// <param name="packageFileName"></param>
+        /// <param name="locationName"></param>
+        private void EnumerateFilePackage(string packageFileName, string locationName)
+        {
+            try
+            {
+                Console.Write(string.Format("Loading file package '{0}'... ", packageFileName));
+
+                // load the package
+                using (Package package = app.LoadPackage(packageFileName, null))
+                {
+                    if (String.IsNullOrEmpty(locationName))
+                        EnumeratePackage(package, packageFileName);
+                    else
+                        EnumeratePackage(package, locationName + @"\" + package.Name);
+                }
+
+                Console.WriteLine("Completed Successfully.");
+            }
+            catch (Microsoft.SqlServer.Dts.Runtime.DtsRuntimeException dtsEx)
+            {
+                if (dtsEx.Message.Contains("The package is encrypted with a password"))
+                {
+                    // The package was encrypted.  Try to decrypt the sucker!
+                    using (Package package = LoadPackage(packageFileName))
+                    {
+                        if (package != null)
+                        {
+                            if (String.IsNullOrEmpty(locationName))
+                                EnumeratePackage(package, packageFileName);
+                            else
+                                EnumeratePackage(package, locationName + @"\" + package.Name);
+                        }
+                        else
+                            Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", packageFileName));
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(string.Format("Error occurred: '{0}'", ex.Message));
+            }
+        }
+
 
         /// <summary>
         /// Attempt to load an ssis package utilising provided passwords.
@@ -818,6 +1035,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 {
                     TaskHost taskHost = dtsContainer as TaskHost;
 
+                    Debug.Print(Microsoft.VisualBasic.Information.TypeName(taskHost.InnerObject));
+
+                    // ToDo: Work out why this is not correct in Project Deployment mode.
+                    // Although the debug statues that it is IDTSPipeline130, it is not casting.
                     IDTSPipeline pipeline = taskHost.InnerObject as IDTSPipeline;
 
                     if (pipeline != null)
@@ -897,7 +1118,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     default:
                         throw new Exception(string.Format("Invalid Sql Statement Source Type {0}.", stmtSource));
                 }
-                ConnectionManager connectionManager = package.Connections[taskHost.Properties["Connection"].GetValue(taskHost).ToString()];
+                Microsoft.SqlServer.Dts.Runtime.ConnectionManager connectionManager = package.Connections[taskHost.Properties["Connection"].GetValue(taskHost).ToString()];
 
                     string connectionManagerType = connectionManager.CreationName;
                     int connectionID = repository.GetConnection(connectionManager.ConnectionString);
@@ -1523,7 +1744,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 // todo: what happens if this connection isn't available anymore
                 if (package.Connections.Contains(runtimeConnection.ConnectionManagerID))
                 {
-                    ConnectionManager connectionManager = package.Connections[runtimeConnection.ConnectionManagerID];
+                    Microsoft.SqlServer.Dts.Runtime.ConnectionManager connectionManager = package.Connections[runtimeConnection.ConnectionManagerID];
 
                     string connectionManagerType = connectionManager.CreationName;
                     int connectionID = repository.GetConnection(connectionManager.ConnectionString);
@@ -1634,7 +1855,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             // AddColumnNameAttributes(component, componentRepositoryID);
         }
 
-        private int CreateConnection(ConnectionManager connectionManager, out string serverName)
+        private int CreateConnection(Microsoft.SqlServer.Dts.Runtime.ConnectionManager connectionManager, out string serverName)
         {
             // todo: is the root object of the connection the root repository object ID?
             string connectionType = connectionManager.CreationName;
@@ -1663,7 +1884,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             return connectionID;
         }
 
-        private void GetConnectionAttributes(ConnectionManager connectionManager, out string serverName, out string initialCatalog)
+        private void GetConnectionAttributes(Microsoft.SqlServer.Dts.Runtime.ConnectionManager connectionManager, out string serverName, out string initialCatalog)
         {
             serverName = null;
             initialCatalog = null;
@@ -2051,5 +2272,40 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
             return repository.AddObject(name, description, objectType, parentObjectID);
         }
+    }
+
+
+
+    public class PackageEventHandler : DefaultEvents
+    {
+        public List<string> eventMessages;
+        public PackageEventHandler()
+        {
+            eventMessages = new List<string>();
+        }
+
+        public override bool OnError(DtsObject source, int errorCode, string subComponent, string description, string helpFile, int helpContext, string idofInterfaceWithError)
+        {
+            HandleEvent("Error", errorCode, subComponent, description);
+            return base.OnError(source, errorCode, subComponent, description, helpFile, helpContext, idofInterfaceWithError);
+        }
+
+        public override void OnInformation(DtsObject source, int informationCode, string subComponent, string description, string helpFile, int helpContext, string idofInterfaceWithError, ref bool fireAgain)
+        {
+            HandleEvent("Information", informationCode, subComponent, description);
+            base.OnInformation(source, informationCode, subComponent, description, helpFile, helpContext, idofInterfaceWithError, ref fireAgain);
+        }
+
+        public override void OnWarning(DtsObject source, int warningCode, string subComponent, string description, string helpFile, int helpContext, string idofInterfaceWithError)
+        {
+            HandleEvent("Warning", warningCode, subComponent, description);
+            base.OnWarning(source, warningCode, subComponent, description, helpFile, helpContext, idofInterfaceWithError);
+        }
+
+        private void HandleEvent(string type, int errorCode, string subComponent, string description)
+        {
+            eventMessages.Add(String.Format("[{0}] {1}: {2}: {3}", type, errorCode, subComponent, description));
+        }
+
     }
 }

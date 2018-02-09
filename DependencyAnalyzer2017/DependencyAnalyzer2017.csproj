@@ -90,6 +90,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\SQL2017DLLs\Microsoft.SqlServer.SqlEnum.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.DataTransformationServices.VsIntegration">
+      <HintPath>$(VS140COMNTOOLS)\..\IDE\PrivateAssemblies\Microsoft.DataTransformationServices.VsIntegration.DLL</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DataWarehouse.VsIntegration">
+      <HintPath>$(VS140COMNTOOLS)\..\IDE\PrivateAssemblies\Microsoft.DataWarehouse.VsIntegration.DLL</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Services" />
@@ -143,6 +149,9 @@
     </Compile>
     <Compile Include="..\DependencyAnalyzer2008\SSRSEnumerator.cs">
       <Link>SSRSEnumerator.cs</Link>
+    </Compile>
+    <Compile Include="..\DependencyAnalyzer2012\Serialization.cs">
+      <Link>Serialization.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\AssemblyInfoVersion.cs">
