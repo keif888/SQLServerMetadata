@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?define ProductVersion = "0.21.0.0"?>
+  <?define ProductVersion = "0.22.0.0"?>
   <?define UpgradeCode = "B758AA83-565F-453A-BECF-0B0B060E7023"?>
   <?define Manufacturer = "Keith Martin"?>
   <?define PackageCode = "*"?>
@@ -147,6 +147,11 @@
               <File Id="SourceCode2005" Name="SSIS_Meta_creation_2005.sql" Source="$(var.SolutionDir)SQL\SSIS_Meta_creation_2005.sql" />
             </Component>
           </Directory>
+          <Directory Id="SSISPROJECTBUILDERDIR" Name="SSISProjectBuilder">
+            <Component Id="SSISProjectBuilderExe" Guid="{39F20A67-354B-4503-9CBD-F4DFA06C5494}" Win64="no">
+              <File Id="FSSISProjectBuilderExe" Name="$(var.SSISProjectBuilder.TargetFileName)" Source="$(var.SSISProjectBuilder.TargetPath)" />
+            </Component>
+          </Directory>
           <Directory Id="TESTPARSERDIR" Name="TestParser">
             <Component Id="TestParserExe" Guid="{1658EDC8-A5F7-431B-8520-D53860B73DA5}" Win64="no">
               <File Id="FTestParserExe" Name="$(var.TestParser.TargetFileName)" Source="$(var.TestParser.TargetPath)" />
@@ -242,7 +247,10 @@
         <ComponentRef Id="ScriptDomTest"/>
         <ComponentRef Id="TestParserShortcut"/>
       </Feature>
-
+    <Feature Id="SSISProjectBuilder" Level="1" Title="SSIS Project Builder">
+      <ComponentRef Id="SSISProjectBuilderExe"/>
+    </Feature>
+    
     </Feature>
   </Product>
 </Wix>

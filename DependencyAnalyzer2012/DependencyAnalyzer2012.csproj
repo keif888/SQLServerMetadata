@@ -88,12 +88,6 @@
     <Reference Include="Microsoft.SqlServer.SqlEnum, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\References\SQL2012DLLs\Microsoft.SqlServer.SqlEnum.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.DataTransformationServices.VsIntegration">
-      <HintPath>$(VS140COMNTOOLS)\..\IDE\PrivateAssemblies\Microsoft.DataTransformationServices.VsIntegration.DLL</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DataWarehouse.VsIntegration">
-      <HintPath>$(VS140COMNTOOLS)\..\IDE\PrivateAssemblies\Microsoft.DataWarehouse.VsIntegration.DLL</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
@@ -137,7 +131,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Serialization.cs" />
     <Compile Include="SSASEnumerator.cs" />
     <Compile Include="..\DependencyAnalyzer2008\SsisEnumerator.cs">
       <Link>SsisEnumerator.cs</Link>
@@ -191,7 +184,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildAction="ReBuild" BuildVersion_UpdateFileVersion="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildAction="ReBuild" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>

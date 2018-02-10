@@ -9,7 +9,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using Microsoft.SqlServer.Dts.Runtime;
 
-namespace Microsoft.Samples.DependencyAnalyzer
+namespace SSISProjectBuilder
 {
     public class Xml
     {

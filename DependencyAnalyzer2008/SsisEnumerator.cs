@@ -65,11 +65,6 @@ using Pre2012PackageInfo = Microsoft.SqlServer.Dts.Runtime.PackageInfo;
 #if SQLGT2008
 using Microsoft.SqlServer.Management.IntegrationServices;
 using Post2012PackageInfo = Microsoft.SqlServer.Management.IntegrationServices.PackageInfo;
-using Microsoft.DataTransformationServices.Project;
-using Microsoft.DataTransformationServices.Project.ComponentModel;
-using Microsoft.DataTransformationServices.Project.Serialization;
-using Microsoft.DataWarehouse.VsIntegration.Shell.Project.Configuration;
-using System.Xml.Serialization;
 #endif
 
 
@@ -102,6 +97,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         private Repository repository;
 
         private const string dtsxPattern = "*.dtsx";
+        private const string ispacPattern = "*.ispac";
         private bool threePartNames;
         private string[] packagePasswords;
 
@@ -434,7 +430,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 } while (folders.Count > 0);
                 #endregion
 
-#if SQLGT2008 //NotWorking
+#if SQLGT2008
                 #region SQL Catalog Hosted Packages
 
                 foreach (string folderName in rootFolders)
@@ -658,8 +654,34 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 }
 
                 EnumeratePackages(rootFolder, dtsxPattern, recurseSubFolders, null);
+#if SQLGT2008
+                EnumerateProjects(rootFolder, ispacPattern, recurseSubFolders, null);
+#endif
             }
         }
+
+#if SQLGT2008
+
+        /// <summary>
+        /// Enumerates all the projects (ispac) in the rootFolder.
+        /// </summary>
+        /// <param name="rootFolder"></param>
+        /// <param name="pattern"></param>
+        /// <param name="recurseSubFolders"></param>
+        /// <param name="p"></param>
+        private void EnumerateProjects(string rootFolder, string pattern, bool recurseSubFolders, string locationName)
+        {
+            string[] filesToInspect;
+            Console.Write("Enumerating projects...");
+            filesToInspect = System.IO.Directory.GetFiles(rootFolder, pattern, (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
+            Console.WriteLine("done.");
+
+            foreach (string projectFileName in filesToInspect)
+            {
+                EnumerateIntegrationServicePack(projectFileName, locationName);
+            }
+        }
+#endif
 
         /// <summary>
         /// Enumerates all the packages in the rootFolder.  Will attempt to determine if there is a folder of Project Deployment
@@ -672,6 +694,24 @@ namespace Microsoft.Samples.DependencyAnalyzer
         private void EnumeratePackages(string rootFolder, string pattern, bool recurseSubFolders, string locationName)
         {
             string[] filesToInspect;
+            string sqlVersion = string.Empty;
+#if SQLGT2008
+            string executionLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            FileInfo currentExecutable = new FileInfo(executionLocation);
+#endif
+#if SQL2012
+            sqlVersion = "SQL2012";
+#endif
+#if SQL2014
+            sqlVersion = "SQL2014";
+#endif
+#if SQL2016
+            sqlVersion = "SQL2016";
+#endif
+#if SQL2017
+            sqlVersion = "SQL2017";
+#endif
+
             Console.Write("Enumerating parameters and connection managers...");
             string[] configsToAttach = System.IO.Directory.GetFiles(rootFolder, "*.params", (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
             string[] connectionsToAttach = System.IO.Directory.GetFiles(rootFolder, "*.conmgr", (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
@@ -689,23 +729,62 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 foreach (string folderPath in foldersToEnumerate)
                     directoriesToEnumerate.Add(folderPath);
                 Console.WriteLine("done.");
-                //string tempFolder = System.IO.Path.GetTempPath() + @"\SSISMD" + Guid.NewGuid().ToString();
-                //if (!System.IO.Directory.Exists(tempFolder))
-                //{
-                //    System.IO.Directory.CreateDirectory(tempFolder);
-                //}
-                //System.IO.DirectoryInfo tempDirectory = new System.IO.DirectoryInfo(tempFolder);
 
                 foreach (string folderPath in directoriesToEnumerate)
                 {
-                    Console.Write(string.Format("Enumerate directory {0}...", folderPath));
+                    Console.Write(string.Format("Enumerate directory {0} for .params and .conmgr...", folderPath));
                     configsToAttach = System.IO.Directory.GetFiles(folderPath, "*.params", System.IO.SearchOption.TopDirectoryOnly);
                     connectionsToAttach = System.IO.Directory.GetFiles(folderPath, "*.conmgr", System.IO.SearchOption.TopDirectoryOnly);
-                    filesToInspect = System.IO.Directory.GetFiles(rootFolder, pattern, System.IO.SearchOption.TopDirectoryOnly);
                     Console.WriteLine("done.");
                     if ((configsToAttach.Length > 0) || (connectionsToAttach.Length > 0))
                     {
 #if SQLGT2008
+                        string tempFolder = System.IO.Path.GetTempPath() + @"\SSISMD" + Guid.NewGuid().ToString();
+                        if (!System.IO.Directory.Exists(tempFolder))
+                        {
+                            System.IO.Directory.CreateDirectory(tempFolder);
+                        }
+                        System.IO.DirectoryInfo tempDirectory = new System.IO.DirectoryInfo(tempFolder);
+                        try
+                        {
+                            Console.Write(string.Format("Enumerate directory {0} for .dtproj...", folderPath));
+                            filesToInspect = System.IO.Directory.GetFiles(rootFolder, "*.dtproj", System.IO.SearchOption.TopDirectoryOnly);
+                            Console.WriteLine("done.");
+                            foreach (string projectFileName in filesToInspect)
+                            {
+                                // We need to shell out to the SSISProjectBuilder as it needs different DLL's to the analyser.    
+                                FileInfo projectFileInfo = new FileInfo(projectFileName);
+                                string ispacFileName = string.Format(@"{0}\{1}.ispac", tempDirectory.FullName, projectFileInfo.Name);
+                                // /d:"D:\keith\Documents\visual studio 2015\Projects\Integration Services 2016 ProjectMode\Integration Services 2016 ProjectMode\Integration Services 2016 ProjectMode.dtproj" /i:"D:\Test\SSISProjectBuilder.ispac" /v:SQL2016
+                                Process ssisProjectBuilder = new Process();
+
+                                ssisProjectBuilder.StartInfo.FileName = string.Format(@"{0}\..\SSISProjectBuilder\SSISProjectBuilder.exe", currentExecutable.DirectoryName);
+                                ssisProjectBuilder.StartInfo.UseShellExecute = false;
+                                ssisProjectBuilder.StartInfo.RedirectStandardOutput = true;
+                                ssisProjectBuilder.StartInfo.RedirectStandardInput = true;
+                                ssisProjectBuilder.StartInfo.Arguments = string.Format("/d:\"{0}\" /i:\"{1}\" /v:{2}", projectFileName, ispacFileName, sqlVersion);
+
+                                ssisProjectBuilder.Start();
+
+                                string redirectedOutput = string.Empty;
+                                ssisProjectBuilder.WaitForExit();
+                                redirectedOutput = ssisProjectBuilder.StandardOutput.ReadToEnd();
+                                Console.WriteLine(redirectedOutput);
+
+                                EnumerateIntegrationServicePack(ispacFileName, locationName);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(string.Format("The exception \r\n{0}\r\nwas raised with stack trace{1}", ex.Message, ex.StackTrace));
+                        }
+                        finally
+                        {
+                            // Cleanup temporary files etc.
+                            tempDirectory.Delete(true);
+                        }
+
+#if IAMBROKEN
                         DirectoryInfo folderInfo = new DirectoryInfo(folderPath);
                         // string projectFileName = tempDirectory.FullName + @"\" + folderInfo.Name + ".ispac";
                         using (Project ssisProject = Project.CreateProject())
@@ -814,12 +893,17 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         }
                         //EnumerateIntegrationServicePack(projectFileName, locationName);
 
+#endif
 #else
-                        Console.WriteLine(string.Format("Directory {0} has connection manager or configuration, which is not compatible with this edition of SQL Server...", folderPath));
+                        Console.WriteLine(string.Format("Directory {0} has connection manager or configuration, which is not compatible with this build of DependencyAnalyzer...", folderPath));
 #endif
                     }
                     else
                     {
+                        Console.Write(string.Format("Enumerate directory {0} for .dtsx...", folderPath));
+                        filesToInspect = System.IO.Directory.GetFiles(rootFolder, pattern, System.IO.SearchOption.TopDirectoryOnly);
+                        Console.WriteLine("done.");
+
                         foreach (string packageFileName in filesToInspect)
                         {
                             EnumerateFilePackage(packageFileName, locationName);
@@ -1035,10 +1119,6 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 {
                     TaskHost taskHost = dtsContainer as TaskHost;
 
-                    Debug.Print(Microsoft.VisualBasic.Information.TypeName(taskHost.InnerObject));
-
-                    // ToDo: Work out why this is not correct in Project Deployment mode.
-                    // Although the debug statues that it is IDTSPipeline130, it is not casting.
                     IDTSPipeline pipeline = taskHost.InnerObject as IDTSPipeline;
 
                     if (pipeline != null)
