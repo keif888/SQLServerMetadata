@@ -150,6 +150,10 @@
           <Directory Id="SSISPROJECTBUILDERDIR" Name="SSISProjectBuilder">
             <Component Id="SSISProjectBuilderExe" Guid="{39F20A67-354B-4503-9CBD-F4DFA06C5494}" Win64="no">
               <File Id="FSSISProjectBuilderExe" Name="$(var.SSISProjectBuilder.TargetFileName)" Source="$(var.SSISProjectBuilder.TargetPath)" />
+              <File Id="FSSISProjectBuilderDll1" Name="Microsoft.AnalysisServices.Project.dll" Source="$(var.SSISProjectBuilder.TargetDir)Microsoft.AnalysisServices.Project.dll" />
+              <File Id="FSSISProjectBuilderDll2" Name="Microsoft.DataTransformationServices.VsIntegration.DLL" Source="$(var.SSISProjectBuilder.TargetDir)Microsoft.DataTransformationServices.VsIntegration.DLL" />
+              <File Id="FSSISProjectBuilderDll3" Name="Microsoft.DataWarehouse.dll" Source="$(var.SSISProjectBuilder.TargetDir)Microsoft.DataWarehouse.dll" />
+              <File Id="FSSISProjectBuilderDll4" Name="Microsoft.DataWarehouse.VsIntegration.DLL" Source="$(var.SSISProjectBuilder.TargetDir)Microsoft.DataWarehouse.VsIntegration.DLL" />
             </Component>
           </Directory>
           <Directory Id="TESTPARSERDIR" Name="TestParser">
