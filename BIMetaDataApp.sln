@@ -289,7 +289,6 @@ Global
 		{D1F0156C-34F2-472C-9493-618652BC19BE}.Release|Any CPU.Deploy.0 = Production
 		{D1F0156C-34F2-472C-9493-618652BC19BE}.Release|Mixed Platforms.ActiveCfg = Production
 		{D1F0156C-34F2-472C-9493-618652BC19BE}.Release|Mixed Platforms.Build.0 = Production
-		{D1F0156C-34F2-472C-9493-618652BC19BE}.Release|Mixed Platforms.Deploy.0 = Production
 		{D1F0156C-34F2-472C-9493-618652BC19BE}.Release|x86.ActiveCfg = Production
 		{D1F0156C-34F2-472C-9493-618652BC19BE}.Release|x86.Build.0 = Production
 		{D1F0156C-34F2-472C-9493-618652BC19BE}.Release|x86.Deploy.0 = Production

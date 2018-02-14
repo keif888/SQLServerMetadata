@@ -16,6 +16,8 @@ It has an "Executor", which allows the user to use a GUI to run the various anal
 
 # Release Notes
 
+**Beta 22** Adds capability to detect .ispac files, and scan them.  Adds capability to detect .conmgr and/or .params files, and switch to "hybid mode".  In "hybrid mode" the folder is checked for the expected .dtproj files, and these are compiled to .ispac files and scanned.  If there are no .dtproj files, then no SSIS packages will be scanned in that folder.  If there are no .conmgr or .params files (in sub folders) then standard SSIS scan will be performed.
+
 **Beta 21** Corrects issue with Project Deployed packages not seeing the connections or parameters.  Also updates the TSQL parser to latest available.
 
 **Beta 20** Corrects issues with SSIS Catalog capabilites, adds SQL 2016 and 2017, and utlises the latest MSAGL libraries
