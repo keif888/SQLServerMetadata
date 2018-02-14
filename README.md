@@ -16,7 +16,7 @@ It has an "Executor", which allows the user to use a GUI to run the various anal
 
 # Release Notes
 
-** Beta 21** Corrects issue with Project Deployed packages not seeing the connections or parameters.  Also updates the TSQL parser to latest available.
+**Beta 21** Corrects issue with Project Deployed packages not seeing the connections or parameters.  Also updates the TSQL parser to latest available.
 
 **Beta 20** Corrects issues with SSIS Catalog capabilites, adds SQL 2016 and 2017, and utlises the latest MSAGL libraries
 
