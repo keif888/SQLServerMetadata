@@ -725,9 +725,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 Console.Write("Enumerate directories...");
                 List<string> directoriesToEnumerate = new List<string>();
                 directoriesToEnumerate.Add(rootFolder);
-                string[] foldersToEnumerate = System.IO.Directory.GetDirectories(rootFolder, "*.*", (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
-                foreach (string folderPath in foldersToEnumerate)
-                    directoriesToEnumerate.Add(folderPath);
+                if (recurseSubFolders)
+                {
+                    string[] foldersToEnumerate = System.IO.Directory.GetDirectories(rootFolder, "*.*", (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
+                    foreach (string folderPath in foldersToEnumerate)
+                        directoriesToEnumerate.Add(folderPath);
+                }
                 Console.WriteLine("done.");
 
                 foreach (string folderPath in directoriesToEnumerate)
@@ -771,7 +774,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                 redirectedOutput = ssisProjectBuilder.StandardOutput.ReadToEnd();
                                 Console.WriteLine(redirectedOutput);
 
-                                EnumerateIntegrationServicePack(ispacFileName, locationName);
+                                EnumerateIntegrationServicePack(ispacFileName, projectFileName);
                             }
                         }
                         catch (Exception ex)
@@ -783,117 +786,6 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             // Cleanup temporary files etc.
                             tempDirectory.Delete(true);
                         }
-
-#if IAMBROKEN
-                        DirectoryInfo folderInfo = new DirectoryInfo(folderPath);
-                        // string projectFileName = tempDirectory.FullName + @"\" + folderInfo.Name + ".ispac";
-                        using (Project ssisProject = Project.CreateProject())
-                        {
-                            ssisProject.OfflineMode = true;
-                            ssisProject.Name = folderInfo.Name;
-                            ssisProject.VersionMajor = 1;
-                            ssisProject.VersionMinor = 0;
-                            ssisProject.VersionBuild = 0;
-                            ssisProject.ProtectionLevel = DTSProtectionLevel.DontSaveSensitive;
-#if SQL2012
-                            ssisProject.TargetServerVersion = DTSTargetServerVersion.SQLServer2012;
-#endif
-#if SQL2014
-                            ssisProject.TargetServerVersion = DTSTargetServerVersion.SQLServer2014;
-#endif
-#if SQL2016
-                            ssisProject.TargetServerVersion = DTSTargetServerVersion.SQLServer2016;
-#endif
-#if SQL2017
-                            ssisProject.TargetServerVersion = DTSTargetServerVersion.SQLServer2017;
-#endif
-                            // Load the parameters into the project
-                            // ToDo: Load the parameters.  Not needed for analysis?
-
-                            // Load the connection details into the project
-                            var connectionManagerSerializer = new XmlSerializer(typeof(ProjectConnectionManager));
-                            foreach (string connectionFile in connectionsToAttach)
-                            {
-                                FileInfo connectionInfo = new FileInfo(connectionFile);
-                                var cmXml = File.ReadAllText(connectionFile);
-                                var connMgr = (ProjectConnectionManager)connectionManagerSerializer.Deserialize(new StringReader(cmXml));
-
-                                var cm = ssisProject.ConnectionManagerItems.Add(connMgr.CreationName, connectionInfo.Name);
-
-                                cm.Load(null, File.OpenRead(connectionFile));
-                            }
-
-                            foreach (string packageFileName in filesToInspect)
-                            {
-                                FileInfo ssisPackage = new FileInfo(packageFileName);
-                                IDTSEvents eventResults = new PackageEventHandler();
-
-                                //string xml = File.ReadAllText(packageFileName);
-                                //using (Package package = new Package { IgnoreConfigurationsOnLoad = true, CheckSignatureOnLoad = false, OfflineMode = true})
-                                //{
-                                //    package.LoadFromXML(xml, eventResults);
-                                //    package.ProtectionLevel = DTSProtectionLevel.DontSaveSensitive;
-                                //    // Remove the package, to see what happens.
-                                //    ssisProject.PackageItems.Add(package, ssisPackage.Name);
-                                //}
-
-                                try
-                                {
-                                    Console.Write(string.Format("Loading file package '{0}'... ", packageFileName));
-
-                                    // load the package
-                                    using (Package package = app.LoadPackage(packageFileName, eventResults))
-                                    {
-                                        ssisProject.PackageItems.Add(package, ssisPackage.Name);
-                                    }
-
-                                    Console.WriteLine("Completed Successfully.");
-                                }
-                                catch (Microsoft.SqlServer.Dts.Runtime.DtsRuntimeException dtsEx)
-                                {
-                                    if (dtsEx.Message.Contains("The package is encrypted with a password"))
-                                    {
-                                        // The package was encrypted.  Try to decrypt the sucker!
-                                        using (Package package = LoadPackage(packageFileName))
-                                        {
-                                            if (package != null)
-                                            {
-                                                ssisProject.PackageItems.Add(package, ssisPackage.Name);
-                                            }
-                                            else
-                                                Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", packageFileName));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
-                                    }
-                                }
-                                catch (System.Exception ex)
-                                {
-                                    Console.WriteLine(string.Format("Error occurred: '{0}'", ex.Message));
-                                }
-                            }
-                            // Ok, in theory we have a Project now.
-                            try
-                            {
-                                foreach (PackageItem pi in ssisProject.PackageItems)
-                                {
-                                    Console.Write(string.Format("Processing Project package '{0}'... ", pi.Package.Name));
-                                    EnumeratePackage(pi.Package, locationName + @"\" + pi.Package.Name);
-                                    Console.WriteLine("Completed Successfully.");
-                                }
-                                // This keeps failing. But do we need to save the project at all?
-                                // ssisProject.SaveTo(projectFileName);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(string.Format("Error occurred: '{0}'\r\nStack Trace {1}", ex.Message, ex.StackTrace));
-                            }
-                        }
-                        //EnumerateIntegrationServicePack(projectFileName, locationName);
-
-#endif
 #else
                         Console.WriteLine(string.Format("Directory {0} has connection manager or configuration, which is not compatible with this build of DependencyAnalyzer...", folderPath));
 #endif
