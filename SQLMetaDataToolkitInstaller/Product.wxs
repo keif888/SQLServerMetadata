@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?define ProductVersion = "0.23.0.0"?>
+  <?define ProductVersion = "0.24.0.0"?>
   <?define UpgradeCode = "B758AA83-565F-453A-BECF-0B0B060E7023"?>
   <?define Manufacturer = "Keith Martin"?>
   <?define PackageCode = "*"?>
@@ -100,8 +100,12 @@
             <Component Id="NUGetSMO" Guid="{8C98AD26-65CE-2017-8954-6E98F4E5BAAA}" Win64="no">
               <File Id="FMicrosoft.SqlServer.ConnectionInfo" Name="Microsoft.SqlServer.ConnectionInfo.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.ConnectionInfo.dll" />
               <File Id="FMicrosoft.SqlServer.ConnectionInfoExtended" Name="Microsoft.SqlServer.ConnectionInfoExtended.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.ConnectionInfoExtended.dll" />
+              <File Id="FMicrosoft.SqlServer.Diagnostics.Strace" Name="Microsoft.SqlServer.Diagnostics.Strace.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Diagnostics.Strace.dll" />
+              <File Id="FMicrosoft.SqlServer.Dmf.Common" Name="Microsoft.SqlServer.Dmf.Common.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Dmf.Common.dll" />
               <File Id="FMicrosoft.SqlServer.Management.Sdk.Sfc" Name="Microsoft.SqlServer.Management.Sdk.Sfc.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Management.Sdk.Sfc.dll" />
+              <File Id="FMicrosoft.SqlServer.ServiceBrokerEnum" Name="Microsoft.SqlServer.ServiceBrokerEnum.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.ServiceBrokerEnum.dll" />
               <File Id="FMicrosoft.SqlServer.Smo" Name="Microsoft.SqlServer.Smo.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Smo.dll" />
+              <File Id="FMicrosoft.SqlServer.SqlClrProvider" Name="Microsoft.SqlServer.SqlClrProvider.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.SqlClrProvider.dll" />
               <File Id="FMicrosoft.SqlServer.SqlEnum" Name="Microsoft.SqlServer.SqlEnum.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.SqlEnum.dll" />
             </Component>
             <Component Id="DependencyAnalyzer2017Parser" Guid="{95C37E97-F292-2017-A9F3-097946B574F8}" Win64="no">
