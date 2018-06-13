@@ -2043,7 +2043,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
             if (pipelineComponentInfos.Contains(objectTypeName) == false)
             {
-                throw new Exception(string.Format("Unknown component type encountered: {0}, {1}", objectTypeName, component.Name));
+                //                throw new Exception(string.Format("Unknown component type encountered: {0}, {1}", objectTypeName, component.Name));
+                Console.WriteLine(string.Format("Unknown component type encountered (ignoring): {0}, {1}", objectTypeName, component.Name));
+                componentType = DTSPipelineComponentType.Transform;
+                return false;
             }
 
             PipelineComponentInfo pipelineComponentInfo = pipelineComponentInfos[objectTypeName];
