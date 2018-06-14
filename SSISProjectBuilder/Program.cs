@@ -33,8 +33,9 @@ namespace SSISProjectBuilder
 
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
+            int result = 1;
             DeploymentFileBuilder builder = new DeploymentFileBuilder();
             string commandLineArguments = "";
             foreach (string tmpString in args)
@@ -68,13 +69,17 @@ namespace SSISProjectBuilder
                             builder.SQLVersion = Microsoft.SqlServer.Dts.Runtime.DTSTargetServerVersion.Latest.ToString();
                             break;
                     }
-                    builder.Execute();
+                    if (builder.Execute())
+                    {
+                        result = 0;
+                    }
                 }
                 catch (System.Exception ex)
                 {
                     Console.Write(string.Format("Unexpected error occurred: {0}\r\nStack Trace:\r\n{1}", ex.Message, ex.StackTrace));
                 }
             }
+            return result;
 
         }
     }

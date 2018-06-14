@@ -100,6 +100,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         private const string ispacPattern = "*.ispac";
         private bool threePartNames;
         private string[] packagePasswords;
+        private static StringBuilder outputFromSSISBuilder = new StringBuilder();
 
         /// <summary>
         /// Different component Class IDs that we understand about
@@ -755,7 +756,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             Console.WriteLine("done.");
                             foreach (string projectFileName in filesToInspect)
                             {
-                                // We need to shell out to the SSISProjectBuilder as it needs different DLL's to the analyser.    
+                                // We need to shell out to the SSISProjectBuilder as it needs different DLL's to the analyser.
+                                Console.WriteLine(String.Format("Generating ispac file from dtproj file {0}", projectFileName));
                                 FileInfo projectFileInfo = new FileInfo(projectFileName);
                                 string ispacFileName = string.Format(@"{0}\{1}.ispac", tempDirectory.FullName, projectFileInfo.Name);
                                 // /d:"D:\keith\Documents\visual studio 2015\Projects\Integration Services 2016 ProjectMode\Integration Services 2016 ProjectMode\Integration Services 2016 ProjectMode.dtproj" /i:"D:\Test\SSISProjectBuilder.ispac" /v:SQL2016
@@ -766,15 +768,52 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                 ssisProjectBuilder.StartInfo.RedirectStandardOutput = true;
                                 ssisProjectBuilder.StartInfo.RedirectStandardInput = true;
                                 ssisProjectBuilder.StartInfo.Arguments = string.Format("/d:\"{0}\" /i:\"{1}\" /v:{2}", projectFileName, ispacFileName, sqlVersion);
+                                ssisProjectBuilder.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
+                                {
+                                    if (!String.IsNullOrEmpty(e.Data))
+                                    {
+                                        outputFromSSISBuilder.Append(String.Format("\n{0}", e.Data));
+                                    }
+                                });
 
                                 ssisProjectBuilder.Start();
+                                ssisProjectBuilder.BeginOutputReadLine();
+                                if (ssisProjectBuilder.WaitForExit(300000))  // Wait for 5 minutes for the process to exit.  If a package build takes longer than this there must be a problem.
+                                {
+                                    Console.WriteLine(outputFromSSISBuilder);
 
-                                string redirectedOutput = string.Empty;
-                                ssisProjectBuilder.WaitForExit();
-                                redirectedOutput = ssisProjectBuilder.StandardOutput.ReadToEnd();
-                                Console.WriteLine(redirectedOutput);
-
-                                EnumerateIntegrationServicePack(ispacFileName, projectFileName);
+                                    if (ssisProjectBuilder.ExitCode == 0)
+                                    {
+                                        EnumerateIntegrationServicePack(ispacFileName, projectFileName);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine(String.Format("Error: SSISProjectBuilder.exe exited with code {0}.\r\nProject file is not being processed.", ssisProjectBuilder.ExitCode));
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Warning! SSISProjectBuilder has not exited in 5 minutes.");
+                                    Console.WriteLine(outputFromSSISBuilder);
+                                    Console.WriteLine("Warning! SSISProjectBuilder is now being killed off.");
+                                    if (!ssisProjectBuilder.HasExited)
+                                    {
+                                        ssisProjectBuilder.Kill();
+                                        if (ssisProjectBuilder.WaitForExit(3000))
+                                        {
+                                            Console.WriteLine("SSISProjectBuilder has been killed.\r\nThis project file will not be processed.");
+                                        }
+                                        else
+                                        {
+                                            throw new Exception("SSISProjectBuilder unable to be killed");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("SSISProjectBuilder has exited.\r\nThis project file will not be processed.");
+                                    }
+                                }
+                                ssisProjectBuilder.Close();
                             }
                         }
                         catch (Exception ex)
