@@ -17,11 +17,27 @@ namespace Microsoft.Samples.DependencyAnalyzer
 {
     class Repository : IDisposable
     {
+
 #if SQL2005
         public const string OLEDBGuid = "{9B5D63AB-A629-4A56-9F3E-B1044134B649}";
-#else
+#endif
+#if SQL2008
         public const string OLEDBGuid = "{3BA51769-6C3C-46B2-85A1-81E58DB7DAE1}";
 #endif
+#if SQL2012
+        public const string OLEDBGuid = "{3269FBD7-897B-4CDF-8988-2E1A24B10FBB}";
+#endif
+#if SQL2014
+        public const string OLEDBGuid = "{F3F3005C-C3CB-4C61-B2A9-056035E4D8F2}";
+#endif
+#if SQL2016
+        public const string OLEDBGuid = "{96A2155A-6C39-4F46-B5A4-EC0B63FA0655}";
+#endif
+#if SQL2017
+        public const string OLEDBGuid = "{5802D1B1-DCFC-4F1E-8ACD-388327A21A9C}";
+#endif
+
+
         internal class Domains
         {
             internal const string SSIS = "SSIS";
@@ -36,7 +52,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// <summary>
         /// Stores the current Database Version
         /// </summary>
-        const int _dbVersion = 6;
+        const int _dbVersion = 9;
 
         /// <summary>
         ///  repository tables
@@ -294,7 +310,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
             if (dbVersion == 0)
             {
-                #region dbVersion 0
+#region dbVersion 0
                 // The following database create will create a Version 4 database.
                 // If the database is prior to Version 4 (No Version Table) then it will be dropped.
                 // This is OK, as the previous version didn't support history!
@@ -809,13 +825,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     ////                sqlCommand.CommandText = "";
                     ////                sqlCommand.ExecuteNonQuery();
                 }
-                #endregion
+#endregion
                 dbVersion = 4;
             }
 
             if (dbVersion == 4)
             {
-                #region dbVersion 4
+#region dbVersion 4
                 // Apply corrected WalkSources View
                 using (SqlCommand sqlAlterCommand = repositoryConnection.CreateCommand())
                 {
@@ -865,12 +881,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                             "(5, GETDATE())";
                     sqlAlterCommand.ExecuteNonQuery();
                 }
-                #endregion
+#endregion
                 dbVersion = 5;
             }
             if (dbVersion == 5)
             {
-                #region dbVersion 5
+#region dbVersion 5
                 // New Procedures
                 using (SqlCommand sqlAlterCommand = repositoryConnection.CreateCommand())
                 {
@@ -1192,42 +1208,93 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                             "(6, GETDATE())";
                     sqlAlterCommand.ExecuteNonQuery();
                 }
-                #endregion
+#endregion
                 dbVersion = 6;
             }
             if (dbVersion == 6)
             {
                 // Add SQL 2012 entries to allow display of relational sources.
-                #region dbVersion 6
+#region dbVersion 6
                 using (SqlCommand sqlCommand = repositoryConnection.CreateCommand())
                 {
-                    sqlCommand.CommandText = "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{32808317-2AFC-4E1C-A03A-9F8477A3BDBA}', N'ODBC 2012')\r\n" +
+                    sqlCommand.CommandText = "IF NOT EXISTS (SELECT 1 FROM [dbo].[LookupConnectionID] WHERE [ConnectionGUID] = N'{32808317-2AFC-4E1C-A03A-9F8477A3BDBA}') BEGIN\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{32808317-2AFC-4E1C-A03A-9F8477A3BDBA}', N'ODBC 2012')\r\n" +
                         "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{3269FBD7-897B-4CDF-8988-2E1A24B10FBB}', N'OLEDB 2012')\r\n" +
                         "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{68FFA586-FFA5-41DC-8EDE-13102087EF33}', N'ADO 2012')\r\n" +
                         "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{39CAF1E8-6582-4C31-A5C6-405A8661EEC1}', N'ADO.Net 2012')\r\n"+
-                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{E3D5D606-997B-4EF6-90AD-43483A788CC3}', N'MSOLAP 2012')\r\n";
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{E3D5D606-997B-4EF6-90AD-43483A788CC3}', N'MSOLAP 2012')\r\n"+
+                        "END;";
                     sqlCommand.ExecuteNonQuery();
-                }
 
-                #endregion
-                dbVersion = 7;
+                    dbVersion = 7;
+
+                    sqlCommand.CommandText = String.Format("INSERT INTO dbo.Version\r\n" +
+                                            "(VersionID, InstallDate)\r\n" +
+                                            "VALUES\r\n" +
+                                            "({0}, GETDATE())", dbVersion);
+                    sqlCommand.ExecuteNonQuery();
+
+
+                }
+#endregion
             }
             if (dbVersion == 7)
             {
                 // Add SQL 2014 entries to allow display of relational sources.
-                #region dbVersion 7
+#region dbVersion 7
                 using (SqlCommand sqlCommand = repositoryConnection.CreateCommand())
                 {
-                    sqlCommand.CommandText = "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{1818FF09-AF4D-4EA8-8C9D-0AB43B5775E5}', N'ODBC 2014')\r\n" +
+                    sqlCommand.CommandText = "IF NOT EXISTS (SELECT 1 FROM [dbo].[LookupConnectionID] WHERE [ConnectionGUID] = N'{1818FF09-AF4D-4EA8-8C9D-0AB43B5775E5}') BEGIN\r\n" + 
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{1818FF09-AF4D-4EA8-8C9D-0AB43B5775E5}', N'ODBC 2014')\r\n" +
                         "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{F3F3005C-C3CB-4C61-B2A9-056035E4D8F2}', N'OLEDB 2014')\r\n" +
                         "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{FFEDAAC9-D6BD-4E6B-90AB-D4D296B5096A}', N'ADO 2014')\r\n" +
                         "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{D5353B56-34DA-4C97-AC94-722B91013E89}', N'ADO.Net 2014')\r\n" +
-                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{05B2302B-4C20-43FD-92B3-3A067A037436}', N'MSOLAP 2014')\r\n";
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{05B2302B-4C20-43FD-92B3-3A067A037436}', N'MSOLAP 2014')\r\n" +
+                        "END;";
                     sqlCommand.ExecuteNonQuery();
+
+                    dbVersion = 8;
+                    sqlCommand.CommandText = String.Format("INSERT INTO dbo.Version\r\n" +
+                                            "(VersionID, InstallDate)\r\n" +
+                                            "VALUES\r\n" +
+                                            "({0}, GETDATE())", dbVersion);
+                    sqlCommand.ExecuteNonQuery();
+
                 }
 
-                #endregion
-                dbVersion = 8;
+#endregion
+            }
+            if (dbVersion == 8)
+            {
+                // Add SQL 2016 and 2017 entries to allow display of relational sources.
+#region dbVersion 8
+                using (SqlCommand sqlCommand = repositoryConnection.CreateCommand())
+                {
+                    sqlCommand.CommandText = "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{1EABA520-CAC6-4134-ACC1-C8B2ED261247}', N'ODBC 2016')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{96A2155A-6C39-4F46-B5A4-EC0B63FA0655}', N'OLEDB 2016')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{4696FBDD-C1BC-4009-AABD-D2AE31E24F0D}', N'ADO 2016')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{5C9E27BC-DF64-48F1-855E-92EF415C638C}', N'ADO.Net 2016')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{F4D9470A-E60A-4BAD-ACC6-2E3AA759E0BD}', N'MSOLAP 2016')\r\n";
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.CommandText = "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{3D17B9AD-F94B-47C8-92F8-AD713A7BA732}', N'ODBC 2017')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{5802D1B1-DCFC-4F1E-8ACD-388327A21A9C}', N'OLEDB 2017')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{9886B70F-B8DD-49C3-BD50-85D9B6A88A72}', N'ADO 2017')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{58297D74-0AC9-4659-B8EE-D5B38CAA686F}', N'ADO.Net 2017')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{D3102C96-CC8A-409D-A94C-2175F8D16FE0}', N'MSOLAP 2017')\r\n";
+                    sqlCommand.ExecuteNonQuery();
+
+                    dbVersion = 9;
+                    sqlCommand.CommandText = String.Format("INSERT INTO dbo.Version\r\n" +
+                                            "(VersionID, InstallDate)\r\n" +
+                                            "VALUES\r\n" +
+                                            "({0}, GETDATE())", dbVersion);
+                    sqlCommand.ExecuteNonQuery();
+
+                }
+
+#endregion
+
+                // Dont forget to update _dbVersion, or the new data won't be committed.
             }
         }
 

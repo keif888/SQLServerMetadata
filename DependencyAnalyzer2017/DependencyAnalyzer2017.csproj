@@ -202,4 +202,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.SqlServer.SqlManagementObjects.140.17265.0\build\net40\Microsoft.SqlServer.SqlManagementObjects.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.SqlServer.SqlManagementObjects.140.17265.0\build\net40\Microsoft.SqlServer.SqlManagementObjects.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>(ROBOCOPY "D:\keith\Documents\Repos\SQLServerMetadata\bin\debug\Dependency Analyzer 2017" "D:\VMShare\keith\Documents\Repos\SQLServerMetadata\bin\debug\Dependency Analyzer 2017" *.* /MIR) ^&amp; IF %25ERRORLEVEL%25 LEQ 1 exit 0</PostBuildEvent>
+  </PropertyGroup>
 </Project>
