@@ -576,7 +576,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
             catch (System.Exception ex)
             {
                 Console.WriteLine(string.Format("Error enumerating packages on SQL Server '{0}': {1}", server, ex.Message));
-                Console.WriteLine(string.Format("Strack Trace :{0}", ex.StackTrace));
+                Console.WriteLine(string.Format("Stack Trace :{0}", ex.StackTrace));
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine(string.Format("Inner Exception is {0}", ex.InnerException.Message));
+                    Console.WriteLine(string.Format("Inner Exception Stack Trace :{0}", ex.InnerException.StackTrace));
+                }
             }
         }
 
