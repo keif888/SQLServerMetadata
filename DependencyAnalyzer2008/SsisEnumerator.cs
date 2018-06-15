@@ -626,6 +626,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 // Load the project content.
                 using (Project ssisProject = Project.OpenProject(integrationServicePack))
                 {
+                    // Force the loading of the connections, so they are in memory when the packages are accessed later.
+                    // This seems to be needed for SQL 2012, but not later versions.
+                    foreach (ConnectionManagerItem cmi in ssisProject.ConnectionManagerItems)
+                    {
+                        Console.WriteLine(string.Format("Discovered connection manager {0}", cmi.ConnectionManager.Name));
+                    }
                     // Parse each and every package in the project.
                     foreach (PackageItem pi in ssisProject.PackageItems)
                     {
@@ -789,11 +795,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
                                     if (ssisProjectBuilder.ExitCode == 0)
                                     {
+                                        ssisProjectBuilder.Close();
                                         EnumerateIntegrationServicePack(ispacFileName, projectFileName);
                                     }
                                     else
                                     {
                                         Console.WriteLine(String.Format("Error: SSISProjectBuilder.exe exited with code {0}.\r\nProject file is not being processed.", ssisProjectBuilder.ExitCode));
+                                        ssisProjectBuilder.Close();
                                     }
                                 }
                                 else
@@ -807,6 +815,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                         if (ssisProjectBuilder.WaitForExit(3000))
                                         {
                                             Console.WriteLine("SSISProjectBuilder has been killed.\r\nThis project file will not be processed.");
+                                            ssisProjectBuilder.Close();
                                         }
                                         else
                                         {
@@ -816,9 +825,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                     else
                                     {
                                         Console.WriteLine("SSISProjectBuilder has exited.\r\nThis project file will not be processed.");
+                                        ssisProjectBuilder.Close();
                                     }
                                 }
-                                ssisProjectBuilder.Close();
                             }
                         }
                         catch (Exception ex)
