@@ -1389,7 +1389,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                 if (localIColumn.CustomPropertyCollection.Count == 2)
                                 {
                                     repository.AddAttribute(componentRepositoryID, localInput.Name + " [" + localIColumn.Name + "] [ID: " + localIColumn.ID.ToString() + "]", "From [" + localIColumn.UpstreamComponentName + "] " + FormatColumnDescription(localIColumn.Name, localIColumn.DataType, localIColumn.Length, localIColumn.Precision, localIColumn.Scale) + " Reference Column [" + 
-                                        localIColumn.CustomPropertyCollection["JoinToReferenceColumn"].Value != null ? localIColumn.CustomPropertyCollection["JoinToReferenceColumn"].Value.ToString() : "Not Available"   // Address Issue #13.  Although why a lookup component wouldn't have a column to reference I don't know.
+                                        localIColumn.CustomPropertyCollection["JoinToReferenceColumn"] != null && localIColumn.CustomPropertyCollection["JoinToReferenceColumn"].Value != null ? localIColumn.CustomPropertyCollection["JoinToReferenceColumn"].Value.ToString() : "Not Available"   // Address Issue #13.  Although why a lookup component wouldn't have a column to reference I don't know.
                                         + "]");
                                 }
                                 else
