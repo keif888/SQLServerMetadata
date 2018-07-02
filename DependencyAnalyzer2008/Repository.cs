@@ -1871,6 +1871,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// <returns></returns>
         public int GetTable(int connectionID, string tableName, string Description)
         {
+            // check if schema prefix is missing
+            if (!tableName.Contains("."))
+            {
+                // just assume [dbo] as default schema
+                tableName = "[dbo]." + tableName;
+            }
+
             int tableID = -1; // assume no table will be found
 
             // get the tables that correspond to this connection
