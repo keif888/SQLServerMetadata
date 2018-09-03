@@ -428,6 +428,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             }
                         }
                     }
+                    // Commit each folder as completed to reduce instance of data loss due to unexpected failures.
+                    repository.Commit();
                 } while (folders.Count > 0);
                 #endregion
 
@@ -499,6 +501,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     if (tempDirectory.Exists)
                         tempDirectory.Delete(true);
 
+                    // Commit each folder as completed to reduce instance of data loss due to unexpected failures.
+                    repository.Commit();
                 } while (folders.Count > 0);
                 #endregion
 #endif
@@ -567,6 +571,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             }
                         }
                     }
+                    // Commit each folder as completed to reduce instance of data loss due to unexpected failures.
+                    repository.Commit();
                 } while (folders.Count > 0);
                 #endregion
 
@@ -691,6 +697,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
             foreach (string projectFileName in filesToInspect)
             {
                 EnumerateIntegrationServicePack(projectFileName, locationName);
+                // Commit each project as completed to reduce instance of data loss due to unexpected failures.
+                repository.Commit();
             }
         }
 #endif
@@ -854,6 +862,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             EnumerateFilePackage(packageFileName, locationName);
                         }
                     }
+                    // Commit each folder as completed to reduce instance of data loss due to unexpected failures.
+                    repository.Commit();
                 }
                 // Remove the temporary directory and it's contents.
                 //tempDirectory.Delete(true);
@@ -869,6 +879,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 {
                     EnumerateFilePackage(packageFileName, locationName);
                 }
+                // Commit each folder as completed to reduce instance of data loss due to unexpected failures.
+                repository.Commit();
             }
         }
 

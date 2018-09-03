@@ -264,6 +264,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// </summary>
         public void Commit()
         {
+            Console.WriteLine("Performing Incremental Commit");
             // write each data table to the database
             SqlBulkCopy bulkCopy = new SqlBulkCopy(repositoryConnection);
 
