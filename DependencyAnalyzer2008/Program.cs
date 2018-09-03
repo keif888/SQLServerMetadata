@@ -27,7 +27,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         public string[] folders = null;
 
         [Argument(ArgumentType.MultipleUnique
-            , HelpText = "Root folders of SSIS datbase system packages."
+            , HelpText = "Root folders of SSIS database system packages."
             , LongName="ssisFolders"
             , ShortName = "sf")]
         public string[] ssisFolders = null;
