@@ -280,6 +280,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 {
                     Console.WriteLine("Enumerating Database metadata for {0}.", dbConnection);
                     enumerator.EnumerateDatabase(dbConnection, dependencyArguments.storeThreePartNames);
+                    // Incremental Commit...
+                    repository.Commit();
                 }
             }
         }
@@ -335,8 +337,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
                 if (enumerator.Initialize(repository))
                 {
-                    foreach(string connStr in dependencyArguments.asCon)
+                    foreach (string connStr in dependencyArguments.asCon)
+                    {
                         enumerator.EnumerateServer(connStr, dependencyArguments.storeThreePartNames);
+                        // Incremental Commit
+                        repository.Commit();
+                    }
                 }
             }
             catch (System.Exception ex)
@@ -355,7 +361,11 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 if (enumerator.Initialize(repository))
                 {
                     foreach (string connStr in dependencyArguments.reportURLs)
+                    {
                         enumerator.EnumerateReportingServer(connStr, dependencyArguments.recurse, dependencyArguments.storeThreePartNames);
+                        // Incremental Commit
+                        repository.Commit();
+                    }
                 }
             }
             catch (System.Exception ex)
