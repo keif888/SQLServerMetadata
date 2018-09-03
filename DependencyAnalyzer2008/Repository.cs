@@ -258,25 +258,106 @@ namespace Microsoft.Samples.DependencyAnalyzer
             return true;
         }
 
+        /// <summary>
+        /// Commits new records to the repository.
+        /// Does not handle records that have been updated after initial commit.
+        /// </summary>
         public void Commit()
         {
             // write each data table to the database
             SqlBulkCopy bulkCopy = new SqlBulkCopy(repositoryConnection);
 
             bulkCopy.DestinationTableName = "RunScan";
-            bulkCopy.WriteToServer(runScanTable);
+            bulkCopy.WriteToServer(runScanTable, DataRowState.Added);
+            using (SqlCommand runScanUpdate = new SqlCommand("UPDATE [dbo].[RunScan] SET RunDate = @RunDate, RunCommand = @RunCommand WHERE RunKey = @RunKey", repositoryConnection))
+            {
+                SqlParameter pRunDate = new SqlParameter("@RunDate", SqlDbType.DateTime);
+                runScanUpdate.Parameters.Add(pRunDate);
+                SqlParameter pRunCommand = new SqlParameter("@RunCommand", SqlDbType.NVarChar);
+                runScanUpdate.Parameters.Add(pRunCommand);
+                SqlParameter pScanRunKey = new SqlParameter("@RunKey", SqlDbType.Int);
+                runScanUpdate.Parameters.Add(pScanRunKey);
+
+                foreach (DataRow row in runScanTable.Rows)
+                {
+                    if (row.RowState == DataRowState.Modified)
+                    {
+                        // This record has been changed, and wont be commited without something happening here.
+                        pRunDate.Value = row["RunDate"];
+                        pRunCommand.Value = row["RunCommand"];
+                        pScanRunKey.Value = row["RunKey"];
+                        runScanUpdate.ExecuteNonQuery();
+                    }
+                }
+            }
+            runScanTable.AcceptChanges();
 
             bulkCopy.DestinationTableName = "Objects";
-            bulkCopy.WriteToServer(objectTable);
+            bulkCopy.WriteToServer(objectTable, DataRowState.Added);
+            using (SqlCommand objectsUpdate = new SqlCommand("UPDATE [dbo].[Objects] SET [ObjectName] = @ObjectName, [ObjectTypeString] = @ObjectTypeString, [ObjectDesc] = @ObjectDesc WHERE [RunKey] = @RunKey AND [ObjectKey] = @ObjectKey", repositoryConnection))
+            {
+                SqlParameter pObjectName = new SqlParameter("@ObjectName", SqlDbType.NVarChar);
+                objectsUpdate.Parameters.Add(pObjectName);
+                SqlParameter pObjectTypeString = new SqlParameter("@ObjectTypeString", SqlDbType.NVarChar);
+                objectsUpdate.Parameters.Add(pObjectTypeString);
+                SqlParameter pObjectDesc = new SqlParameter("@ObjectDesc", SqlDbType.NVarChar);
+                objectsUpdate.Parameters.Add(pObjectDesc);
+                SqlParameter pObjectRunKey = new SqlParameter("@RunKey", SqlDbType.Int);
+                objectsUpdate.Parameters.Add(pObjectRunKey);
+                SqlParameter pObjectKey = new SqlParameter("@ObjectKey", SqlDbType.NVarChar);
+                objectsUpdate.Parameters.Add(pObjectKey);
+                foreach (DataRow row in objectTable.Rows)
+                {
+                    if (row.RowState == DataRowState.Modified)
+                    {
+                        // This record has been changed, and wont be commited without something happening here.
+                        pObjectName.Value = row["ObjectName"];
+                        pObjectTypeString.Value = row["ObjectTypeString"];
+                        pObjectDesc.Value = row["ObjectDesc"];
+                        pObjectKey.Value = row["ObjectKey"];
+                        pObjectRunKey.Value = row["RunKey"];
+                        objectsUpdate.ExecuteNonQuery();
+                    }
+                }
+            }
+            objectTable.AcceptChanges();
 
             bulkCopy.DestinationTableName = "ObjectDependencies";
-            bulkCopy.WriteToServer(objectDependenciesTable);
+            bulkCopy.WriteToServer(objectDependenciesTable, DataRowState.Added);
+            // This table doesn't support updates :-)
+            objectDependenciesTable.AcceptChanges();
 
             bulkCopy.DestinationTableName = "ObjectAttributes";
-            bulkCopy.WriteToServer(objectAttributesTable);
+            bulkCopy.WriteToServer(objectAttributesTable, DataRowState.Added);
+            using (SqlCommand attributesUpdate = new SqlCommand("UPDATE [dbo].[ObjectAttributes] SET [ObjectAttrName] = @ObjectAttrName, [ObjectAttrValue] = @ObjectAttrValue WHERE [RunKey] = @RunKey AND [ObjectKey] = @ObjectKey", repositoryConnection))
+            {
+                SqlParameter pObjectAttrName = new SqlParameter("@ObjectAttrName", SqlDbType.NVarChar);
+                attributesUpdate.Parameters.Add(pObjectAttrName);
+                SqlParameter pObjectAttrValue = new SqlParameter("@ObjectAttrValue", SqlDbType.NVarChar);
+                attributesUpdate.Parameters.Add(pObjectAttrValue);
+                SqlParameter pObjectRunKey = new SqlParameter("@RunKey", SqlDbType.Int);
+                attributesUpdate.Parameters.Add(pObjectRunKey);
+                SqlParameter pObjectKey = new SqlParameter("@ObjectKey", SqlDbType.NVarChar);
+                attributesUpdate.Parameters.Add(pObjectKey);
+                foreach (DataRow row in objectAttributesTable.Rows)
+                {
+                    if (row.RowState == DataRowState.Modified)
+                    {
+                        // This record has been changed, and wont be commited without something happening here.
+                        pObjectAttrName.Value = row["ObjectAttrName"];
+                        pObjectAttrValue.Value = row["ObjectAttrValue"];
+                        pObjectKey.Value = row["ObjectKey"];
+                        pObjectRunKey.Value = row["RunKey"];
+                        attributesUpdate.ExecuteNonQuery();
+                    }
+                }
+            }
+            objectAttributesTable.AcceptChanges();
 
             bulkCopy.DestinationTableName = "ObjectTypes";
-            bulkCopy.WriteToServer(objectTypesTable);
+            bulkCopy.WriteToServer(objectTypesTable, DataRowState.Added);
+            objectTypesTable.AcceptChanges();
+            // This table doesn't support updates, only adds :-)
 
             bulkCopy.Close();
         }
@@ -1327,10 +1408,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     }
                 }
             }
-            using (SqlCommand sqlCommand = new SqlCommand("truncate table ObjectTypes", repositoryConnection))
-            {
-                sqlCommand.ExecuteNonQuery();
-            }
+            // Mark all the records as unchanged.
+            objectTypesTable.AcceptChanges();
+            // This is no longer required, as the bulk load will only add NEW records.
+            //using (SqlCommand sqlCommand = new SqlCommand("truncate table ObjectTypes", repositoryConnection))
+            //{
+            //    sqlCommand.ExecuteNonQuery();
+            //}
         }
 
         public void DeleteExistingRepository()
