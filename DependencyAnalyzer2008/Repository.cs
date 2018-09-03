@@ -267,6 +267,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             // write each data table to the database
             SqlBulkCopy bulkCopy = new SqlBulkCopy(repositoryConnection);
 
+            bulkCopy.BulkCopyTimeout = 0;  // Set the bulk copy time to infinite.  We really don't want this to time out after 60 seconds which is the default.
             bulkCopy.DestinationTableName = "RunScan";
             bulkCopy.WriteToServer(runScanTable, DataRowState.Added);
             using (SqlCommand runScanUpdate = new SqlCommand("UPDATE [dbo].[RunScan] SET RunDate = @RunDate, RunCommand = @RunCommand WHERE RunKey = @RunKey", repositoryConnection))
