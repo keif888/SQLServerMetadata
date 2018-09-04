@@ -1222,7 +1222,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         }
                         catch (System.Exception err)
                         {
-                            Console.WriteLine("The exception \r\n{0}\r\nwas raised against query \r\n{1}\r\nPlease report to http://sqlmetadata.codeplex.com/WorkItem/List.aspx\r\n", err.Message, queryDefinition);
+                            Console.WriteLine("The exception \r\n{0}\r\nwas raised against query \r\n{1}\r\nPlease report to https://github.com/keif888/SQLServerMetadata/issues\r\n", err.Message, queryDefinition);
                         }
                     }
             }
@@ -1800,7 +1800,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         }
                         catch (System.Exception err)
                         {
-                            Console.WriteLine("The exception \r\n{0}\r\nwas raised against query \r\n{1}\r\nPlease report to http://sqlmetadata.codeplex.com/WorkItem/List.aspx\r\n", err.Message, queryDefinition);
+                            Console.WriteLine("The exception \r\n{0}\r\nwas raised against query \r\n{1}\r\nPlease report to https://github.com/keif888/SQLServerMetadata/issues\r\n", err.Message, queryDefinition);
                         }
 
                         /*
@@ -1811,7 +1811,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                                 }
                                                 catch (System.Exception err)
                                                 {
-                                                    Console.WriteLine("The exception \r\n{0}\r\nwas raised against query \r\n{1}\r\nPlease report to http://sqlmetadata.codeplex.com/WorkItem/List.aspx\r\n", err.Message, queryDefinition);
+                                                    Console.WriteLine("The exception \r\n{0}\r\nwas raised against query \r\n{1}\r\nPlease report to https://github.com/keif888/SQLServerMetadata/issues\r\n", err.Message, queryDefinition);
                                                 }
                                                 foreach (IStatement statement in statements)
                                                 {
@@ -2248,7 +2248,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         {
                             tableOrViewName = string.Empty;
                             queryDefinition = string.Empty;
-                            Console.WriteLine("Unexpected setup for OLEDB Fast Load from Variable.  Table details not collected.\r\nPlease report to http://sqlmetadata.codeplex.com/WorkItem/List.aspx\r\nWith the SSIS Package if possible.");
+                            Console.WriteLine("Unexpected setup for OLEDB Fast Load from Variable.  Table details not collected.\r\nPlease report to https://github.com/keif888/SQLServerMetadata/issues\r\nWith the SSIS Package if possible.");
                         }
                         else
                         {
