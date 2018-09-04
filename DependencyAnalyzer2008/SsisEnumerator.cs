@@ -1835,14 +1835,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         {
                             if (!string.IsNullOrEmpty(tableOrViewName))
                             {
-                                // add the table to the repository for each distinct connection
-                                if (threePartNames)
-                                {
-                                    String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
-                                    tableRepositoryID = repository.GetTable(connectionID, String.Format("[{0}].{1}", dbName, tableOrViewName));
-                                }
-                                else
-                                    tableRepositoryID = repository.GetTable(connectionID, tableOrViewName);
+                                // Convert the table name into a select statement, so we can use TSQL parsing.
+                                queryDefinition = String.Format("SELECT * FROM {0}", tableOrViewName);
+                                ParseTSqlStatement(queryDefinition, connectionID, dataFlowComponentType, tableOrViewSource, componentRepositoryID);
                             }
                         }
                         else if (connectionManagerType == "FILE" || connectionManagerType == "FLATFILE" ||
@@ -1850,8 +1845,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         {
                             // add the table to the repository for each distinct connection
                             tableRepositoryID = repository.GetFile(connectionManager.ConnectionString, "localhost");
+                            AddTableMappings(dataFlowComponentType, tableOrViewSource, componentRepositoryID, tableRepositoryID);
                         }
-                        AddTableMappings(dataFlowComponentType, tableOrViewSource, componentRepositoryID, tableRepositoryID);
                     }
                 }
             }

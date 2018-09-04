@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TSQLParser
 {
-    class Identifier
+    public class Identifier
     {
         public enum IdentifierEnum
         {
