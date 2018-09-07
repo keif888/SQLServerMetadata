@@ -696,7 +696,10 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
             foreach (string projectFileName in filesToInspect)
             {
-                EnumerateIntegrationServicePack(projectFileName, locationName);
+                if (String.IsNullOrEmpty(locationName))
+                    EnumerateIntegrationServicePack(projectFileName, projectFileName);
+                else
+                    EnumerateIntegrationServicePack(projectFileName, locationName);
                 // Commit each project as completed to reduce instance of data loss due to unexpected failures.
                 repository.Commit();
             }
