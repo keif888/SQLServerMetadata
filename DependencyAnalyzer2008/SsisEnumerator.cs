@@ -1152,7 +1152,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     case SqlStatementSourceType.FileConnection:
                         break;
                     case SqlStatementSourceType.Variable:
-                        queryDefinition = GetVariable(package, taskHost.Properties["SqlStatementSource"].GetValue(taskHost).ToString());
+                        queryDefinition = GetVariable(package, taskHost, taskHost.Properties["SqlStatementSource"].GetValue(taskHost).ToString());
                         repository.AddAttribute(sqlTaskRepositoryObjectID, Repository.Attributes.QueryDefinition, queryDefinition);
                         break;
                     default:
@@ -1313,7 +1313,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             XmlReader objXMLText;
 
             // if we have a source, note it as the starting point and add it to the repository
-            if (IsComponentInteresting(package, component, out objectType, out dataFlowComponentType, out domain, out tableOrViewName, out tableOrViewSource, out queryDefinition))
+            if (IsComponentInteresting(package, taskHost, component, out objectType, out dataFlowComponentType, out domain, out tableOrViewName, out tableOrViewSource, out queryDefinition))
             {
                 // if the data flow object itself hasn't been created as  yet, do so now
                 if (dataFlowRepositoryObjectID == -1)
@@ -2077,6 +2077,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// <summary>
         /// if the component is interesting, return that fact and the object type
         /// </summary>
+        /// <param name="package">ssis package that contains the component to inspect</param>
+        /// <param name="taskHost">ssis task that contains the component to inspect</param>
         /// <param name="component">component to inspect</param>
         /// <param name="objectTypeName">object type name</param>
         /// <param name="componentType">Source/Destination/Transform</param>
@@ -2084,7 +2086,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// <param name="tableOrViewName">table or view for relational domain</param>
         /// <param name="tableOrViewSource">Whether the table/view (if specified) is a source or a destination</param>
         /// <returns></returns>
-        private bool IsComponentInteresting(Package package, IDTSComponentMetaData component,
+        private bool IsComponentInteresting(Package package, TaskHost taskHost, IDTSComponentMetaData component,
             out string objectTypeName,
             out DTSPipelineComponentType componentType,
             out string domain,
@@ -2125,7 +2127,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                  || (string.Equals(componentClassID, ClassIDs.OleDbDestination)))
             {
                 domain = Repository.Domains.Relational;
-                GetOleDbComponentsInfo(package, component, ref tableOrViewName, ref queryDefinition);
+                GetOleDbComponentsInfo(package, taskHost, component, ref tableOrViewName, ref queryDefinition);
                 tableOrViewSource = !(string.Equals(componentClassID, ClassIDs.OleDbDestination));
             }
             else if (string.Equals(componentClassID, ClassIDs.SqlDestination))
@@ -2202,7 +2204,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// <param name="component"></param>
         /// <param name="tableOrViewName"></param>
         /// <param name="queryDefinition"></param>
-        private static void GetOleDbComponentsInfo(Package package, IDTSComponentMetaData component, ref string tableOrViewName, ref string queryDefinition)
+        private static void GetOleDbComponentsInfo(Package package, TaskHost taskHost, IDTSComponentMetaData component, ref string tableOrViewName, ref string queryDefinition)
         {
             IDTSCustomProperty prop = component.CustomPropertyCollection["AccessMode"];
             string strVariableName;
@@ -2221,7 +2223,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
                     case (int)AccessMode.AM_OPENROWSET_VARIABLE:
                         strVariableName = GetStringComponentPropertyValue(component, "OpenRowsetVariable");
-                        tableOrViewName = GetVariable(package, strVariableName);
+                        tableOrViewName = GetVariable(package, taskHost, strVariableName);
                         break;
 
                     case (int)AccessMode.AM_SQLCOMMAND:
@@ -2236,7 +2238,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         }
                         else
                         {
-                            queryDefinition = GetVariable(package, strVariableName);
+                            queryDefinition = GetVariable(package, taskHost, strVariableName);
                         }
                         break;
 
@@ -2250,7 +2252,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         }
                         else
                         {
-                            tableOrViewName = GetVariable(package, strVariableName);
+                            tableOrViewName = GetVariable(package, taskHost, strVariableName);
                         }
                         break;
 
@@ -2260,10 +2262,17 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
         }
 
-        private static string GetVariable(Package package, string strVariableName)
+        private static string GetVariable(Package package, TaskHost taskHost, string strVariableName)
         {
             if (strVariableName != null)
-                return package.Variables[strVariableName].Value.ToString();
+            {
+                if (package.Variables.Contains(strVariableName))
+                    return package.Variables[strVariableName].Value.ToString();
+                else if (taskHost.Variables.Contains(strVariableName))
+                    return taskHost.Variables[strVariableName].Value.ToString();
+                else
+                    return null;
+            }
             else
                 return null;
         }
