@@ -425,6 +425,11 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                         repository.Rollback();
                                         Console.WriteLine("This package has been rolled back.");
                                     }
+                                    finally
+                                    {
+                                        // Commit each package as completed to reduce instance of data loss due to unexpected failures, and associated rollback.
+                                        repository.Commit();
+                                    }
                                 }
                                 else
                                 {
@@ -439,10 +444,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                 repository.Rollback();
                                 Console.WriteLine("This package has been rolled back.");
                             }
+                            finally
+                            {
+                                // Commit each package, as we have per package rollbacks now.
+                                repository.Commit();
+                            }
                         }
                     }
-                    // Commit each folder as completed to reduce instance of data loss due to unexpected failures.
-                    repository.Commit();
                 } while (folders.Count > 0);
                 #endregion
 
@@ -595,10 +603,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                 repository.Rollback();
                                 Console.WriteLine("This package has been rolled back.");
                             }
+                            finally
+                            {
+                                // Commit each package as completed to reduce instance of data loss due to unexpected failures, and associated rollback.
+                                repository.Commit();
+                            }
                         }
                     }
-                    // Commit each folder as completed to reduce instance of data loss due to unexpected failures.
-                    repository.Commit();
                 } while (folders.Count > 0);
                 #endregion
 
@@ -678,6 +689,11 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             Console.WriteLine(string.Format("Error {0} occurred whilst attempting to handle ispac {1}\r\nWith stack trace {2}.", ex.Message, integrationServicePack, ex.StackTrace));
                             repository.Rollback();
                             Console.WriteLine("This package has been rolled back.");
+                        }
+                        finally
+                        {
+                            // Commit each package as completed to reduce instance of data loss due to unexpected failures, and associated rollback.
+                            repository.Commit();
                         }
                     }
                 }
@@ -970,6 +986,11 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         repository.Rollback();
                         Console.WriteLine("This package has been rolled back.");
                     }
+                    finally
+                    {
+                        // Commit each package as completed to reduce instance of data loss due to unexpected failures, and associated rollback.
+                        repository.Commit();
+                    }
                 }
                 else
                 {
@@ -983,6 +1004,11 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 Console.WriteLine(string.Format("Error {0} occurred whilst attempting to load package {1}\r\nWith stack trace {2}.", ex.Message, packageFileName, ex.StackTrace));
                 repository.Rollback();
                 Console.WriteLine("This package has been rolled back.");
+            }
+            finally
+            {
+                // Commit each package as completed to reduce instance of data loss due to unexpected failures, and associated rollback.
+                repository.Commit();
             }
         }
 
