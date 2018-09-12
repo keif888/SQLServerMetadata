@@ -408,23 +408,36 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             {
                                 if (dtsEx.Message.Contains("The package is encrypted with a password"))
                                 {
-                                    // The package was encrypted.  Try to decrypt the sucker!
-                                    using (Package package = LoadPackage(location, server, user, pwd, null))
+                                    try
                                     {
-                                        if (package != null)
-                                            EnumeratePackage(package, location);
-                                        else
-                                            Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", location));
+                                        // The package was encrypted.  Try to decrypt the sucker!
+                                        using (Package package = LoadPackage(location, server, user, pwd, null))
+                                        {
+                                            if (package != null)
+                                                EnumeratePackage(package, location);
+                                            else
+                                                Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", location));
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine(string.Format("Error occurred: '{0}'", ex.Message));
+                                        repository.Rollback();
+                                        Console.WriteLine("This package has been rolled back.");
                                     }
                                 }
                                 else
                                 {
                                     Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
+                                    repository.Rollback();
+                                    Console.WriteLine("This package has been rolled back.");
                                 }
                             }
                             catch (System.Exception ex2)
                             {
                                 Console.WriteLine(string.Format("Error occurred: '{0}'", ex2.Message));
+                                repository.Rollback();
+                                Console.WriteLine("This package has been rolled back.");
                             }
                         }
                     }
@@ -551,23 +564,36 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             {
                                 if (dtsEx.Message.Contains("The package is encrypted with a password"))
                                 {
-                                    // The package was encrypted.  Try to decrypt the sucker!
-                                    using (Package package = LoadPackage(location, server, null))
+                                    try
                                     {
-                                        if (package != null)
-                                            EnumeratePackage(package, location);
-                                        else
-                                            Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", location));
+                                        // The package was encrypted.  Try to decrypt the sucker!
+                                        using (Package package = LoadPackage(location, server, null))
+                                        {
+                                            if (package != null)
+                                                EnumeratePackage(package, location);
+                                            else
+                                                Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", location));
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine(string.Format("Error occurred: '{0}'", ex.Message));
+                                        repository.Rollback();
+                                        Console.WriteLine("This package has been rolled back.");
                                     }
                                 }
                                 else
                                 {
                                     Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
+                                    repository.Rollback();
+                                    Console.WriteLine("This package has been rolled back.");
                                 }
                             }
                             catch (System.Exception ex2)
                             {
                                 Console.WriteLine(string.Format("Error occurred: '{0}'", ex2.Message));
+                                repository.Rollback();
+                                Console.WriteLine("This package has been rolled back.");
                             }
                         }
                     }
@@ -641,9 +667,18 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     // Parse each and every package in the project.
                     foreach (PackageItem pi in ssisProject.PackageItems)
                     {
-                        Console.Write(string.Format("Processing Project package '{0}'... ", pi.Package.Name));
-                        EnumeratePackage(pi.Package, locationName + @"\" + pi.Package.Name);
-                        Console.WriteLine("Completed Successfully.");
+                        try
+                        {
+                            Console.Write(string.Format("Processing Project package '{0}'... ", pi.Package.Name));
+                            EnumeratePackage(pi.Package, locationName + @"\" + pi.Package.Name);
+                            Console.WriteLine("Completed Successfully.");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(string.Format("Error {0} occurred whilst attempting to handle ispac {1}\r\nWith stack trace {2}.", ex.Message, integrationServicePack, ex.StackTrace));
+                            repository.Rollback();
+                            Console.WriteLine("This package has been rolled back.");
+                        }
                     }
                 }
             }
@@ -913,28 +948,41 @@ namespace Microsoft.Samples.DependencyAnalyzer
             {
                 if (dtsEx.Message.Contains("The package is encrypted with a password"))
                 {
-                    // The package was encrypted.  Try to decrypt the sucker!
-                    using (Package package = LoadPackage(packageFileName))
+                    try
                     {
-                        if (package != null)
+                        // The package was encrypted.  Try to decrypt the sucker!
+                        using (Package package = LoadPackage(packageFileName))
                         {
-                            if (String.IsNullOrEmpty(locationName))
-                                EnumeratePackage(package, packageFileName);
+                            if (package != null)
+                            {
+                                if (String.IsNullOrEmpty(locationName))
+                                    EnumeratePackage(package, packageFileName);
+                                else
+                                    EnumeratePackage(package, locationName + @"\" + package.Name);
+                            }
                             else
-                                EnumeratePackage(package, locationName + @"\" + package.Name);
+                                Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", packageFileName));
                         }
-                        else
-                            Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", packageFileName));
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(string.Format("Error {0} occurred whilst attempting to load package {1}\r\nWith stack trace {2}.", ex.Message, packageFileName, ex.StackTrace));
+                        repository.Rollback();
+                        Console.WriteLine("This package has been rolled back.");
                     }
                 }
                 else
                 {
-                    Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
+                    Console.WriteLine(string.Format("Error {0} occurred whilst attempting to load package {1}\r\nWith stack trace {2}.", dtsEx.Message, packageFileName, dtsEx.StackTrace));
+                    repository.Rollback();
+                    Console.WriteLine("This package has been rolled back.");
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(string.Format("Error occurred: '{0}'", ex.Message));
+                Console.WriteLine(string.Format("Error {0} occurred whilst attempting to load package {1}\r\nWith stack trace {2}.", ex.Message, packageFileName, ex.StackTrace));
+                repository.Rollback();
+                Console.WriteLine("This package has been rolled back.");
             }
         }
 

@@ -1381,6 +1381,32 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
         }
 
+        /// <summary>
+        /// This will remove any records that are marked as added from the internal data tables.
+        /// This is done as it's assumed that they have added by a scan that has raised an exception.
+        /// </summary>
+        public void Rollback()
+        {
+            var rowsToDelete = objectTable.Select(null, null, DataViewRowState.Added);
+            foreach (var row in rowsToDelete)
+            {
+                row.Delete();
+            }
+            objectTable.AcceptChanges();
+            rowsToDelete = objectDependenciesTable.Select(null, null, DataViewRowState.Added);
+            foreach (var row in rowsToDelete)
+            {
+                row.Delete();
+            }
+            objectDependenciesTable.AcceptChanges();
+            rowsToDelete = objectAttributesTable.Select(null, null, DataViewRowState.Added);
+            foreach (var row in rowsToDelete)
+            {
+                row.Delete();
+            }
+            objectAttributesTable.AcceptChanges();
+        }
+
         public void LoadExisingRepository()
         {
             using (SqlCommand sqlCommand = new SqlCommand("SELECT COALESCE(MAX(ObjectKey), 0) + 1 FROM [dbo].[Objects]", repositoryConnection))
