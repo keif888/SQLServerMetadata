@@ -2262,14 +2262,21 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
         }
 
+        /// <summary>
+        /// Retrieves the value for a variable from either the taskHost or the package
+        /// </summary>
+        /// <param name="package">the SSIS package that is being analysed</param>
+        /// <param name="taskHost">the container within the SSIS package that holds the item using the variable</param>
+        /// <param name="strVariableName">the name of the variable that is to be found.</param>
+        /// <returns></returns>
         private static string GetVariable(Package package, TaskHost taskHost, string strVariableName)
         {
             if (strVariableName != null)
             {
-                if (package.Variables.Contains(strVariableName))
-                    return package.Variables[strVariableName].Value.ToString();
-                else if (taskHost.Variables.Contains(strVariableName))
+                if (taskHost.Variables.Contains(strVariableName))
                     return taskHost.Variables[strVariableName].Value.ToString();
+                else if (package.Variables.Contains(strVariableName))
+                    return package.Variables[strVariableName].Value.ToString();
                 else
                     return null;
             }
