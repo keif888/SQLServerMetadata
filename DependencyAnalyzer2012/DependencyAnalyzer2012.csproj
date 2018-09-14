@@ -60,6 +60,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AnalysisServices, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\References\SQL2012DLLs\Microsoft.AnalysisServices.dll</HintPath>
     </Reference>
@@ -168,7 +171,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\DependencyAnalyzer2008\log4net.config">
+      <Link>log4net.config</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\AssemblyInfoVersion.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AssemblyInfoVersion.cs</LastGenOutput>
@@ -184,7 +192,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildAction="ReBuild" />
+      <UserProperties BuildVersion_BuildAction="ReBuild" BuildVersion_UpdateFileVersion="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>

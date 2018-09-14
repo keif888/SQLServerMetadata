@@ -17,6 +17,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
 {
     class Repository : IDisposable
     {
+        // Add log4net so we can start logging, instead of writing to the console.
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 #if SQL2005
         public const string OLEDBGuid = "{9B5D63AB-A629-4A56-9F3E-B1044134B649}";
@@ -264,7 +266,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         /// </summary>
         public void Commit()
         {
-            Console.WriteLine("Performing Incremental Commit");
+            log.Info("Performing Incremental Commit");
             // write each data table to the database
             SqlBulkCopy bulkCopy = new SqlBulkCopy(repositoryConnection);
 

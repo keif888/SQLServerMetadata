@@ -50,6 +50,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AnalysisServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\SQL2017DLLs\Microsoft.AnalysisServices.DLL</HintPath>
@@ -163,6 +166,10 @@
   <ItemGroup>
     <None Include="..\DependencyAnalyzer2008\License.rtf">
       <Link>License.rtf</Link>
+    </None>
+    <None Include="..\DependencyAnalyzer2008\log4net.config">
+      <Link>log4net.config</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="App.config" />
   </ItemGroup>

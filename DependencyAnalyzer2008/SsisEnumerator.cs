@@ -76,6 +76,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
     /// </summary>
     class SSISEnumerator
     {
+        // Add log4net so we can start logging, instead of writing to the console.
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         // 5 access modes used by ole db adapters
         enum AccessMode : int
         {
@@ -346,7 +349,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
             catch (System.Exception ex)
             {
-                Console.WriteLine(string.Format("Could not initialize the SSIS Packages Enumerator: {0}", ex.Message));
+                log.ErrorFormat("Could not initialize the SSIS Packages Enumerator: {0}", ex.Message);
                 success = false;
             }
 
@@ -397,12 +400,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
                             try
                             {
-                                Console.Write(string.Format("Loading SQL package '{0}'... ", location));
+                                log.InfoFormat("Loading SQL package '{0}'... ", location);
                                 using (Package package = app.LoadFromSqlServer(location, server, user, pwd, null))
                                 {
                                     EnumeratePackage(package, location);
                                 }
-                                Console.WriteLine("Completed Successfully.");
+                                log.Info("Completed Successfully.");
                             }
                             catch (Microsoft.SqlServer.Dts.Runtime.DtsRuntimeException dtsEx)
                             {
@@ -416,14 +419,14 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                             if (package != null)
                                                 EnumeratePackage(package, location);
                                             else
-                                                Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", location));
+                                                log.WarnFormat("Unable to decrypt package {0} with passwords provided.", location);
                                         }
                                     }
                                     catch (Exception ex)
                                     {
-                                        Console.WriteLine(string.Format("Error occurred: '{0}'", ex.Message));
+                                        log.ErrorFormat("Error occurred: '{0}'", ex.Message);
                                         repository.Rollback();
-                                        Console.WriteLine("This package has been rolled back.");
+                                        log.Warn("This package has been rolled back.");
                                     }
                                     finally
                                     {
@@ -433,16 +436,16 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                 }
                                 else
                                 {
-                                    Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
+                                    log.ErrorFormat("Error occurred: '{0}'", dtsEx.Message);
                                     repository.Rollback();
-                                    Console.WriteLine("This package has been rolled back.");
+                                    log.Warn("This package has been rolled back.");
                                 }
                             }
                             catch (System.Exception ex2)
                             {
-                                Console.WriteLine(string.Format("Error occurred: '{0}'", ex2.Message));
+                                log.ErrorFormat("Error occurred: '{0}'", ex2.Message);
                                 repository.Rollback();
-                                Console.WriteLine("This package has been rolled back.");
+                                log.Warn("This package has been rolled back.");
                             }
                             finally
                             {
@@ -561,12 +564,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
                             try
                             {
-                                Console.Write(string.Format("Loading SSIS package '{0}'... ", location));
+                                log.InfoFormat("Loading SSIS package '{0}'... ", location);
                                 using (Package package = app.LoadFromDtsServer(location, server, null))
                                 {
                                     EnumeratePackage(package, location);
                                 }
-                                Console.WriteLine("Completed Successfully.");
+                                log.Info("Completed Successfully.");
                             }
                             catch (Microsoft.SqlServer.Dts.Runtime.DtsRuntimeException dtsEx)
                             {
@@ -580,28 +583,28 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                             if (package != null)
                                                 EnumeratePackage(package, location);
                                             else
-                                                Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", location));
+                                                log.WarnFormat("Unable to decrypt package {0} with passwords provided.", location);
                                         }
                                     }
                                     catch (Exception ex)
                                     {
-                                        Console.WriteLine(string.Format("Error occurred: '{0}'", ex.Message));
+                                        log.ErrorFormat("Error occurred: '{0}'", ex.Message);
                                         repository.Rollback();
-                                        Console.WriteLine("This package has been rolled back.");
+                                        log.Warn("This package has been rolled back.");
                                     }
                                 }
                                 else
                                 {
-                                    Console.WriteLine(string.Format("Error occurred: '{0}'", dtsEx.Message));
+                                    log.ErrorFormat("Error occurred: '{0}'", dtsEx.Message);
                                     repository.Rollback();
-                                    Console.WriteLine("This package has been rolled back.");
+                                    log.Warn("This package has been rolled back.");
                                 }
                             }
                             catch (System.Exception ex2)
                             {
-                                Console.WriteLine(string.Format("Error occurred: '{0}'", ex2.Message));
+                                log.ErrorFormat("Error occurred: '{0}'", ex2.Message);
                                 repository.Rollback();
-                                Console.WriteLine("This package has been rolled back.");
+                                log.Warn("This package has been rolled back.");
                             }
                             finally
                             {
@@ -618,12 +621,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
             catch (System.Exception ex)
             {
-                Console.WriteLine(string.Format("Error enumerating packages on SQL Server '{0}': {1}", server, ex.Message));
-                Console.WriteLine(string.Format("Stack Trace :{0}", ex.StackTrace));
+                log.ErrorFormat("Error enumerating packages on SQL Server '{0}': {1}", server, ex.Message);
+                log.Error(String.Format("Stack Trace :{0}", ex.StackTrace).Replace(Environment.NewLine, " "));
                 if (ex.InnerException != null)
                 {
-                    Console.WriteLine(string.Format("Inner Exception is {0}", ex.InnerException.Message));
-                    Console.WriteLine(string.Format("Inner Exception Stack Trace :{0}", ex.InnerException.StackTrace));
+                    log.ErrorFormat("Inner Exception is {0}", ex.InnerException.Message);
+                    log.Error(string.Format("Inner Exception Stack Trace :{0}", ex.InnerException.StackTrace).Replace(Environment.NewLine, " "));
                 }
             }
         }
@@ -653,7 +656,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Format("Error {0} occurred whilst attempting to cleanup temporary files.\r\n{1}\r\n{2}\r\nWith stack trace {3}.", ex.Message, projectNameFile, tempDirectory.FullName + @"\" + project.Name, ex.StackTrace));
+                log.ErrorFormat("Error {0} occurred whilst attempting to cleanup temporary files.", ex.Message);
+                log.ErrorFormat("File Name {0}", projectNameFile);
+                log.ErrorFormat(String.Format("Stack Trace {0}.", ex.StackTrace).Replace(Environment.NewLine, " "));
             }
         }
 
@@ -673,22 +678,23 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     // This seems to be needed for SQL 2012, but not later versions.
                     foreach (ConnectionManagerItem cmi in ssisProject.ConnectionManagerItems)
                     {
-                        Console.WriteLine(string.Format("Discovered connection manager {0}", cmi.ConnectionManager.Name));
+                        log.InfoFormat("Discovered connection manager {0}", cmi.ConnectionManager.Name);
                     }
                     // Parse each and every package in the project.
                     foreach (PackageItem pi in ssisProject.PackageItems)
                     {
                         try
                         {
-                            Console.Write(string.Format("Processing Project package '{0}'... ", pi.Package.Name));
+                            log.InfoFormat("Processing Project package '{0}'... ", pi.Package.Name);
                             EnumeratePackage(pi.Package, locationName + @"\" + pi.Package.Name);
-                            Console.WriteLine("Completed Successfully.");
+                            log.Info("Completed Successfully.");
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine(string.Format("Error {0} occurred whilst attempting to handle ispac {1}\r\nWith stack trace {2}.", ex.Message, integrationServicePack, ex.StackTrace));
+                            log.ErrorFormat("Error {0} occurred whilst attempting to handle ispac {1}", ex.Message, integrationServicePack);
+                            log.Error(string.Format("Stack Trace {0}.", ex.StackTrace).Replace(Environment.NewLine, " "));
                             repository.Rollback();
-                            Console.WriteLine("This package has been rolled back.");
+                            log.Warn("This package has been rolled back.");
                         }
                         finally
                         {
@@ -700,7 +706,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Format("Error {0} occurred whilst attempting to handle ispac {1}\r\nWith stack trace {2}.", ex.Message, integrationServicePack, ex.StackTrace));
+                log.ErrorFormat("Error {0} occurred whilst attempting to handle ispac {1}", ex.Message, integrationServicePack);
+                log.Error(string.Format("Stack Trace {0}.", ex.StackTrace).Replace(Environment.NewLine, " "));
             }
         }
 
@@ -741,9 +748,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
         private void EnumerateProjects(string rootFolder, string pattern, bool recurseSubFolders, string locationName)
         {
             string[] filesToInspect;
-            Console.Write("Enumerating projects...");
+            log.Info("Enumerating projects...");
             filesToInspect = System.IO.Directory.GetFiles(rootFolder, pattern, (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
-            Console.WriteLine("done.");
+            log.Info("done.");
 
             foreach (string projectFileName in filesToInspect)
             {
@@ -786,17 +793,17 @@ namespace Microsoft.Samples.DependencyAnalyzer
             sqlVersion = "SQL2017";
 #endif
 
-            Console.Write("Enumerating parameters and connection managers...");
+            log.Info("Enumerating parameters and connection managers...");
             string[] configsToAttach = System.IO.Directory.GetFiles(rootFolder, "*.params", (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
             string[] connectionsToAttach = System.IO.Directory.GetFiles(rootFolder, "*.conmgr", (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
-            Console.WriteLine("done.");
+            log.Info("done.");
 
             if ((configsToAttach.Length > 0) || (connectionsToAttach.Length > 0))
             {
                 // Assume that we are in Project Deployment Mode.
                 // But this has to check each folder, as there may be a mix of project and package deployment based on folder locations :-(
-                Console.WriteLine("Parameters or connection managers detected.  Switch to hybrid project mode...");
-                Console.Write("Enumerate directories...");
+                log.Info("Parameters or connection managers detected.  Switch to hybrid project mode...");
+                log.Info("Enumerate directories...");
                 List<string> directoriesToEnumerate = new List<string>();
                 directoriesToEnumerate.Add(rootFolder);
                 if (recurseSubFolders)
@@ -805,14 +812,14 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     foreach (string folderPath in foldersToEnumerate)
                         directoriesToEnumerate.Add(folderPath);
                 }
-                Console.WriteLine("done.");
+                log.Info("done.");
 
                 foreach (string folderPath in directoriesToEnumerate)
                 {
-                    Console.Write(string.Format("Enumerate directory {0} for .params and .conmgr...", folderPath));
+                    log.InfoFormat("Enumerate directory {0} for .params and .conmgr...", folderPath);
                     configsToAttach = System.IO.Directory.GetFiles(folderPath, "*.params", System.IO.SearchOption.TopDirectoryOnly);
                     connectionsToAttach = System.IO.Directory.GetFiles(folderPath, "*.conmgr", System.IO.SearchOption.TopDirectoryOnly);
-                    Console.WriteLine("done.");
+                    log.Info("done.");
                     if ((configsToAttach.Length > 0) || (connectionsToAttach.Length > 0))
                     {
 #if SQLGT2008
@@ -824,13 +831,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         System.IO.DirectoryInfo tempDirectory = new System.IO.DirectoryInfo(tempFolder);
                         try
                         {
-                            Console.Write(string.Format("Enumerate directory {0} for .dtproj...", folderPath));
+                            log.InfoFormat("Enumerate directory {0} for .dtproj...", folderPath);
                             filesToInspect = System.IO.Directory.GetFiles(rootFolder, "*.dtproj", System.IO.SearchOption.TopDirectoryOnly);
-                            Console.WriteLine("done.");
+                            log.Info("done.");
                             foreach (string projectFileName in filesToInspect)
                             {
                                 // We need to shell out to the SSISProjectBuilder as it needs different DLL's to the analyser.
-                                Console.WriteLine(String.Format("Generating ispac file from dtproj file {0}", projectFileName));
+                                log.InfoFormat("Generating ispac file from dtproj file {0}", projectFileName);
                                 FileInfo projectFileInfo = new FileInfo(projectFileName);
                                 string ispacFileName = string.Format(@"{0}\{1}.ispac", tempDirectory.FullName, projectFileInfo.Name);
                                 // /d:"D:\keith\Documents\visual studio 2015\Projects\Integration Services 2016 ProjectMode\Integration Services 2016 ProjectMode\Integration Services 2016 ProjectMode.dtproj" /i:"D:\Test\SSISProjectBuilder.ispac" /v:SQL2016
@@ -853,7 +860,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                 ssisProjectBuilder.BeginOutputReadLine();
                                 if (ssisProjectBuilder.WaitForExit(300000))  // Wait for 5 minutes for the process to exit.  If a package build takes longer than this there must be a problem.
                                 {
-                                    Console.WriteLine(outputFromSSISBuilder);
+                                    foreach (String line in outputFromSSISBuilder.ToString().Split('\n'))
+                                        log.Info(line);
 
                                     if (ssisProjectBuilder.ExitCode == 0)
                                     {
@@ -862,21 +870,22 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                     }
                                     else
                                     {
-                                        Console.WriteLine(String.Format("Error: SSISProjectBuilder.exe exited with code {0}.\r\nProject file is not being processed.", ssisProjectBuilder.ExitCode));
+                                        log.ErrorFormat("SSISProjectBuilder.exe exited with code {0}. Project file is not being processed.", ssisProjectBuilder.ExitCode);
                                         ssisProjectBuilder.Close();
                                     }
                                 }
                                 else
                                 {
-                                    Console.WriteLine("Warning! SSISProjectBuilder has not exited in 5 minutes.");
-                                    Console.WriteLine(outputFromSSISBuilder);
-                                    Console.WriteLine("Warning! SSISProjectBuilder is now being killed off.");
+                                    log.Warn("SSISProjectBuilder has not exited in 5 minutes.");
+                                    foreach (String line in outputFromSSISBuilder.ToString().Split('\n'))
+                                        log.Warn(line);
+                                    log.Warn("SSISProjectBuilder is now being killed off.");
                                     if (!ssisProjectBuilder.HasExited)
                                     {
                                         ssisProjectBuilder.Kill();
                                         if (ssisProjectBuilder.WaitForExit(3000))
                                         {
-                                            Console.WriteLine("SSISProjectBuilder has been killed.\r\nThis project file will not be processed.");
+                                            log.ErrorFormat("SSISProjectBuilder has been killed. This project file {0} will not be processed.", projectFileName);
                                             ssisProjectBuilder.Close();
                                         }
                                         else
@@ -886,7 +895,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                     }
                                     else
                                     {
-                                        Console.WriteLine("SSISProjectBuilder has exited.\r\nThis project file will not be processed.");
+                                        log.ErrorFormat("SSISProjectBuilder has exited. This project file {0} will not be processed.", projectFileName);
                                         ssisProjectBuilder.Close();
                                     }
                                 }
@@ -894,7 +903,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine(string.Format("The exception \r\n{0}\r\nwas raised with stack trace{1}", ex.Message, ex.StackTrace));
+                            log.ErrorFormat("The exception {0} was raised.", ex.StackTrace);
+                            log.Error(string.Format("Stack Trace {0}", ex.StackTrace).Replace(Environment.NewLine, " "));
                         }
                         finally
                         {
@@ -902,14 +912,14 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             tempDirectory.Delete(true);
                         }
 #else
-                        Console.WriteLine(string.Format("Directory {0} has connection manager or configuration, which is not compatible with this build of DependencyAnalyzer...", folderPath));
+                        log.ErrorFormat("Directory {0} has connection manager or configuration, which is not compatible with this build of DependencyAnalyzer...", folderPath);
 #endif
                     }
                     else
                     {
-                        Console.Write(string.Format("Enumerate directory {0} for .dtsx...", folderPath));
+                        log.InfoFormat("Enumerate directory {0} for .dtsx...", folderPath);
                         filesToInspect = System.IO.Directory.GetFiles(rootFolder, pattern, System.IO.SearchOption.TopDirectoryOnly);
-                        Console.WriteLine("done.");
+                        log.Info("done.");
 
                         foreach (string packageFileName in filesToInspect)
                         {
@@ -923,11 +933,11 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 //tempDirectory.Delete(true);
             }
             else
-            { 
+            {
 
-                Console.Write("Enumerating packages...");
+                log.Info("Enumerating packages...");
                 filesToInspect = System.IO.Directory.GetFiles(rootFolder, pattern, (recurseSubFolders) ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly);
-                Console.WriteLine("done.");
+                log.Info("done.");
 
                 foreach (string packageFileName in filesToInspect)
                 {
@@ -947,7 +957,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
         {
             try
             {
-                Console.Write(string.Format("Loading file package '{0}'... ", packageFileName));
+                log.InfoFormat("Loading file package '{0}'... ", packageFileName);
 
                 // load the package
                 using (Package package = app.LoadPackage(packageFileName, null))
@@ -958,7 +968,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         EnumeratePackage(package, locationName + @"\" + package.Name);
                 }
 
-                Console.WriteLine("Completed Successfully.");
+                log.Info("Completed Successfully.");
             }
             catch (Microsoft.SqlServer.Dts.Runtime.DtsRuntimeException dtsEx)
             {
@@ -977,14 +987,15 @@ namespace Microsoft.Samples.DependencyAnalyzer
                                     EnumeratePackage(package, locationName + @"\" + package.Name);
                             }
                             else
-                                Console.WriteLine(string.Format("Unable to decrypt package {0} with passwords provided.", packageFileName));
+                                log.ErrorFormat("Unable to decrypt package {0} with passwords provided.", packageFileName);
                         }
                     }
                     catch(Exception ex)
                     {
-                        Console.WriteLine(string.Format("Error {0} occurred whilst attempting to load package {1}\r\nWith stack trace {2}.", ex.Message, packageFileName, ex.StackTrace));
+                        log.ErrorFormat("Error {0} occurred whilst attempting to load package {1}.", ex.Message.Replace(Environment.NewLine, " "), packageFileName);
+                        log.Error(string.Format("Stack Trace {0}.", ex.StackTrace).Replace(Environment.NewLine, " "));
                         repository.Rollback();
-                        Console.WriteLine("This package has been rolled back.");
+                        log.Warn("This package has been rolled back.");
                     }
                     finally
                     {
@@ -994,16 +1005,18 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 }
                 else
                 {
-                    Console.WriteLine(string.Format("Error {0} occurred whilst attempting to load package {1}\r\nWith stack trace {2}.", dtsEx.Message, packageFileName, dtsEx.StackTrace));
+                    log.ErrorFormat("Error {0} occurred whilst attempting to load package {1}.", dtsEx.Message.Replace(Environment.NewLine, " "), packageFileName);
+                    log.Error(string.Format("Stack Trace {0}.", dtsEx.StackTrace).Replace(Environment.NewLine, " "));
                     repository.Rollback();
-                    Console.WriteLine("This package has been rolled back.");
+                    log.Warn("This package has been rolled back.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Format("Error {0} occurred whilst attempting to load package {1}\r\nWith stack trace {2}.", ex.Message, packageFileName, ex.StackTrace));
+                log.ErrorFormat("Error {0} occurred whilst attempting to load package {1}.", ex.Message.Replace(Environment.NewLine, " "), packageFileName);
+                log.Error(string.Format("Stack Trace {0}.", ex.StackTrace).Replace(Environment.NewLine, " "));
                 repository.Rollback();
-                Console.WriteLine("This package has been rolled back.");
+                log.Warn("This package has been rolled back.");
             }
             finally
             {
@@ -1032,12 +1045,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 {
                     app.PackagePassword = password;
                     package = app.LoadFromSqlServer(location, SSISServer, SSISUser, SSISPwd, Events);
-                    Console.WriteLine(string.Format("Password attempt {0} succeeded for package {1}", attempts++, location));
+                    log.InfoFormat("Password attempt {0} succeeded for package {1}", attempts++, location);
                     break;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(string.Format("Password attempt {0} failed for package {1} with message {2}", attempts++, location, ex.Message));
+                    log.ErrorFormat("Password attempt {0} failed for package {1} with message {2}", attempts++, location, ex.Message);
                     package = null;
                 }
             }
@@ -1063,12 +1076,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 {
                     app.PackagePassword = password;
                     package = app.LoadFromDtsServer(location, SSISServer, Events);
-                    Console.WriteLine(string.Format("Password attempt {0} succeeded for package {1}", attempts++, location));
+                    log.InfoFormat("Password attempt {0} succeeded for package {1}", attempts++, location);
                     break;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(string.Format("Password attempt {0} failed for package {1} with message {2}", attempts++, location, ex.Message));
+                    log.ErrorFormat("Password attempt {0} failed for package {1} with message {2}", attempts++, location, ex.Message);
                     package = null;
                 }
             }
@@ -1091,12 +1104,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 {
                     app.PackagePassword = password;
                     package = app.LoadPackage(packageFileName, null);
-                    Console.WriteLine(string.Format("Password attempt {0} succeeded for package {1}", attempts++, packageFileName));
+                    log.InfoFormat("Password attempt {0} succeeded for package {1}", attempts++, packageFileName);
                     break;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(string.Format("Password attempt {0} failed for package {1} with message {2}", attempts++, packageFileName, ex.Message));
+                    log.ErrorFormat("Password attempt {0} failed for package {1} with message {2}", attempts++, packageFileName, ex.Message);
                     package = null;
                 }
             }
@@ -1105,15 +1118,15 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
         private void EnumerateInfos(Application app)
         {
-            Console.Write("Enumerating registered SSIS Data Flow components...");
+            log.Info("Enumerating registered SSIS Data Flow components...");
             pipelineComponentInfos = app.PipelineComponentInfos;
             foreach (PipelineComponentInfo pipelineComponentInfo in pipelineComponentInfos)
             {
                 repository.AddObjectType(Repository.Domains.SSIS, pipelineComponentInfo.ID, pipelineComponentInfo.Name, pipelineComponentInfo.Description);
             }
-            Console.WriteLine("Done");
+            log.Info("Done");
 
-            Console.Write("Enumerating registered SSIS Connection Managers...");
+            log.Info("Enumerating registered SSIS Connection Managers...");
 
             connectionInfos = app.ConnectionInfos;
             connectionTypeToIDMap = new Dictionary<string, string>(connectionInfos.Count);
@@ -1123,9 +1136,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 repository.AddObjectType(Repository.Domains.SSIS, connectionInfo.ID, connectionInfo.Name, connectionInfo.Description);
             }
 
-            Console.WriteLine("Done");
+            log.Info("Done");
 
-            Console.Write("Enumerating registered SSIS Tasks...");
+            log.Info("Enumerating registered SSIS Tasks...");
 
             taskInfos = app.TaskInfos;
             foreach (TaskInfo taskInfo in taskInfos)
@@ -1133,7 +1146,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 repository.AddObjectType(Repository.Domains.SSIS, taskInfo.ID, taskInfo.Name, taskInfo.Description);
             }
 
-            Console.WriteLine("Done");
+            log.Info("Done");
         }
 
         /// <summary>
@@ -1211,7 +1224,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
             // Add this task to the repository
             int sqlTaskRepositoryObjectID = AddObject(taskHost.Name, taskHost.Description, taskHost.CreationName, packageRepositoryID);
-            
+
             if (taskHost.Properties.Contains("SqlStatementSource") & taskHost.Properties.Contains("SqlStatementSourceType") & taskHost.Properties.Contains("Connection"))
             {
                 string queryDefinition = string.Empty;
@@ -1234,74 +1247,74 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 }
                 Microsoft.SqlServer.Dts.Runtime.ConnectionManager connectionManager = package.Connections[taskHost.Properties["Connection"].GetValue(taskHost).ToString()];
 
-                    string connectionManagerType = connectionManager.CreationName;
-                    int connectionID = repository.GetConnection(connectionManager.ConnectionString);
+                string connectionManagerType = connectionManager.CreationName;
+                int connectionID = repository.GetConnection(connectionManager.ConnectionString);
 
-                    string serverName = null;
-                    if (connectionID == -1)
-                    {
-                        connectionID = CreateConnection(connectionManager, out serverName);
-                    }
+                string serverName = null;
+                if (connectionID == -1)
+                {
+                    connectionID = CreateConnection(connectionManager, out serverName);
+                }
 
-                    if (!string.IsNullOrEmpty(queryDefinition))
+                if (!string.IsNullOrEmpty(queryDefinition))
+                {
+                    try
                     {
-                        try
+                        SqlStatement toBeParsed = new SqlStatement();
+
+                        //toBeParsed.sqlString = statement;
+                        toBeParsed.quotedIdentifiers = true;
+                        if (toBeParsed.ParseString(queryDefinition))
                         {
-                            SqlStatement toBeParsed = new SqlStatement();
-
-                            //toBeParsed.sqlString = statement;
-                            toBeParsed.quotedIdentifiers = true;
-                            if (toBeParsed.ParseString(queryDefinition))
+                            foreach (string tableName in toBeParsed.getTableNames(true))
                             {
-                                foreach (string tableName in toBeParsed.getTableNames(true))
+                                if (threePartNames)
                                 {
-                                    if (threePartNames)
-                                    {
-                                        String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
-                                        tableID = repository.GetTable(connectionID, String.Format("[{0}].{1}", dbName, tableName));
-                                    }
-                                    else
-                                        tableID = repository.GetTable(connectionID, tableName);
-                                    repository.AddMapping(tableID, sqlTaskRepositoryObjectID);
+                                    String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
+                                    tableID = repository.GetTable(connectionID, String.Format("[{0}].{1}", dbName, tableName));
                                 }
-                                foreach (string procedureName in toBeParsed.getProcedureNames(true))
-                                {
-                                    if (threePartNames)
-                                    {
-                                        String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
-                                        procID = repository.GetProcedure(connectionID, String.Format("[{0}].{1}", dbName, procedureName));
-                                    }
-                                    else
-                                        procID = repository.GetProcedure(connectionID, procedureName);
-                                    repository.AddMapping(procID, sqlTaskRepositoryObjectID);
-                                }
-                                foreach (string funcName in toBeParsed.getFunctionNames(true))
-                                {
-                                    if (threePartNames)
-                                    {
-                                        String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
-                                        funcID = repository.GetFunction(connectionID, String.Format("[{0}].{1}", dbName, funcName));
-                                    }
-                                    else
-                                        funcID = repository.GetFunction(connectionID, funcName);
-                                    repository.AddMapping(funcID, sqlTaskRepositoryObjectID);
-                                }
+                                else
+                                    tableID = repository.GetTable(connectionID, tableName);
+                                repository.AddMapping(tableID, sqlTaskRepositoryObjectID);
                             }
-                            else
+                            foreach (string procedureName in toBeParsed.getProcedureNames(true))
                             {
-                                string errorMessage = "The following messages where generated whilst parsing the sql statement\r\n" + queryDefinition + "\r\n";
-                                foreach (string error in toBeParsed.parseErrors)
+                                if (threePartNames)
                                 {
-                                    errorMessage += error + "\r\n";
+                                    String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
+                                    procID = repository.GetProcedure(connectionID, String.Format("[{0}].{1}", dbName, procedureName));
                                 }
-                                Console.WriteLine(errorMessage);
+                                else
+                                    procID = repository.GetProcedure(connectionID, procedureName);
+                                repository.AddMapping(procID, sqlTaskRepositoryObjectID);
+                            }
+                            foreach (string funcName in toBeParsed.getFunctionNames(true))
+                            {
+                                if (threePartNames)
+                                {
+                                    String dbName = repository.RetrieveDatabaseNameFromConnectionID(connectionID);
+                                    funcID = repository.GetFunction(connectionID, String.Format("[{0}].{1}", dbName, funcName));
+                                }
+                                else
+                                    funcID = repository.GetFunction(connectionID, funcName);
+                                repository.AddMapping(funcID, sqlTaskRepositoryObjectID);
                             }
                         }
-                        catch (System.Exception err)
+                        else
                         {
-                            Console.WriteLine("The exception \r\n{0}\r\nwas raised against query \r\n{1}\r\nPlease report to https://github.com/keif888/SQLServerMetadata/issues\r\n", err.Message, queryDefinition);
+                            log.WarnFormat("The following messages where generated whilst parsing the sql statement {0}", queryDefinition);
+                            foreach (string error in toBeParsed.parseErrors)
+                            {
+                                log.Warn(error);
+                            }
                         }
                     }
+                    catch (System.Exception err)
+                    {
+                        log.ErrorFormat("The exception {0} was raised against query {1}", err.Message, queryDefinition);
+                        log.Error("Please report to https://github.com/keif888/SQLServerMetadata/issues");
+                    }
+                }
             }
             //ExecuteSQLTask sqlTask = taskHost.InnerObject as ExecuteSQLTask;
             //string queryDefinition = sqlTask.SqlStatementSource;
@@ -1841,12 +1854,11 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
             else
             {
-                string errorMessage = "The following messages where generated whilst parsing the sql statement\r\n" + statement + "\r\n";
+                log.WarnFormat("The following messages where generated whilst parsing the sql statement {0}", statement);
                 foreach (string error in toBeParsed.parseErrors)
                 {
-                    errorMessage += error + "\r\n";
+                    log.Warn(error);
                 }
-                Console.WriteLine(errorMessage);
             }
         }
 
@@ -1877,7 +1889,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         }
                         catch (System.Exception err)
                         {
-                            Console.WriteLine("The exception \r\n{0}\r\nwas raised against query \r\n{1}\r\nPlease report to https://github.com/keif888/SQLServerMetadata/issues\r\n", err.Message, queryDefinition);
+                            log.ErrorFormat("The exception {0} was raised against query {1}", err.Message, queryDefinition);
+                            log.Error("Please report to https://github.com/keif888/SQLServerMetadata/issues");
                         }
 
                         /*
@@ -2026,7 +2039,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
             catch (System.Exception ex)
             {
-                Console.WriteLine(string.Format("Error occurred: Could not completely parse connection string for '{0}': {1}", connectionManager.Name, ex.Message));
+                log.ErrorFormat("Error occurred: Could not completely parse connection string for '{0}': {1}", connectionManager.Name, ex.Message);
             }
         }
 
@@ -2183,7 +2196,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             if (pipelineComponentInfos.Contains(objectTypeName) == false)
             {
                 //                throw new Exception(string.Format("Unknown component type encountered: {0}, {1}", objectTypeName, component.Name));
-                Console.WriteLine(string.Format("Unknown component type encountered (ignoring): {0}, {1}", objectTypeName, component.Name));
+                log.WarnFormat("Unknown component type encountered (ignoring): {0}, {1}", objectTypeName, component.Name);
                 componentType = DTSPipelineComponentType.Transform;
                 return false;
             }
@@ -2322,7 +2335,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                         {
                             tableOrViewName = string.Empty;
                             queryDefinition = string.Empty;
-                            Console.WriteLine("Unexpected setup for OLEDB Fast Load from Variable.  Table details not collected.\r\nPlease report to https://github.com/keif888/SQLServerMetadata/issues\r\nWith the SSIS Package if possible.");
+                            log.Warn("Unexpected setup for OLEDB Fast Load from Variable.  Table details not collected");
+                            log.Warn("Please report to https://github.com/keif888/SQLServerMetadata/issues  With the SSIS Package if possible.");
                         }
                         else
                         {

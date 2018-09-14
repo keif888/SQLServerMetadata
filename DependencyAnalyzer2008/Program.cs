@@ -151,6 +151,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
     
     class Program
     {
+        // Add log4net so we can start logging, instead of writing to the console.
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         static void Main(string[] args)
         {
@@ -178,7 +180,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
                     if (repository == null)
                     {
-                        Console.WriteLine(String.Format("Unable to open database on connection string '{0}'.  Exiting...", dependencyArguments.depDb));
+                        log.Error(String.Format("Unable to open database on connection string '{0}'.  Exiting...", dependencyArguments.depDb));
                         return;
                     }
 
@@ -211,7 +213,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 }
                 catch (System.Exception ex)
                 {
-                    Console.Write(string.Format("Unexpected error occurred: {0}\r\nStack Trace:\r\n{1}", ex.Message, ex.StackTrace));
+                    log.Error(string.Format("Unexpected error occurred: {0}", ex.Message));
+                    log.Error(string.Format("Stack Trace: {0}", ex.StackTrace).Replace(Environment.NewLine, ""));
                 }
 
                 if (dependencyArguments.batchMode == false)
@@ -235,9 +238,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
       
         public static void Commit(Repository repository)
         {
-            Console.Write("Committing analysis information to database...");
+            log.Info("Committing analysis information to database...");
             repository.Commit();
-            Console.WriteLine("Completed.");
+            log.Info("Completed.");
         }
 
         private static void EnumerateRelational(DependencyArguments dependencyArguments, Repository repository)
@@ -278,7 +281,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             {
                 foreach (string dbConnection in dependencyArguments.databasesToScan)
                 {
-                    Console.WriteLine("Enumerating Database metadata for {0}.", dbConnection);
+                    log.InfoFormat("Enumerating Database metadata for {0}.", dbConnection);
                     enumerator.EnumerateDatabase(dbConnection, dependencyArguments.storeThreePartNames);
                     // Incremental Commit...
                     repository.Commit();
@@ -292,12 +295,12 @@ namespace Microsoft.Samples.DependencyAnalyzer
             SSISEnumerator enumerator = new SSISEnumerator();
             if (enumerator.Initialize(repository))
             {
-                Console.WriteLine("Enumerating File System Integration Services metadata.");
+                log.Info("Enumerating File System Integration Services metadata.");
                 enumerator.EnumerateFileSystemPackages(dependencyArguments.folders, dependencyArguments.recurse, dependencyArguments.storeThreePartNames, dependencyArguments.isPkgPwd);
 
                 if (dependencyArguments.skipSQL == false)
                 {
-                    Console.WriteLine("Enumerating Integration Services metadata.");
+                    log.Info("Enumerating Integration Services metadata.");
                     foreach (string dbServer in dependencyArguments.isDbServer)
                     {
                         if (dbServer.Contains(";"))
@@ -330,7 +333,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
 
         private static void EnumerateSSAS(DependencyArguments dependencyArguments, Repository repository)
         {
-            Console.WriteLine("Enumerating Analysis Services metadata.");
+            log.Info("Enumerating Analysis Services metadata.");
             try
             {
                 SSASEnumerator enumerator = new SSASEnumerator();
@@ -347,13 +350,13 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
             catch (System.Exception ex)
             {
-                Console.WriteLine(string.Format("Error occurred: {0}", ex.Message));
+                log.Error(string.Format("Error occurred: {0}", ex.Message));
             }
         }
 
         private static void EnumerateSSRS(DependencyArguments dependencyArguments, Repository repository)
         {
-            Console.WriteLine("Enumerating Reporting Services metadata.");
+            log.Info("Enumerating Reporting Services metadata.");
             try
             {
                 SSRSEnumerator enumerator = new SSRSEnumerator();
@@ -370,7 +373,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
             catch (System.Exception ex)
             {
-                Console.WriteLine(string.Format("Error occurred: {0}", ex.Message));
+                log.Error(string.Format("Error occurred: {0}", ex.Message));
             }
         }
 
@@ -411,7 +414,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Format("Unable to connect to Dependency Database: {0}\r\nMessage:\r\n{1}", dependencyArguments.depDb, ex.Message));
+                log.Error(string.Format("Unable to connect to Dependency Database: {0}", dependencyArguments.depDb));
+                log.Error(string.Format("Message: {0}", ex.Message));
                 return null;
             }
         }

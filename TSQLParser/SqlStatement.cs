@@ -30,7 +30,7 @@ namespace TSQLParser
                 {
                     foreach (ParseError parseError in _parseErrors)
                     {
-                        result.Add(String.Format("Error Number: {0}\r\nMessage: {1}\r\nLine: {2}\r\nOffset: {3}", parseError.Number, parseError.Message, parseError.Line, parseError.Offset));
+                        result.Add(String.Format("Parsing Warning Number: {0}\r\nMessage: {1}\r\nLine: {2}\r\nOffset: {3}", parseError.Number, parseError.Message, parseError.Line, parseError.Offset));
                     }
                 }
                 return result;
