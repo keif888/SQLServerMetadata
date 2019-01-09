@@ -1948,6 +1948,13 @@ namespace TSQLParser
                                         son.Identifiers.Add(mpi);
                                     }
                             }
+                            else if (functionCall.CallTarget is ExpressionCallTarget)
+                            {
+                                if ((functionCall.CallTarget as ExpressionCallTarget).Expression != null)
+                                {
+                                    findIdentifiers((functionCall.CallTarget as ExpressionCallTarget).Expression);
+                                }
+                            }
                             son.Identifiers.Add(functionCall.FunctionName);
                             findIdentifiers(son, Identifier.IdentifierEnum.Function);
                         }
