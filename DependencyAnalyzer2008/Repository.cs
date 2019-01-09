@@ -1378,9 +1378,24 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 }
 
 #endregion
-
-                // Dont forget to update _dbVersion, or the new data won't be committed.
             }
+            if (dbVersion == 9)
+            {
+                using (SqlCommand sqlCommand = repositoryConnection.CreateCommand())
+                {
+                    dbVersion = 10;
+                    sqlCommand.CommandText = String.Format("INSERT INTO dbo.Version\r\n" +
+                                            "(VersionID, InstallDate)\r\n" +
+                                            "VALUES\r\n" +
+                                            "({0}, GETDATE())", dbVersion);
+                    sqlCommand.ExecuteNonQuery();
+
+                    sqlCommand.CommandText = "ALTER TABLE [dbo].[Objects] ALTER COLUMN [ObjectDesc] NVARCHAR(MAX)";
+                    sqlCommand.ExecuteNonQuery();
+                }
+
+            }
+            // Dont forget to update _dbVersion, or the new data won't be committed.
         }
 
         /// <summary>
