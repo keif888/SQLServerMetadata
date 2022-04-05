@@ -8,9 +8,10 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>SSISProjectBuilder</RootNamespace>
     <AssemblyName>SSISProjectBuilder</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,6 +33,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.AnalysisServices.Project">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\SSIS\150\BIShared\Microsoft.AnalysisServices.Project.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DataTransformationServices.VsIntegration, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\SSIS\Microsoft.DataTransformationServices.VsIntegration.DLL</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DataWarehouse.VsIntegration, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\SSIS\150\BIShared\Microsoft.DataWarehouse.VsIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.ManagedDTS, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\PublicAssemblies\SSIS\150\Microsoft.SqlServer.ManagedDTS.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,15 +56,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.SqlServer.ManagedDTS">
-      <HintPath>$(VS140COMNTOOLS)\..\IDE\PrivateAssemblies\Microsoft.SqlServer.ManagedDTS.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DataTransformationServices.VsIntegration">
-      <HintPath>$(VS140COMNTOOLS)\..\IDE\PrivateAssemblies\Microsoft.DataTransformationServices.VsIntegration.DLL</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DataWarehouse.VsIntegration">
-      <HintPath>$(VS140COMNTOOLS)\..\IDE\PrivateAssemblies\Microsoft.DataWarehouse.VsIntegration.DLL</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\DependencyAnalyzer2008\CommandLineArguments.cs">
@@ -75,6 +82,9 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AssemblyInfoVersion.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

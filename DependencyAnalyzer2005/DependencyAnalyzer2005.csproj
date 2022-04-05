@@ -59,8 +59,8 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.8\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.14\lib\net40\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AnalysisServices, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -85,10 +85,12 @@
       <HintPath>..\References\SQL2005DLLs\Microsoft.SqlServer.SmoEnum.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -183,6 +185,6 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PreBuildEvent>"%25CommonProgramFiles%25\Microsoft Shared\TextTemplating\14.0\texttransform.exe" "$(ProjectDir)\Properties\AssemblyInfoVersion.tt"</PreBuildEvent>
+    <PreBuildEvent>"$(DevEnvDir)texttransform.exe" "$(ProjectDir)\Properties\AssemblyInfoVersion.tt"</PreBuildEvent>
   </PropertyGroup>
 </Project>
