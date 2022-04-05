@@ -2091,6 +2091,11 @@ namespace TSQLParser
                         break;
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.DataModificationTableReference":
                         findIdentifiers(((DataModificationTableReference)tableSource).DataModificationSpecification.Target);
+                        if (((DataModificationTableReference)tableSource).DataModificationSpecification is MergeSpecification specification)
+                        {
+                            if (specification.TableReference != null)
+                                findIdentifiers(specification.TableReference);
+                        }
                         if (((DataModificationTableReference)tableSource).DataModificationSpecification.OutputIntoClause != null)
                         {
                             findIdentifiers(((DataModificationTableReference)tableSource).DataModificationSpecification.OutputIntoClause.IntoTable);
