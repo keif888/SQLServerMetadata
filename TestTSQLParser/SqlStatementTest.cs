@@ -1108,6 +1108,9 @@ Month(am.theDate) ASC;";
              }
          }
 
+        /// <summary>
+        /// Test to confirm that Bug #36 has been fixed
+        /// </summary>
         [TestMethod()]
         public void updateTableAlias()
         {
@@ -1119,6 +1122,83 @@ Month(am.theDate) ASC;";
             List<string> lstractual;
             lstrexpected.Add("[Ods].[DimUnit]");
             lstrexpected.Add("[Ods].[DimUnitUpdate]");
+            lstractual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
+        /// <summary>
+        /// Test to confirm that Bug #30 has been fixed.
+        /// </summary>
+        [TestMethod()]
+        public void ColumnNestedQuery()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @"SELECT
+	STUFF((SELECT DISTINCT
+		 ', ' + SU.FirstName + ' ' + SU.NAME AS JXXCoordinator
+	 FROM   Table9 AS JXX
+	 LEFT JOIN Table6 AS SU
+		 ON JXX.Table6Id = SU.Id
+	 WHERE  FCMF1.ClassificationID = JXX.Table4Id
+	 FOR XML PATH(N''), TYPE).value(N'.[1]', N'nvarchar(max)'), 1, 2, N''
+	) AS JXXCoordinator
+FROM   #TempTable1 AS E
+       LEFT JOIN #TempTable4 AS NTC
+               ON NTC.Id = TaskCategoryId
+       INNER JOIN Table8 AS F
+               ON F.Id = E.FirmID
+       INNER JOIN Table1 AS C
+               ON F.Table1Id = C.Id
+       LEFT JOIN Table7 AS FII
+              ON ISNULL(F.TopParentID, F.Id) = FII.Id
+       LEFT JOIN Table1 AS CII
+              ON CII.Id = FII.Table1Id
+       LEFT JOIN Table2 AS P
+              ON P.Id = E.PriorityId
+       LEFT JOIN Table6 AS SU
+              ON SU.Id = E.UserID
+	    LEFT JOIN #TempTable6 PG
+				ON PG.FirmId = F.Id
+		LEFT JOIN #TempTable2 BPG
+				ON BPG.FirmId = F.Id
+		LEFT JOIN #TempTable5 PPG
+				ON PPG.FirmID = F.Id
+		LEFT JOIN #TempTable3 IDPG
+				ON IDPG.FirmId = F.Id
+		LEFT JOIN Table3 AS FCMF
+				ON F.Id = FCMF.FirmID
+				AND FCMF.ClassificationTypeName = 'DXXXXXXX'
+		LEFT JOIN Table3 AS FCMF1
+				ON F.Id = FCMF1.FirmID
+				AND FCMF1.ClassificationTypeName = 'JXX'
+		LEFT JOIN Table4 AS FC_JXX
+				ON FC_JXX.Id = FCMF1.ClassificationId
+		LEFT JOIN Table5 AS JXXD
+				ON FCMF1.ClassificationId = JXXD.JXX_Table4Id
+";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[Table1]");
+            lstrexpected.Add("[Table2]");
+            lstrexpected.Add("[Table3]");
+            lstrexpected.Add("[Table4]");
+            lstrexpected.Add("[Table5]");
+            lstrexpected.Add("[Table6]");
+            lstrexpected.Add("[Table7]");
+            lstrexpected.Add("[Table8]");
+            lstrexpected.Add("[Table9]");
+            lstrexpected.Add("[#TempTable1]");
+            lstrexpected.Add("[#TempTable2]");
+            lstrexpected.Add("[#TempTable3]");
+            lstrexpected.Add("[#TempTable4]");
+            lstrexpected.Add("[#TempTable5]");
+            lstrexpected.Add("[#TempTable6]");
             lstractual = target.getTableNames(forceSchemaQualified);
             Assert.AreEqual(lstrexpected.Count, lstractual.Count);
             for (int i = 0; i < lstractual.Count; i++)
@@ -1172,6 +1252,5 @@ WHERE   Action = 'DELETE';
                 Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
             }
         }
-
     }
 }
