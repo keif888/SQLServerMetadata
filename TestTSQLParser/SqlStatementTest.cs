@@ -1127,5 +1127,51 @@ Month(am.theDate) ASC;";
             }
         }
 
+        [TestMethod()]
+        public void InsertWithMerge()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @"INSERT INTO Production.ZeroInventory
+(
+    DeletedProductID
+  , RemovedOnDate
+)
+SELECT  ProductID , GETDATE()
+FROM    (
+            MERGE Production.ProductInventory AS pi
+            USING (
+                      SELECT    ProductID
+                              , SUM(OrderQty)
+                      FROM      Sales.SalesOrderDetail AS sod
+                      JOIN      Sales.SalesOrderHeader AS soh
+                      ON        sod.SalesOrderID  = soh.SalesOrderID
+                                AND soh.OrderDate = '20070401'
+                      GROUP BY  ProductID
+                  ) AS src (ProductID, OrderQty)
+            ON (pi.ProductID = src.ProductID)
+            WHEN MATCHED AND pi.Quantity - src.OrderQty <= 0
+            THEN DELETE
+            WHEN MATCHED
+            THEN UPDATE SET pi.Quantity = pi.Quantity - src.OrderQty
+            OUTPUT $action , deleted.ProductID
+        ) AS Changes(Action, ProductID)
+WHERE   Action = 'DELETE';
+";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[Production].[ZeroInventory]");
+            lstrexpected.Add("[Production].[ProductInventory]");
+            lstrexpected.Add("[Sales].[SalesOrderDetail]");
+            lstrexpected.Add("[Sales].[SalesOrderHeader]");
+            lstractual = target.getTableNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
     }
 }
