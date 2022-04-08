@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 //using Microsoft.Data.Schema.ScriptDom.Sql;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
+//using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System.Collections.Generic;
 
 namespace TestTSQLParser
