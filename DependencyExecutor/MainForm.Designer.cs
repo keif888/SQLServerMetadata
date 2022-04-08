@@ -1216,7 +1216,8 @@
             "2012",
             "2014",
             "2016",
-            "2017"});
+            "2017",
+            "2019"});
             this.cbSQLVersion.Location = new System.Drawing.Point(181, 5);
             this.cbSQLVersion.Name = "cbSQLVersion";
             this.cbSQLVersion.Size = new System.Drawing.Size(93, 21);

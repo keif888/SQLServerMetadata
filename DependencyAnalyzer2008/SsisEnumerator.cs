@@ -59,6 +59,9 @@ using IDTSPipeline = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSPipeline130;
 #if SQL2017
 using IDTSPipeline = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSPipeline130;
 #endif
+#if SQL2019
+using IDTSPipeline = Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSPipeline130;
+#endif
 
 using Pre2012PackageInfo = Microsoft.SqlServer.Dts.Runtime.PackageInfo;
 
@@ -282,8 +285,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
             internal const string ManagedComponentWrapper = "{8DC69D45-2AD5-40C6-AAEC-25722F92D6FC}"; //Script Component? "{2E42D45B-F83C-400F-8D77-61DDE6A7DF29}";
 
             internal const string DerivedColumn = "{692A88CF-7641-45B7-8E01-7BEE602D40EE}";
-            internal const string MultipleHash = "Martin.SQLServer.Dts.MultipleHash, MultipleHash2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=51c551904274ab44";
-            internal const string KimballSCD = "MouldingAndMillwork.SSIS.KimballMethodSCD, KimballMethodSCD100, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8b0551303405e96c";
+            internal const string MultipleHash = "Martin.SQLServer.Dts.MultipleHash, MultipleHash2017, Version=1.0.0.0, Culture=neutral, PublicKeyToken=51c551904274ab44";
+            internal const string KimballSCD = "MouldingAndMillwork.SSIS.KimballMethodSCD, KimballMethodSCD140, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8b0551303405e96c";
             internal const string OLEDBCommand = "{1E21FD10-A6DF-4280-A583-4E3A87002286}";
 
             //internal const string ADONetSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
@@ -296,10 +299,41 @@ namespace Microsoft.Samples.DependencyAnalyzer
             //internal const string PartitionProcessing = "{DA510FB7-E3A8-4D96-9F59-55E15E67FE3D}";
             //internal const string RecordSetDestination = "{C457FD7E-CE98-4C4B-AEFE-F3AE0044F181}";
             //internal const string SQLServerCompactDestination = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
-
-
 #endif
+#if SQL2019
+            internal const string OleDbSource = "{0AC66534-E2CE-4B6A-99EE-0320EB33AB57}";
+            internal const string ExcelSource = "{EA1F8A5D-21C4-44B6-8529-102960968F1E}";
+            internal const string FlatFileSource = "{4D314831-A269-45DA-9066-23D8828BE102}";
+            internal const string RawFileSource = "{B7030F40-C400-4A9E-B846-436AD0DD0465}";
+            internal const string XmlSource = "{7CDF593F-DE06-4ABD-B356-7976EF7AC8E0}"; //"Microsoft.SqlServer.Dts.Pipeline.XmlSourceAdapter, Microsoft.SqlServer.XmlSrc, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91";
 
+            internal const string OleDbDestination = "{B5D38974-BE31-4ABA-85AB-FADAA58E773A}";
+            internal const string SqlDestination = "{45D94AEC-4A85-446D-B553-5FDD8E2C4DAD}";
+            internal const string FlatFileDest = "{A513477A-65CD-474B-B52A-D1B0519EF04E}";
+            internal const string RawFileDest = "{B0719607-5B68-4415-B927-580048392876}";
+            internal const string ExcelDestination = "{3D9EB354-624C-4AE3-8B81-1865659E4692}";
+
+            internal const string Lookup = "{C9E81003-60C2-4A51-AC5A-4BF13F99FE8F}";
+            internal const string FuzzyLookup = "{170BEFAA-E87F-476D-815D-4767C0507BAF}";
+
+            internal const string ManagedComponentWrapper = "{7CDF593F-DE06-4ABD-B356-7976EF7AC8E0}"; //Script Component? "{2E42D45B-F83C-400F-8D77-61DDE6A7DF29}";
+
+            internal const string DerivedColumn = "{5BF3E622-21C2-4527-B4E3-938FF097BD5C}";
+            internal const string MultipleHash = "Martin.SQLServer.Dts.MultipleHash, MultipleHash2019, Version=1.0.0.0, Culture=neutral, PublicKeyToken=51c551904274ab44";
+            internal const string KimballSCD = "MouldingAndMillwork.SSIS.KimballMethodSCD, KimballMethodSCD150, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8b0551303405e96c";
+            internal const string OLEDBCommand = "{065EEED5-E779-4156-AA69-FE35A54915E6}";
+
+            //internal const string ADONetSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+            //internal const string CDCSource = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+            //internal const string DataMiningModel = "{3D9FFAE9-B89B-43D9-80C8-B97D2740C746}";
+            //internal const string DataReaderDestination = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+            //internal const string DimensionProcessing = "{2C2F0891-3AAA-4865-A676-D7476FE4CE90}";
+            //internal const string ODBCDestination = "{074B8736-CD73-40A5-822E-888215AF57DA}";
+            //internal const string ODBCSource = "{A77F5655-A006-443A-9B7E-90B6BD55CB84}";
+            //internal const string PartitionProcessing = "{DA510FB7-E3A8-4D96-9F59-55E15E67FE3D}";
+            //internal const string RecordSetDestination = "{C457FD7E-CE98-4C4B-AEFE-F3AE0044F181}";
+            //internal const string SQLServerCompactDestination = "{874F7595-FB5F-40FF-96AF-FBFF8250E3EF}";
+#endif
         }
 
         private const string objectTypePackage = "SSIS Package";
@@ -791,6 +825,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
 #endif
 #if SQL2017
             sqlVersion = "SQL2017";
+#endif
+#if SQL2019
+            sqlVersion = "SQL2019";
 #endif
 
             log.Info("Enumerating parameters and connection managers...");

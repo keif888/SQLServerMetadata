@@ -38,6 +38,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
 #if SQL2017
         public const string OLEDBGuid = "{5802D1B1-DCFC-4F1E-8ACD-388327A21A9C}";
 #endif
+#if SQL2019
+        public const string OLEDBGuid = "{14977E8C-BABD-438F-9C71-C57206CDE422}";
+#endif
 
 
         internal class Domains

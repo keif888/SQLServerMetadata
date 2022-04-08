@@ -76,6 +76,14 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
+    <ProjectReference Include="..\DependencyAnalyzer2019\DependencyAnalyzer2019.csproj">
+      <Name>DependencyAnalyzer2019</Name>
+      <Project>{515c04cc-ce3c-4877-822c-e6d939182019}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\DependencyExecutor\DependencyExecutor.csproj">
       <Name>DependencyExecutor</Name>
       <Project>{509b2e77-2895-488b-8973-74a284d1d2af}</Project>

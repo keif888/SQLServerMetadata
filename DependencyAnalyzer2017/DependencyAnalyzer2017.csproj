@@ -91,11 +91,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\SQL2017DLLs\Microsoft.SqlServer.ManagedDTS.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.Management.IntegrationServices, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.Management.IntegrationServices, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\SQL2017DLLs\Microsoft.SqlServer.Management.IntegrationServices.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.Management.IntegrationServicesEnum, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.SqlServer.Management.IntegrationServicesEnum, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\SQL2017DLLs\Microsoft.SqlServer.Management.IntegrationServicesEnum.dll</HintPath>
     </Reference>

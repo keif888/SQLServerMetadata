@@ -134,7 +134,40 @@
               <File Id="FScriptDom2017" Name="Microsoft.SqlServer.TransactSql.ScriptDom.dll" Source="$(var.TSQLParser.TargetDir)Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
             </Component>
           </Directory>
-          <Directory Id="DEPENDENCYEXECUTORDIR" Name="Dependency Executor">
+			<Directory Id="DependencyAnalyzer2019DIR" Name="Dependency Analyzer 2019">
+				<Component Id="DependencyAnalyzer2019Exe" Guid="{8C98AD26-65CE-2019-8954-6E98F4E5BF1D}" Win64="no">
+					<File Id="FDependencyAnalyzer2019Exe" Name="$(var.DependencyAnalyzer2019.TargetFileName)" Source="$(var.DependencyAnalyzer2019.TargetPath)" />
+					<File Id="FDependencyAnalyzer2019ExeConf" Name="$(var.DependencyAnalyzer2019.TargetFileName).config" Source="$(var.DependencyAnalyzer2019.TargetPath).config" />
+					<File Id="FLog4Net2019Dll" Name="log4net.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)log4net.dll" />
+					<File Id="FLog4Net2019Config" Name="log4net.config" Source="$(var.DependencyAnalyzer2019.TargetDir)log4net.config" />
+				</Component>
+				<Component Id="SMO2019" Guid="{8C98AD26-65CE-2019-8954-6E98F4E5BAAA}" Win64="no">
+					<File Id="FMicrosoft.SqlServer.ConnectionInfo2019" Name="Microsoft.SqlServer.ConnectionInfo.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.ConnectionInfo.dll" />
+					<!--  Removed as they aren't in the SMO, so are they needed?  ToDo: Test if these files are needed.
+					<File Id="FMicrosoft.SqlServer.ConnectionInfoExtended2019" Name="Microsoft.SqlServer.ConnectionInfoExtended.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.ConnectionInfoExtended.dll" />
+					<File Id="FMicrosoft.SqlServer.Diagnostics.Strace2019" Name="Microsoft.SqlServer.Diagnostics.Strace.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Diagnostics.Strace.dll" />
+					-->
+					<File Id="FMicrosoft.SqlServer.Dmf.Common2019" Name="Microsoft.SqlServer.Dmf.Common.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Dmf.Common.dll" />
+					<File Id="FMicrosoft.SqlServer.Management.Sdk.Sfc2019" Name="Microsoft.SqlServer.Management.Sdk.Sfc.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Management.Sdk.Sfc.dll" />
+					<File Id="FMicrosoft.SqlServer.ServiceBrokerEnum2019" Name="Microsoft.SqlServer.ServiceBrokerEnum.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.ServiceBrokerEnum.dll" />
+					<File Id="FMicrosoft.SqlServer.Smo2019" Name="Microsoft.SqlServer.Smo.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Smo.dll" />
+					<File Id="FMicrosoft.SqlServer.SqlClrProvider2019" Name="Microsoft.SqlServer.SqlClrProvider.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.SqlClrProvider.dll" />
+					<File Id="FMicrosoft.SqlServer.SqlEnum2019" Name="Microsoft.SqlServer.SqlEnum.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.SqlEnum.dll" />
+					<File Id="FMicrosoft.SqlServer.Management.IntegrationServicesEnum2019" Name="Microsoft.SqlServer.Management.IntegrationServicesEnum.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Management.IntegrationServicesEnum.dll" />
+					<File Id="FMicrosoft.AnalysisServices2019" Name="Microsoft.AnalysisServices.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.AnalysisServices.dll" />
+					<File Id="FMicrosoft.AnalysisServices.Core2019" Name="Microsoft.AnalysisServices.Core.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.AnalysisServices.Core.dll" />
+					<File Id="FMicrosoft.AnalysisServices.SPClient.Interfaces2019" Name="Microsoft.AnalysisServices.SPClient.Interfaces.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.AnalysisServices.SPClient.Interfaces.dll" />
+					<File Id="FMicrosoft.AnalysisServices.Tabular2019" Name="Microsoft.AnalysisServices.Tabular.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.AnalysisServices.Tabular.dll" />
+					<File Id="FMicrosoft.AnalysisServices.Tabular.Json2019" Name="Microsoft.AnalysisServices.Tabular.Json.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.AnalysisServices.Tabular.Json.dll" />
+				</Component>
+				<Component Id="DependencyAnalyzer2019Parser" Guid="{95C37E97-F292-2019-A9F3-097946B574F8}" Win64="no">
+					<File Id="FDependencyAnalyzer2019Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
+				</Component>
+				<Component Id="ScriptDom2019" Guid="{95C77E97-F292-2019-A9F3-097946B574F8}" Win64="no">
+					<File Id="FScriptDom2019" Name="Microsoft.SqlServer.TransactSql.ScriptDom.dll" Source="$(var.TSQLParser.TargetDir)Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
+				</Component>
+			</Directory>
+			<Directory Id="DEPENDENCYEXECUTORDIR" Name="Dependency Executor">
             <Component Id="DependencyExecutor" Guid="{39F20A67-354B-4503-9CBD-F4DFA06C5484}" Win64="no">
               <File Id="DependencyExecutorExe" Name="$(var.DependencyExecutor.TargetFileName)" Source="$(var.DependencyExecutor.TargetPath)" />
             </Component>
@@ -257,7 +290,13 @@
         <ComponentRef Id="DependencyAnalyzer2017Parser"/>
         <ComponentRef Id="ScriptDom2017"/>
       </Feature>
-      <Feature Id="DependencyExecutor" Level="1" Title="Dependency Executor">
+		<Feature Id="DependencyAnalyzer2019" Level="1" Title="Dependency Analyzer 2019">
+			<ComponentRef Id="DependencyAnalyzer2019Exe"/>
+			<ComponentRef Id="SMO2019"/>
+			<ComponentRef Id="DependencyAnalyzer2019Parser"/>
+			<ComponentRef Id="ScriptDom2019"/>
+		</Feature>
+		<Feature Id="DependencyExecutor" Level="1" Title="Dependency Executor">
         <ComponentRef Id="DependencyExecutor"/>
         <ComponentRef Id="ApplicationShortcut"/>
       </Feature>
