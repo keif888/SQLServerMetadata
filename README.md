@@ -71,3 +71,11 @@ The Executor doesn't have the option to change the SSIS server.
 The following picture shows the Dependency Viewer:
 ![Dependency Viewer](https://github.com/keif888/SQLServerMetadata/blob/master/WikiImages/Home_DepViewer.PNG)
 
+## Other Downloads Required:
+To be able to analyse SSIS requires either the appropriate version of Visual Studio/BIDS/SSDT, or the appropriate version of SSIS to be installed.
+To be able to analyse SQL/AS 2005, without having SQL 2005 installed, requires the SQLSERVER2005_ASAMO10, SQLSysClrTypes and SharedManagementObjects (32 bit).  But these are no longer available from Microsoft.
+To be able to analyse SQL/AS 2008, without having SQL 2008 installed, requires the SQLSERVER2008_ASAMO10, SQLSysClrTypes and SharedManagementObjects (32 bit) from here: https://www.microsoft.com/en-us/download/details.aspx?id=44272
+To be able to analyse SQL/AS 2012, without having SQL 2012 installed, requires the SQL_AS_AMO, SQLSysClrTypes and SharedManagementObjects (32 bit) from here: https://www.microsoft.com/en-us/download/details.aspx?id=56041
+To be able to analyse SQL/AS 2014, without having SQL 2014 installed, requires the SQL_AS_AMO, SQLSysClrTypes and SharedManagementObjects (32 bit) from here: https://www.microsoft.com/en-us/download/details.aspx?id=42295
+To be able to analyse SQL/AS 2016, without having SQL 2016 installed, requires the SQL_AS_AMO, SQLSysClrTypes and SharedManagementObjects (32 bit) from here: https://www.microsoft.com/en-us/download/details.aspx?id=103444
+From 2017 onwards, SQL and Analysis services capability has been provided directly in the download.

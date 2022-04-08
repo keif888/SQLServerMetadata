@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?define ProductVersion = "0.26.0.0"?>
+  <?define ProductVersion = "0.27.0.0"?>
   <?define UpgradeCode = "B758AA83-565F-453A-BECF-0B0B060E7023"?>
   <?define Manufacturer = "Keith Martin"?>
   <?define PackageCode = "*"?>
@@ -40,7 +40,9 @@
         <Directory Id="INSTALLDIR" Name="SQLServerMetadataToolkit">
           <Directory Id="DependencyAnalyzer2005DIR" Name="Dependency Analyzer 2005">
             <Component Id="DependencyAnalyzer2005Exe" Guid="{C529EBFF-9266-47E9-9AB7-CD94E11E7D28}" Win64="no">
-              <File Id="FDependencyAnalyzer2005Exe" Name="$(var.DependencyAnalyzer2005.TargetFileName)" Source="$(var.DependencyAnalyzer2005.TargetPath)" />
+                <File Id="FDependencyAnalyzer2005Exe" Name="$(var.DependencyAnalyzer2005.TargetFileName)" Source="$(var.DependencyAnalyzer2005.TargetPath)" />
+                <File Id="FLog4Net2005Dll" Name="log4net.dll" Source="$(var.DependencyAnalyzer2005.TargetDir)log4net.dll" />
+                <File Id="FLog4Net2005Config" Name="log4net.config" Source="$(var.DependencyAnalyzer2005.TargetDir)log4net.config" />
             </Component>
             <Component Id="DependencyAnalyzer2005Parser" Guid="{666DAD9B-DE37-4D7C-BD5C-E1F14D48BF27}" Win64="no">
               <File Id="FDependencyAnalyzer2005Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
@@ -52,6 +54,8 @@
           <Directory Id="DependencyAnalyzer2008DIR" Name="Dependency Analyzer 2008">
             <Component Id="DependencyAnalyzer2008Exe" Guid="{3C0B8DCE-FEF2-4B81-9069-19F9CA146370}" Win64="no">
               <File Id="FDependencyAnalyzer2008Exe" Name="$(var.DependencyAnalyzer2008.TargetFileName)" Source="$(var.DependencyAnalyzer2008.TargetPath)" />
+                <File Id="FLog4Net2008Dll" Name="log4net.dll" Source="$(var.DependencyAnalyzer2008.TargetDir)log4net.dll" />
+                <File Id="FLog4Net2008Config" Name="log4net.config" Source="$(var.DependencyAnalyzer2008.TargetDir)log4net.config" />
             </Component>
             <Component Id="DependencyAnalyzer2008Parser" Guid="{5F6E7D1F-8894-4484-B944-BDC2254781F0}" Win64="no">
                 <File Id="FDependencyAnalyzer2008Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
@@ -63,8 +67,10 @@
           <Directory Id="DependencyAnalyzer2012DIR" Name="Dependency Analyzer 2012">
             <Component Id="DependencyAnalyzer2012Exe" Guid="{C73B2EEC-0C28-45A4-88F8-885EB16D09E0}" Win64="no">
               <File Id="FDependencyAnalyzer2012Exe" Name="$(var.DependencyAnalyzer2012.TargetFileName)" Source="$(var.DependencyAnalyzer2012.TargetPath)" />
+                <File Id="FLog4Net2012Dll" Name="log4net.dll" Source="$(var.DependencyAnalyzer2012.TargetDir)log4net.dll" />
+                <File Id="FLog4Net2012Config" Name="log4net.config" Source="$(var.DependencyAnalyzer2012.TargetDir)log4net.config" />
             </Component>
-            <Component Id="DependencyAnalyzer2012Parser" Guid="{0A489594-2A5F-4677-8C0C-4EDC0A9DC002}" Win64="no">
+	        <Component Id="DependencyAnalyzer2012Parser" Guid="{0A489594-2A5F-4677-8C0C-4EDC0A9DC002}" Win64="no">
                 <File Id="FDependencyAnalyzer2012Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
             </Component>
             <Component Id="ScriptDom2012" Guid="{0A479594-2A5F-4677-8C0C-4EDC0A9DC002}" Win64="no">
@@ -74,8 +80,10 @@
           <Directory Id="DependencyAnalyzer2014DIR" Name="Dependency Analyzer 2014">
             <Component Id="DependencyAnalyzer2014Exe" Guid="{8C98AD26-65CE-4BA3-8954-6E98F4E5BF1D}" Win64="no">
               <File Id="FDependencyAnalyzer2014Exe" Name="$(var.DependencyAnalyzer2014.TargetFileName)" Source="$(var.DependencyAnalyzer2014.TargetPath)" />
+                <File Id="FLog4Net2014Dll" Name="log4net.dll" Source="$(var.DependencyAnalyzer2014.TargetDir)log4net.dll" />
+                <File Id="FLog4Net2014Config" Name="log4net.config" Source="$(var.DependencyAnalyzer2014.TargetDir)log4net.config" />
             </Component>
-            <Component Id="DependencyAnalyzer2014Parser" Guid="{95C37E97-F292-4804-A9F3-097946B574F8}" Win64="no">
+			<Component Id="DependencyAnalyzer2014Parser" Guid="{95C37E97-F292-4804-A9F3-097946B574F8}" Win64="no">
               <File Id="FDependencyAnalyzer2014Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
             </Component>
             <Component Id="ScriptDom2014" Guid="{95C77E97-F292-4804-A9F3-097946B574F8}" Win64="no">
@@ -85,8 +93,10 @@
           <Directory Id="DependencyAnalyzer2016DIR" Name="Dependency Analyzer 2016">
             <Component Id="DependencyAnalyzer2016Exe" Guid="{8C98AD26-65CE-2016-8954-6E98F4E5BF1D}" Win64="no">
               <File Id="FDependencyAnalyzer2016Exe" Name="$(var.DependencyAnalyzer2016.TargetFileName)" Source="$(var.DependencyAnalyzer2016.TargetPath)" />
+                <File Id="FLog4Net2016Dll" Name="log4net.dll" Source="$(var.DependencyAnalyzer2016.TargetDir)log4net.dll" />
+                <File Id="FLog4Net2016Config" Name="log4net.config" Source="$(var.DependencyAnalyzer2016.TargetDir)log4net.config" />
             </Component>
-            <Component Id="DependencyAnalyzer2016Parser" Guid="{95C37E97-F292-2016-A9F3-097946B574F8}" Win64="no">
+			<Component Id="DependencyAnalyzer2016Parser" Guid="{95C37E97-F292-2016-A9F3-097946B574F8}" Win64="no">
               <File Id="FDependencyAnalyzer2016Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
             </Component>
             <Component Id="ScriptDom2016" Guid="{95C77E97-F292-2016-A9F3-097946B574F8}" Win64="no">
@@ -97,18 +107,25 @@
             <Component Id="DependencyAnalyzer2017Exe" Guid="{8C98AD26-65CE-2017-8954-6E98F4E5BF1D}" Win64="no">
               <File Id="FDependencyAnalyzer2017Exe" Name="$(var.DependencyAnalyzer2017.TargetFileName)" Source="$(var.DependencyAnalyzer2017.TargetPath)" />
               <File Id="FDependencyAnalyzer2017ExeConf" Name="$(var.DependencyAnalyzer2017.TargetFileName).config" Source="$(var.DependencyAnalyzer2017.TargetPath).config" />
+                <File Id="FLog4Net2017Dll" Name="log4net.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)log4net.dll" />
+                <File Id="FLog4Net2017Config" Name="log4net.config" Source="$(var.DependencyAnalyzer2017.TargetDir)log4net.config" />
             </Component>
-            <Component Id="NUGetSMO" Guid="{8C98AD26-65CE-2017-8954-6E98F4E5BAAA}" Win64="no">
-              <File Id="FMicrosoft.SqlServer.ConnectionInfo" Name="Microsoft.SqlServer.ConnectionInfo.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.ConnectionInfo.dll" />
-              <File Id="FMicrosoft.SqlServer.ConnectionInfoExtended" Name="Microsoft.SqlServer.ConnectionInfoExtended.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.ConnectionInfoExtended.dll" />
-              <File Id="FMicrosoft.SqlServer.Diagnostics.Strace" Name="Microsoft.SqlServer.Diagnostics.Strace.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Diagnostics.Strace.dll" />
-              <File Id="FMicrosoft.SqlServer.Dmf.Common" Name="Microsoft.SqlServer.Dmf.Common.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Dmf.Common.dll" />
-              <File Id="FMicrosoft.SqlServer.Management.Sdk.Sfc" Name="Microsoft.SqlServer.Management.Sdk.Sfc.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Management.Sdk.Sfc.dll" />
-              <File Id="FMicrosoft.SqlServer.ServiceBrokerEnum" Name="Microsoft.SqlServer.ServiceBrokerEnum.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.ServiceBrokerEnum.dll" />
-              <File Id="FMicrosoft.SqlServer.Smo" Name="Microsoft.SqlServer.Smo.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Smo.dll" />
-              <File Id="FMicrosoft.SqlServer.SqlClrProvider" Name="Microsoft.SqlServer.SqlClrProvider.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.SqlClrProvider.dll" />
-              <File Id="FMicrosoft.SqlServer.SqlEnum" Name="Microsoft.SqlServer.SqlEnum.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.SqlEnum.dll" />
-              <File Id="FMicrosoft.SqlServer.Management.IntegrationServicesEnum" Name="Microsoft.SqlServer.Management.IntegrationServicesEnum.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Management.IntegrationServicesEnum.dll" />
+            <Component Id="SMO2017" Guid="{8C98AD26-65CE-2017-8954-6E98F4E5BAAA}" Win64="no">
+              <File Id="FMicrosoft.SqlServer.ConnectionInfo2017" Name="Microsoft.SqlServer.ConnectionInfo.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.ConnectionInfo.dll" />
+              <File Id="FMicrosoft.SqlServer.ConnectionInfoExtended2017" Name="Microsoft.SqlServer.ConnectionInfoExtended.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.ConnectionInfoExtended.dll" />
+              <File Id="FMicrosoft.SqlServer.Diagnostics.Strace2017" Name="Microsoft.SqlServer.Diagnostics.Strace.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Diagnostics.Strace.dll" />
+              <File Id="FMicrosoft.SqlServer.Dmf.Common2017" Name="Microsoft.SqlServer.Dmf.Common.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Dmf.Common.dll" />
+              <File Id="FMicrosoft.SqlServer.Management.Sdk.Sfc2017" Name="Microsoft.SqlServer.Management.Sdk.Sfc.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Management.Sdk.Sfc.dll" />
+              <File Id="FMicrosoft.SqlServer.ServiceBrokerEnum2017" Name="Microsoft.SqlServer.ServiceBrokerEnum.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.ServiceBrokerEnum.dll" />
+              <File Id="FMicrosoft.SqlServer.Smo2017" Name="Microsoft.SqlServer.Smo.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Smo.dll" />
+              <File Id="FMicrosoft.SqlServer.SqlClrProvider2017" Name="Microsoft.SqlServer.SqlClrProvider.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.SqlClrProvider.dll" />
+              <File Id="FMicrosoft.SqlServer.SqlEnum2017" Name="Microsoft.SqlServer.SqlEnum.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.SqlEnum.dll" />
+              <File Id="FMicrosoft.SqlServer.Management.IntegrationServicesEnum2017" Name="Microsoft.SqlServer.Management.IntegrationServicesEnum.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.SqlServer.Management.IntegrationServicesEnum.dll" />
+              <File Id="FMicrosoft.AnalysisServices2017" Name="Microsoft.AnalysisServices.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.AnalysisServices.dll" />
+              <File Id="FMicrosoft.AnalysisServices.Core2017" Name="Microsoft.AnalysisServices.Core.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.AnalysisServices.Core.dll" />
+              <File Id="FMicrosoft.AnalysisServices.SPClient.Interfaces2017" Name="Microsoft.AnalysisServices.SPClient.Interfaces.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.AnalysisServices.SPClient.Interfaces.dll" />
+              <File Id="FMicrosoft.AnalysisServices.Tabular2017" Name="Microsoft.AnalysisServices.Tabular.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.AnalysisServices.Tabular.dll" />
+              <File Id="FMicrosoft.AnalysisServices.Tabular.Json2017" Name="Microsoft.AnalysisServices.Tabular.Json.dll" Source="$(var.DependencyAnalyzer2017.TargetDir)Microsoft.AnalysisServices.Tabular.Json.dll" />
             </Component>
             <Component Id="DependencyAnalyzer2017Parser" Guid="{95C37E97-F292-2017-A9F3-097946B574F8}" Win64="no">
               <File Id="FDependencyAnalyzer2017Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
@@ -236,7 +253,7 @@
       </Feature>
       <Feature Id="DependencyAnalyzer2017" Level="1" Title="Dependency Analyzer 2017">
         <ComponentRef Id="DependencyAnalyzer2017Exe"/>
-        <ComponentRef Id="NUGetSMO"/>
+        <ComponentRef Id="SMO2017"/>
         <ComponentRef Id="DependencyAnalyzer2017Parser"/>
         <ComponentRef Id="ScriptDom2017"/>
       </Feature>

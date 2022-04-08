@@ -31,7 +31,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -39,6 +39,7 @@
     <DefineConstants>TRACE;DEBUG;SQL2017;SQLGT2008</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -53,13 +54,20 @@
     <Reference Include="log4net, Version=2.0.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AnalysisServices, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\SQL2017DLLs\Microsoft.AnalysisServices.DLL</HintPath>
+    <Reference Include="Microsoft.AnalysisServices, Version=19.36.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AnalysisServices.retail.amd64.19.36.0\lib\net45\Microsoft.AnalysisServices.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AnalysisServices.Core, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\SQL2017DLLs\Microsoft.AnalysisServices.Core.DLL</HintPath>
+    <Reference Include="Microsoft.AnalysisServices.Core, Version=19.36.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AnalysisServices.retail.amd64.19.36.0\lib\net45\Microsoft.AnalysisServices.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AnalysisServices.SPClient.Interfaces, Version=19.36.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AnalysisServices.retail.amd64.19.36.0\lib\net45\Microsoft.AnalysisServices.SPClient.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AnalysisServices.Tabular, Version=19.36.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AnalysisServices.retail.amd64.19.36.0\lib\net45\Microsoft.AnalysisServices.Tabular.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AnalysisServices.Tabular.Json, Version=19.36.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AnalysisServices.retail.amd64.19.36.0\lib\net45\Microsoft.AnalysisServices.Tabular.Json.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=14.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SqlServer.SqlManagementObjects.140.17265.0\lib\net40\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
