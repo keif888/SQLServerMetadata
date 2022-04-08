@@ -1,5 +1,7 @@
 # SQL Server Metadata Toolkit
 
+Downloads [here](https://github.com/keif888/SQLServerMetadata/releases) 
+
 # Project Description
 
 MSDN's SQL 2005 tool kit updated to 2008, 2012, 2014, 2016 and 2017 for detecting metadata in SQL Server, SSIS, SSRS and SSAS.
@@ -15,6 +17,16 @@ It can scan SSIS, SSAS, SQL Server Databases, and Reporting Services.
 It has an "Executor", which allows the user to use a GUI to run the various analysers.  If you hover over the buttons at the bottom, the actual command will be shown in the status bar, and you can then copy that command if you so desire...
 
 # Release Notes
+
+**Beta 27** Fixes issues #23, #24, #25, #27, #30, #36.
+
+**Beta 26** Fixes issue #21. This release also adds missing configuration into the database to allow viewing of the database dependencies for SQL 2014 and above.
+
+**Beta 25** Fixes for issues #19 and #20. This release adds the ability for the analysis to ignore SSIS components that are not registered on the machine doing the analysis by treating them as uninteresting.
+
+**Beta 24** Further fixes for issue #17 where v0.23.0.0 did not include enough of the DLL's which make up SQL Server SMO capabilities for SQL 2017.
+
+**Beta 23** Fixes issue #17 which was caused by not including the SQL Server SMO capabilities for SQL 2017, as Microsoft are no longer packaging this capability into the GAC.
 
 **Beta 22** Adds capability to detect .ispac files, and scan them.  Adds capability to detect .conmgr and/or .params files, and switch to "hybid mode".  In "hybrid mode" the folder is checked for the expected .dtproj files, and these are compiled to .ispac files and scanned.  If there are no .dtproj files, then no SSIS packages will be scanned in that folder.  If there are no .conmgr or .params files (in sub folders) then standard SSIS scan will be performed.
 
