@@ -517,6 +517,8 @@ namespace Microsoft.Samples.DependencyAnalyzer
             catch (Exception err)
             {
                 Console.WriteLine(string.Format("Could not enumerate the database: {0}", err.Message));
+                Console.WriteLine(string.Format("Inner Execption: {0}", err.InnerException));
+                Console.WriteLine(string.Format("Stack Trace: {0}", err.StackTrace));
             }
         }
     }

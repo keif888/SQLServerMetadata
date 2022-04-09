@@ -94,6 +94,20 @@ namespace TSQLParser
                                 sqlString = sqlString.Substring(0, error.Offset + offsetIncrement) + "@Special19695Guff " + sqlString.Substring(error.Offset + offsetIncrement + 1, sqlString.Length - error.Offset - 1 - offsetIncrement);
                                 offsetIncrement += 17;
                             }
+                            else if (sqlString.Substring(error.Offset + offsetIncrement, 1) == "{")  //ToDo: Add valid handling for "{ call [core].[sp_update_data_source] (?, ?, ?, ?, ?) }", If it follows the pattern then strip {} and () replace call with exec.
+                            {
+                                reParseSQL = true;
+                                sqlString = sqlString.Substring(0, error.Offset + offsetIncrement) + sqlString.Substring(error.Offset + offsetIncrement + 1, sqlString.Length - error.Offset - 1 - offsetIncrement);
+                                offsetIncrement -= 1;
+                            }
+                            else if (sqlString.Substring(error.Offset + offsetIncrement, 1) == "}")
+                            {
+                                reParseSQL = true;
+                                sqlString = sqlString.Substring(0, error.Offset + offsetIncrement) + sqlString.Substring(error.Offset + offsetIncrement + 1, sqlString.Length - error.Offset - 1 - offsetIncrement);
+                                offsetIncrement -= 1;
+                            }
+
+
                         }
                     }
                     if (!reParseSQL)
