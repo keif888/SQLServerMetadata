@@ -97,6 +97,13 @@ namespace TSQLParser
                             else if (sqlString.Substring(error.Offset + offsetIncrement, 1) == "{")  //ToDo: Add valid handling for "{ call [core].[sp_update_data_source] (?, ?, ?, ?, ?) }", If it follows the pattern then strip {} and () replace call with exec.
                             {
                                 reParseSQL = true;
+                                if (sqlString.Substring(error.Offset + offsetIncrement + 1, sqlString.Length - error.Offset - 1 - offsetIncrement).Contains('}'))
+                                {
+                                    int pos = sqlString.IndexOf('}', error.Offset + offsetIncrement);
+                                    string odbcString = sqlString.Substring(error.Offset + offsetIncrement + 1, pos - error.Offset - 1 - offsetIncrement);
+                                    // \{[\s]+call(?'procname'[\s\w\[\].]+)(?'parms'\([? ,]+\))[\s]+}
+                                }
+
                                 sqlString = sqlString.Substring(0, error.Offset + offsetIncrement) + sqlString.Substring(error.Offset + offsetIncrement + 1, sqlString.Length - error.Offset - 1 - offsetIncrement);
                                 offsetIncrement -= 1;
                             }

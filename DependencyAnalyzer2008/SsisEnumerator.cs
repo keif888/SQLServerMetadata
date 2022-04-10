@@ -17,9 +17,6 @@ using System.Diagnostics;
 using System.Text;
 using System.Xml;
 using System.IO;
-#if SQL2019
-using Microsoft.Data.SqlClient;
-#endif
 
 using Microsoft.SqlServer.Dts.Runtime;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
@@ -509,27 +506,6 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 do
                 {
                     string folder = folders.Dequeue();
-#if SQL2019
-
-                    string connectionString = @"Data Source={0};Initial Catalog=master;";
-
-                    if (String.IsNullOrEmpty(user))
-                    {
-                        connectionString += "Integrated Security=SSPI;";
-                    }
-                    else
-                    {
-                        connectionString += String.Format("User ID={0};Password={1};", user, pwd);
-                    }
-                    SqlConnection connection = new SqlConnection(String.Format(connectionString, server));
-                    connection.Open();
-                    SqlServer.Management.Sdk.Sfc.SqlStoreConnection storeConnection = new SqlServer.Management.Sdk.Sfc.SqlStoreConnection(connection);
-                    IntegrationServices integrationServices = new IntegrationServices
-                    {
-                        Connection = storeConnection
-                    };
-
-#else
                     string connectionString = @"Data Source={0};Initial Catalog=master;";
 
                     if (String.IsNullOrEmpty(user))
@@ -543,7 +519,6 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     System.Data.SqlClient.SqlConnection connection = new System.Data.SqlClient.SqlConnection(String.Format(connectionString, server));
                     connection.Open();
                     IntegrationServices integrationServices = new IntegrationServices(connection);
-#endif
                     string tempFolder = System.IO.Path.GetTempPath() + @"\SSISMD" + Guid.NewGuid().ToString();
                     if (!System.IO.Directory.Exists(tempFolder))
                     {
@@ -578,11 +553,7 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             }
                         }
                     }
-#if SQL2019
                     connection.Close();
-#else
-                    connection.Close();
-#endif
                     if (tempDirectory.Exists)
                         tempDirectory.Delete(true);
 
