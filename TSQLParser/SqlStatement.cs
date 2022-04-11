@@ -6,7 +6,7 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 //using Microsoft.Data.Schema.ScriptDom;
 //using Microsoft.Data.Schema.ScriptDom.Sql;
 using System.IO;
-
+using System.Text.RegularExpressions;
 
 namespace TSQLParser
 {
@@ -94,18 +94,41 @@ namespace TSQLParser
                                 sqlString = sqlString.Substring(0, error.Offset + offsetIncrement) + "@Special19695Guff " + sqlString.Substring(error.Offset + offsetIncrement + 1, sqlString.Length - error.Offset - 1 - offsetIncrement);
                                 offsetIncrement += 17;
                             }
-                            else if (sqlString.Substring(error.Offset + offsetIncrement, 1) == "{")  //ToDo: Add valid handling for "{ call [core].[sp_update_data_source] (?, ?, ?, ?, ?) }", If it follows the pattern then strip {} and () replace call with exec.
+                            else if (sqlString.Substring(error.Offset + offsetIncrement, 1) == "{")  
                             {
                                 reParseSQL = true;
                                 if (sqlString.Substring(error.Offset + offsetIncrement + 1, sqlString.Length - error.Offset - 1 - offsetIncrement).Contains('}'))
                                 {
+                                    // handle ODBC call syntax
                                     int pos = sqlString.IndexOf('}', error.Offset + offsetIncrement);
-                                    string odbcString = sqlString.Substring(error.Offset + offsetIncrement + 1, pos - error.Offset - 1 - offsetIncrement);
-                                    // \{[\s]+call(?'procname'[\s\w\[\].]+)(?'parms'\([? ,]+\))[\s]+}
+                                    string odbcString = sqlString.Substring(error.Offset + offsetIncrement, pos - error.Offset - offsetIncrement + 1);
+                                    Regex matchODBCCall = new Regex(@"\{(?'result'[\S\W\s\w]*?)?call(?'procname'[^(]+)(?'parms'\([^)]+\))[\s]*}");  //(@"\{(?'result'[\@?=\s\w\[\].]+)?call(?'procname'[\@?=\s\w\[\].]+)(?'parms'\([\s\w\@? ,']+\))[\s]*}");
+                                    Match regexResults = matchODBCCall.Match(odbcString);
+                                    if (regexResults != null)
+                                    {
+                                        if (regexResults.Groups.Count >= 3)
+                                        {
+                                            string replacementString = string.Format("EXEC {0} {1} {2};", regexResults.Groups["result"].Value, regexResults.Groups["procname"].Value, regexResults.Groups["parms"].Value.Replace('(', ' ').Replace(')',' '));
+                                            sqlString = sqlString.Substring(0, error.Offset + offsetIncrement) + replacementString + (sqlString.Length > (error.Offset + offsetIncrement + pos + 1) ? sqlString.Substring(error.Offset + offsetIncrement + pos + 1) : string.Empty);
+                                            offsetIncrement -= (odbcString.Length - replacementString.Length);
+                                        }
+                                        else
+                                        {
+                                            sqlString = sqlString.Substring(0, error.Offset + offsetIncrement) + sqlString.Substring(error.Offset + offsetIncrement + 1, sqlString.Length - error.Offset - 1 - offsetIncrement);
+                                            offsetIncrement -= 1;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        sqlString = sqlString.Substring(0, error.Offset + offsetIncrement) + sqlString.Substring(error.Offset + offsetIncrement + 1, sqlString.Length - error.Offset - 1 - offsetIncrement);
+                                        offsetIncrement -= 1;
+                                    }
                                 }
-
-                                sqlString = sqlString.Substring(0, error.Offset + offsetIncrement) + sqlString.Substring(error.Offset + offsetIncrement + 1, sqlString.Length - error.Offset - 1 - offsetIncrement);
-                                offsetIncrement -= 1;
+                                else
+                                {
+                                    sqlString = sqlString.Substring(0, error.Offset + offsetIncrement) + sqlString.Substring(error.Offset + offsetIncrement + 1, sqlString.Length - error.Offset - 1 - offsetIncrement);
+                                    offsetIncrement -= 1;
+                                }
                             }
                             else if (sqlString.Substring(error.Offset + offsetIncrement, 1) == "}")
                             {
