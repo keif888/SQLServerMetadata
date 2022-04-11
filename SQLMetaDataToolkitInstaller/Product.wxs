@@ -142,30 +142,24 @@
 					<File Id="FLog4Net2019Config" Name="log4net.config" Source="$(var.DependencyAnalyzer2019.TargetDir)log4net.config" />
 				</Component>
 				<Component Id="SMO2019" Guid="{8C98AD26-65CE-2019-8954-6E98F4E5BAAA}" Win64="no">
-					<File Id="FMicrosoft.SqlServer.ConnectionInfo2019" Name="Microsoft.SqlServer.ConnectionInfo.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.ConnectionInfo.dll" />
-					<!--  Removed as they aren't in the SMO, so are they needed?  ToDo: Test if these files are needed.
-					<File Id="FMicrosoft.SqlServer.ConnectionInfoExtended2019" Name="Microsoft.SqlServer.ConnectionInfoExtended.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.ConnectionInfoExtended.dll" />
-					-->
-					<File Id="FMicrosoft.SqlServer.Dmf.Common2019" Name="Microsoft.SqlServer.Dmf.Common.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Dmf.Common.dll" />
-					<File Id="FMicrosoft.SqlServer.Management.Sdk.Sfc2019" Name="Microsoft.SqlServer.Management.Sdk.Sfc.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Management.Sdk.Sfc.dll" />
-					<File Id="FMicrosoft.SqlServer.ServiceBrokerEnum2019" Name="Microsoft.SqlServer.ServiceBrokerEnum.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.ServiceBrokerEnum.dll" />
-					<File Id="FMicrosoft.SqlServer.Smo2019" Name="Microsoft.SqlServer.Smo.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Smo.dll" />
-					<File Id="FMicrosoft.SqlServer.SqlClrProvider2019" Name="Microsoft.SqlServer.SqlClrProvider.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.SqlClrProvider.dll" />
-					<File Id="FMicrosoft.SqlServer.SqlEnum2019" Name="Microsoft.SqlServer.SqlEnum.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.SqlEnum.dll" />
-					<File Id="FMicrosoft.SqlServer.Management.IntegrationServices2019" Name="Microsoft.SqlServer.Management.IntegrationServices.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Management.IntegrationServices.dll" />
-					<File Id="FMicrosoft.SqlServer.Management.IntegrationServicesEnum2019" Name="Microsoft.SqlServer.Management.IntegrationServicesEnum.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Management.IntegrationServicesEnum.dll" />
-					<File Id="FMicrosoft.AnalysisServices2019" Name="Microsoft.AnalysisServices.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.AnalysisServices.dll" />
 					<File Id="FMicrosoft.AnalysisServices.Core2019" Name="Microsoft.AnalysisServices.Core.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.AnalysisServices.Core.dll" />
+					<File Id="FMicrosoft.AnalysisServices2019" Name="Microsoft.AnalysisServices.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.AnalysisServices.dll" />
 					<File Id="FMicrosoft.AnalysisServices.SPClient.Interfaces2019" Name="Microsoft.AnalysisServices.SPClient.Interfaces.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.AnalysisServices.SPClient.Interfaces.dll" />
 					<File Id="FMicrosoft.AnalysisServices.Tabular2019" Name="Microsoft.AnalysisServices.Tabular.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.AnalysisServices.Tabular.dll" />
 					<File Id="FMicrosoft.AnalysisServices.Tabular.Json2019" Name="Microsoft.AnalysisServices.Tabular.Json.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.AnalysisServices.Tabular.Json.dll" />
-					<File Id="FMicrosoft.Data.SqlClient2019" Name="Microsoft.Data.SqlClient.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.Data.SqlClient.dll" />
-					<File Id="FMicrosoft.Identity.Client2019" Name="Microsoft.Identity.Client.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.Identity.Client.dll" />
-					<File Id="FMicrosoft.Data.Tools.Sql.BatchParser2019" Name="Microsoft.Data.Tools.Sql.BatchParser.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.Data.Tools.Sql.BatchParser.dll" />
 					<File Id="FMicrosoft.Data.SqlClient.SNI.x642019" Name="Microsoft.Data.SqlClient.SNI.x64.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.Data.SqlClient.SNI.x64.dll" />
 					<File Id="FMicrosoft.Data.SqlClient.SNI.x862019" Name="Microsoft.Data.SqlClient.SNI.x86.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.Data.SqlClient.SNI.x86.dll" />
-					<File Id="FMicrosoft.SqlServer.Diagnostics.Strace2019" Name="Microsoft.SqlServer.Diagnostics.Strace.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Diagnostics.Strace.dll" />
+					<File Id="FMicrosoft.SqlServer.ConnectionInfo2019" Name="Microsoft.SqlServer.ConnectionInfo.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.ConnectionInfo.dll" />
+					<File Id="FMicrosoft.SqlServer.ConnectionInfoExtended2019" Name="Microsoft.SqlServer.ConnectionInfoExtended.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.ConnectionInfoExtended.dll" />
+					<File Id="FMicrosoft.SqlServer.DTSPipelineWrap2019" Name="Microsoft.SqlServer.DTSPipelineWrap.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.DTSPipelineWrap.dll" />
+					<File Id="FMicrosoft.SqlServer.DTSRuntimeWrap2019" Name="Microsoft.SqlServer.DTSRuntimeWrap.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.DTSRuntimeWrap.dll" />
 					<File Id="FMicrosoft.SqlServer.IntegrationServices.Common.ObjectModel2019" Name="Microsoft.SqlServer.IntegrationServices.Common.ObjectModel.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.IntegrationServices.Common.ObjectModel.dll" />
+					<File Id="FMicrosoft.SqlServer.ManagedDTS2019" Name="Microsoft.SqlServer.ManagedDTS.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.ManagedDTS.dll" />
+					<File Id="FMicrosoft.SqlServer.Management.IntegrationServices2019" Name="Microsoft.SqlServer.Management.IntegrationServices.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Management.IntegrationServices.dll" />
+					<File Id="FMicrosoft.SqlServer.Management.IntegrationServicesEnum2019" Name="Microsoft.SqlServer.Management.IntegrationServicesEnum.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Management.IntegrationServicesEnum.dll" />
+					<File Id="FMicrosoft.SqlServer.Management.Sdk.Sfc2019" Name="Microsoft.SqlServer.Management.Sdk.Sfc.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Management.Sdk.Sfc.dll" />
+					<File Id="FMicrosoft.SqlServer.Smo2019" Name="Microsoft.SqlServer.Smo.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.Smo.dll" />
+					<File Id="FMicrosoft.SqlServer.SqlEnum2019" Name="Microsoft.SqlServer.SqlEnum.dll" Source="$(var.DependencyAnalyzer2019.TargetDir)Microsoft.SqlServer.SqlEnum.dll" />
 				</Component>
 				<Component Id="DependencyAnalyzer2019Parser" Guid="{95C37E97-F292-2019-A9F3-097946B574F8}" Win64="no">
 					<File Id="FDependencyAnalyzer2019Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
