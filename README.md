@@ -4,19 +4,21 @@ Downloads [here](https://github.com/keif888/SQLServerMetadata/releases)
 
 # Project Description
 
-MSDN's SQL 2005 tool kit updated to 2008, 2012, 2014, 2016 and 2017 for detecting metadata in SQL Server, SSIS, SSRS and SSAS.
+MSDN's SQL 2005 tool kit updated to 2008, 2012, 2014, 2016, 2017 and 2019 for detecting metadata in SQL Server, SSIS, SSRS and SSAS.
 
 This project is an update on the project released on MSDN Code Gallery  [SQL Server Metadata Toolkit](http://code.msdn.microsoft.com/SqlServerMetadata)
 
-It has the ability to scan the following versions 2005, 2008, 2008 R2, 2012, 2014, 2016 and 2017...
+It has the ability to scan the following versions 2005, 2008, 2008 R2, 2012, 2014, 2016, 2017 and 2019...
 
-Please note that support for features that have been introduced since SQL 2008 R2 is still limited.
+Please note that support for Transact SQL capabilities that have been introduced since isn't there.  If you encounter a T-SQL statement that doesn't parse, please post it as an [issue](https://github.com/keif888/SQLServerMetadata/issues).
 
 It can scan SSIS, SSAS, SQL Server Databases, and Reporting Services.
 
 It has an "Executor", which allows the user to use a GUI to run the various analysers.  If you hover over the buttons at the bottom, the actual command will be shown in the status bar, and you can then copy that command if you so desire...
 
 # Release Notes
+
+**Beta 28** Fixes issues #35, #37. This release adds SQL 2019 capabilities, and ODBC call handling to the Parser.
 
 **Beta 27** Fixes issues #23, #24, #25, #27, #30, #36.
 
@@ -85,9 +87,15 @@ The following picture shows the Dependency Viewer:
 
 ## Other Downloads Required:
 To be able to analyse SSIS requires either the appropriate version of Visual Studio/BIDS/SSDT, or the appropriate version of SSIS to be installed.
+
 To be able to analyse SQL/AS 2005, without having SQL 2005 installed, requires the SQLSERVER2005_ASAMO10, SQLSysClrTypes and SharedManagementObjects (32 bit).  But these are no longer available from Microsoft.
+
 To be able to analyse SQL/AS 2008, without having SQL 2008 installed, requires the SQLSERVER2008_ASAMO10, SQLSysClrTypes and SharedManagementObjects (32 bit) from here: https://www.microsoft.com/en-us/download/details.aspx?id=44272
+
 To be able to analyse SQL/AS 2012, without having SQL 2012 installed, requires the SQL_AS_AMO, SQLSysClrTypes and SharedManagementObjects (32 bit) from here: https://www.microsoft.com/en-us/download/details.aspx?id=56041
+
 To be able to analyse SQL/AS 2014, without having SQL 2014 installed, requires the SQL_AS_AMO, SQLSysClrTypes and SharedManagementObjects (32 bit) from here: https://www.microsoft.com/en-us/download/details.aspx?id=42295
+
 To be able to analyse SQL/AS 2016, without having SQL 2016 installed, requires the SQL_AS_AMO, SQLSysClrTypes and SharedManagementObjects (32 bit) from here: https://www.microsoft.com/en-us/download/details.aspx?id=103444
+
 From 2017 onwards, SQL and Analysis services capability has been provided directly in the download.
