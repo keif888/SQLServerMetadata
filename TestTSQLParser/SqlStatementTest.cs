@@ -1252,5 +1252,167 @@ WHERE   Action = 'DELETE';
                 Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
             }
         }
+
+
+        [TestMethod()]
+        public void BuiltInFunctionTableReference()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @"SELECT 
+    [TextData], 
+    [BinaryData], 
+    [DatabaseID], 
+    [TransactionID], 
+    [LineNumber], 
+    [NTUserName], 
+    [NTDomainName], 
+    [HostName], 
+    [ClientProcessID], 
+    [ApplicationName], 
+    [LoginName], 
+    [SPID], 
+    [Duration], 
+    [StartTime], 
+    [EndTime], 
+    [Reads], 
+    [Writes], 
+    [CPU], 
+    [Permissions], 
+    [Severity], 
+    [EventSubClass], 
+    [ObjectID], 
+    [Success], 
+    [IndexID], 
+    [IntegerData], 
+    [ServerName], 
+    [EventClass], 
+    [ObjectType], 
+    [NestLevel], 
+    [State], 
+    [Error], 
+    [Mode], 
+    [Handle], 
+    [ObjectName], 
+    [DatabaseName], 
+    [FileName], 
+    [OwnerName], 
+    [RoleName], 
+    [TargetUserName], 
+    [DBUserName], 
+    [LoginSid], 
+    [TargetLoginName], 
+    [TargetLoginSid], 
+    [ColumnPermissions], 
+    [LinkedServerName], 
+    [ProviderName], 
+    [MethodName], 
+    [RowCounts], 
+    [RequestID], 
+    [XactSequence], 
+    [EventSequence], 
+    [BigintData1], 
+    [BigintData2], 
+    [GUID], 
+    [IntegerData2], 
+    [ObjectID2], 
+    [Type], 
+    [OwnerID], 
+    [ParentName], 
+    [IsSystem], 
+    [Offset], 
+    [SourceDatabaseID], 
+    [SqlHandle], 
+    [SessionLoginName], 
+    [PlanHandle]
+, [GroupID] FROM
+    ::fn_trace_gettable(N'C:\Users\macies\AppData\Local\Temp\ecodedc\DC_Trace_MSSQL.1.f37780d4-fea7-4271-90b2-fa553ad4ca91.0_1.trc', 1)
+ WHERE
+    [EventSequence] > 0
+";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[fn_trace_gettable]");
+            lstractual = target.getFunctionNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
+
+        [TestMethod()]
+        public void ODBCTest1()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @"{? = call [core].[sp_update_data_source] (?, ?, ?, ?, ?) }";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[core].[sp_update_data_source]");
+            lstractual = target.getProcedureNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
+        [TestMethod()]
+        public void ODBCTest2()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @" { call [dbo].[sp_syscollector_event_onstatsupdate] (?, N'Upload trace file', ?, ?, ?, ?) }";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[dbo].[sp_syscollector_event_onstatsupdate]");
+            lstractual = target.getProcedureNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
+        [TestMethod()]
+        public void ODBCTest3()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @" {call [dbo].[sp_syscollector_get_trace_info](?, ?)}";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[dbo].[sp_syscollector_get_trace_info]");
+            lstractual = target.getProcedureNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
+
+        [TestMethod()]
+        public void ODBCTest4()
+        {
+            SqlStatement target = new SqlStatement();
+            bool forceSchemaQualified = false;
+            string sqlString = @"{call dbo.sp_syscollector_event_onstatsupdate(?, N'PerfCountersCollect - Main Collect Loop', ?, ?, 0, ?)}";
+            target.ParseString(sqlString);
+            List<string> lstrexpected = new List<string>();
+            List<string> lstractual;
+            lstrexpected.Add("[dbo].[sp_syscollector_event_onstatsupdate]");
+            lstractual = target.getProcedureNames(forceSchemaQualified);
+            Assert.AreEqual(lstrexpected.Count, lstractual.Count);
+            for (int i = 0; i < lstractual.Count; i++)
+            {
+                Assert.IsTrue(lstractual.Contains(lstrexpected[i]), String.Format("Value {0} is missing", lstrexpected[i]));
+            }
+        }
     }
 }

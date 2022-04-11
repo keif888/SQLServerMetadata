@@ -2157,6 +2157,15 @@ namespace TSQLParser
                     case "Microsoft.SqlServer.TransactSql.ScriptDom.VariableTableReference":
                         // Not intested in Variables...
                         break;
+                    case "Microsoft.SqlServer.TransactSql.ScriptDom.BuiltInFunctionTableReference":
+                        if ((tableSource as BuiltInFunctionTableReference).Alias != null)
+                            findIdentifiers((tableSource as BuiltInFunctionTableReference).Alias);
+                        Identifier foundID = new Identifier(string.Empty, string.Empty, string.Empty, ((BuiltInFunctionTableReference)tableSource).Name.Value, Identifier.IdentifierEnum.Function);
+                        if (!_identifiers.ContainsKey(foundID.ToString(false, true)))
+                        {
+                            _identifiers.Add(foundID.ToString(false, true), foundID);
+                        }
+                        break;
                     //case "Microsoft.SqlServer.TransactSql.ScriptDom.VariableTableSource":
                     //    // Not intested in Variables...
                     //    break;
