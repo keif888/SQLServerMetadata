@@ -234,6 +234,23 @@ namespace Microsoft.Samples.DependencyAnalyzer
                             {
                                 repository.AddAttribute(dsvTableID, Repository.Attributes.QueryDefinition, queryDefinition.ToString());
                             }
+                            else
+                            {
+                                // if query definition is missing it's not a Named Query in DSV. Handle it like a normal table, copied code from table logic abvove
+                                // now add the table
+                                string tableName = GetFullyQualifiedTableName(table);
+
+                                if (threePartNames)
+                                    tableName = String.Format("[{0}].{1}", repository.RetrieveDatabaseNameFromConnectionID(connectionID), tableName);
+                                int tableID = repository.GetTable(connectionID, tableName);
+                                if (tableID == -1)
+                                {
+                                    tableID = repository.AddObject(tableName, string.Empty, RelationalEnumerator.ObjectTypes.Table, connectionID);
+                                }
+
+                                // add the lineage
+                                repository.AddMapping(tableID, dsvTableID);
+                            }
                         }
                     }
                 }
