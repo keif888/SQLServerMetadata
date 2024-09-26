@@ -710,7 +710,14 @@ namespace Microsoft.Samples.DependencyAnalyzer
                     // This seems to be needed for SQL 2012, but not later versions.
                     foreach (ConnectionManagerItem cmi in ssisProject.ConnectionManagerItems)
                     {
-                        log.InfoFormat("Discovered connection manager {0}", cmi.ConnectionManager.Name);
+                        try
+                        {
+                            log.InfoFormat("Discovered connection manager {0}", cmi.ConnectionManager.Name);
+                        }
+                        catch (Exception ex)
+                        {
+                            log.ErrorFormat("Unabled to create connection manager: {0}\nStack Trace:\n{1}.", ex.Message, ex.StackTrace);
+                        }
                     }
                     // Parse each and every package in the project.
                     foreach (PackageItem pi in ssisProject.PackageItems)
