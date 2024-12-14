@@ -1401,6 +1401,36 @@ namespace Microsoft.Samples.DependencyAnalyzer
                 }
 
             }
+            if (dbVersion == 10)
+            {
+                // Add SQL 2019 and 2022 entries to allow display of relational sources.
+                #region dbVersion 10
+                using (SqlCommand sqlCommand = repositoryConnection.CreateCommand())
+                {
+                    sqlCommand.CommandText = "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{D4D59D1B-9320-4A38-B663-15549C611270}', N'ODBC 2019')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{14977E8C-BABD-438F-9C71-C57206CDE422}', N'OLEDB 2019')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{919E895E-830F-4F4B-828C-1CD881513C2C}', N'ADO 2019')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{89249836-8DE6-4404-9CCD-C6E6ED9413B1}', N'ADO.Net 2019')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{647A6D51-7608-4590-9DFF-A8C416E6169C}', N'MSOLAP 2019')\r\n";
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.CommandText = "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{CA2B2C8A-BE15-4E51-AF9A-230825709FA7}', N'ODBC 2022')\r\n" + // HKEY_CLASSES_ROOT\DTS.ConnectionManagerOdbc.8
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{2556BC6F-C438-4894-B899-76BFC2E75CDB}', N'OLEDB 2022')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{90791B75-F78A-4045-B48C-F28CE9828A11}', N'ADO 2022')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{FCA9AF1E-CF2A-445D-B147-87D061D99F43}', N'ADO.Net 2022')\r\n" +
+                        "INSERT [dbo].[LookupConnectionID] ([ConnectionGUID], [ConnectionDescription]) VALUES (N'{BCE4FB72-5C8D-4C54-ABB7-29C62307B965}', N'MSOLAP 2022')\r\n";
+                    sqlCommand.ExecuteNonQuery();
+
+                    dbVersion = 11;
+                    sqlCommand.CommandText = String.Format("INSERT INTO dbo.Version\r\n" +
+                                            "(VersionID, InstallDate)\r\n" +
+                                            "VALUES\r\n" +
+                                            "({0}, GETDATE())", dbVersion);
+                    sqlCommand.ExecuteNonQuery();
+
+                }
+
+                #endregion
+            }
             // Dont forget to update _dbVersion, or the new data won't be committed.
         }
 

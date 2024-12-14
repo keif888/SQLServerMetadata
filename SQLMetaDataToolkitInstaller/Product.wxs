@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?define ProductVersion = "0.28.0.0"?>
+  <?define ProductVersion = "0.29.0.0"?>
   <?define UpgradeCode = "B758AA83-565F-453A-BECF-0B0B060E7023"?>
   <?define Manufacturer = "Keith Martin"?>
   <?define PackageCode = "*"?>
@@ -168,6 +168,40 @@
 					<File Id="FScriptDom2019" Name="Microsoft.SqlServer.TransactSql.ScriptDom.dll" Source="$(var.TSQLParser.TargetDir)Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
 				</Component>
 			</Directory>
+			<Directory Id="DependencyAnalyzer2022DIR" Name="Dependency Analyzer 2022">
+				<Component Id="DependencyAnalyzer2022Exe" Guid="{8C98AD26-65CE-2022-8954-6E98F4E5BF1D}" Win64="no">
+					<File Id="FDependencyAnalyzer2022Exe" Name="$(var.DependencyAnalyzer2022.TargetFileName)" Source="$(var.DependencyAnalyzer2022.TargetPath)" />
+					<File Id="FDependencyAnalyzer2022ExeConf" Name="$(var.DependencyAnalyzer2022.TargetFileName).config" Source="$(var.DependencyAnalyzer2022.TargetPath).config" />
+					<File Id="FLog4Net2022Dll" Name="log4net.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)log4net.dll" />
+					<File Id="FLog4Net2022Config" Name="log4net.config" Source="$(var.DependencyAnalyzer2022.TargetDir)log4net.config" />
+				</Component>
+				<Component Id="SMO2022" Guid="{8C98AD26-65CE-2022-8954-6E98F4E5BAAA}" Win64="no">
+					<File Id="FMicrosoft.AnalysisServices.Core2022" Name="Microsoft.AnalysisServices.Core.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.AnalysisServices.Core.dll" />
+					<File Id="FMicrosoft.AnalysisServices2022" Name="Microsoft.AnalysisServices.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.AnalysisServices.dll" />
+					<File Id="FMicrosoft.AnalysisServices.SPClient.Interfaces2022" Name="Microsoft.AnalysisServices.SPClient.Interfaces.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.AnalysisServices.SPClient.Interfaces.dll" />
+					<File Id="FMicrosoft.AnalysisServices.Tabular2022" Name="Microsoft.AnalysisServices.Tabular.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.AnalysisServices.Tabular.dll" />
+					<File Id="FMicrosoft.AnalysisServices.Tabular.Json2022" Name="Microsoft.AnalysisServices.Tabular.Json.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.AnalysisServices.Tabular.Json.dll" />
+					<File Id="FMicrosoft.Data.SqlClient.SNI.x642022" Name="Microsoft.Data.SqlClient.SNI.x64.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.Data.SqlClient.SNI.x64.dll" />
+					<File Id="FMicrosoft.Data.SqlClient.SNI.x862022" Name="Microsoft.Data.SqlClient.SNI.x86.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.Data.SqlClient.SNI.x86.dll" />
+					<File Id="FMicrosoft.SqlServer.ConnectionInfo2022" Name="Microsoft.SqlServer.ConnectionInfo.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.SqlServer.ConnectionInfo.dll" />
+					<File Id="FMicrosoft.SqlServer.ConnectionInfoExtended2022" Name="Microsoft.SqlServer.ConnectionInfoExtended.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.SqlServer.ConnectionInfoExtended.dll" />
+					<File Id="FMicrosoft.SqlServer.DTSPipelineWrap2022" Name="Microsoft.SqlServer.DTSPipelineWrap.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.SqlServer.DTSPipelineWrap.dll" />
+					<File Id="FMicrosoft.SqlServer.DTSRuntimeWrap2022" Name="Microsoft.SqlServer.DTSRuntimeWrap.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.SqlServer.DTSRuntimeWrap.dll" />
+					<File Id="FMicrosoft.SqlServer.IntegrationServices.Common.ObjectModel2022" Name="Microsoft.SqlServer.IntegrationServices.Common.ObjectModel.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.SqlServer.IntegrationServices.Common.ObjectModel.dll" />
+					<File Id="FMicrosoft.SqlServer.ManagedDTS2022" Name="Microsoft.SqlServer.ManagedDTS.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.SqlServer.ManagedDTS.dll" />
+					<File Id="FMicrosoft.SqlServer.Management.IntegrationServices2022" Name="Microsoft.SqlServer.Management.IntegrationServices.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.SqlServer.Management.IntegrationServices.dll" />
+					<File Id="FMicrosoft.SqlServer.Management.IntegrationServicesEnum2022" Name="Microsoft.SqlServer.Management.IntegrationServicesEnum.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.SqlServer.Management.IntegrationServicesEnum.dll" />
+					<File Id="FMicrosoft.SqlServer.Management.Sdk.Sfc2022" Name="Microsoft.SqlServer.Management.Sdk.Sfc.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.SqlServer.Management.Sdk.Sfc.dll" />
+					<File Id="FMicrosoft.SqlServer.Smo2022" Name="Microsoft.SqlServer.Smo.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.SqlServer.Smo.dll" />
+					<File Id="FMicrosoft.SqlServer.SqlEnum2022" Name="Microsoft.SqlServer.SqlEnum.dll" Source="$(var.DependencyAnalyzer2022.TargetDir)Microsoft.SqlServer.SqlEnum.dll" />
+				</Component>
+				<Component Id="DependencyAnalyzer2022Parser" Guid="{95C37E97-F292-2022-A9F3-097946B574F8}" Win64="no">
+					<File Id="FDependencyAnalyzer2022Parser" Name="$(var.TSQLParser.TargetFileName)" Source="$(var.TSQLParser.TargetPath)" />
+				</Component>
+				<Component Id="ScriptDom2022" Guid="{95C77E97-F292-2022-A9F3-097946B574F8}" Win64="no">
+					<File Id="FScriptDom2022" Name="Microsoft.SqlServer.TransactSql.ScriptDom.dll" Source="$(var.TSQLParser.TargetDir)Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
+				</Component>
+			</Directory>
 			<Directory Id="DEPENDENCYEXECUTORDIR" Name="Dependency Executor">
             <Component Id="DependencyExecutor" Guid="{39F20A67-354B-4503-9CBD-F4DFA06C5484}" Win64="no">
               <File Id="DependencyExecutorExe" Name="$(var.DependencyExecutor.TargetFileName)" Source="$(var.DependencyExecutor.TargetPath)" />
@@ -296,6 +330,12 @@
 			<ComponentRef Id="SMO2019"/>
 			<ComponentRef Id="DependencyAnalyzer2019Parser"/>
 			<ComponentRef Id="ScriptDom2019"/>
+		</Feature>
+		<Feature Id="DependencyAnalyzer2022" Level="1" Title="Dependency Analyzer 2022">
+			<ComponentRef Id="DependencyAnalyzer2022Exe"/>
+			<ComponentRef Id="SMO2022"/>
+			<ComponentRef Id="DependencyAnalyzer2022Parser"/>
+			<ComponentRef Id="ScriptDom2022"/>
 		</Feature>
 		<Feature Id="DependencyExecutor" Level="1" Title="Dependency Executor">
         <ComponentRef Id="DependencyExecutor"/>
