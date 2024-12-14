@@ -6,7 +6,7 @@ Downloads [here](https://github.com/keif888/SQLServerMetadata/releases)
 
 MSDN's SQL 2005 tool kit updated to 2008, 2012, 2014, 2016, 2017 and 2019 for detecting metadata in SQL Server, SSIS, SSRS and SSAS.
 
-This project is an update on the project released on MSDN Code Gallery  [SQL Server Metadata Toolkit](http://code.msdn.microsoft.com/SqlServerMetadata)
+This project is an update on the project released on MSDN Code Gallery, which has been decommissioned by Microsoft. This link no longer works -> https://code.msdn.microsoft.com/SqlServerMetadata
 
 It has the ability to scan the following versions 2005, 2008, 2008 R2, 2012, 2014, 2016, 2017 and 2019...
 
