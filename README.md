@@ -4,11 +4,11 @@ Downloads [here](https://github.com/keif888/SQLServerMetadata/releases)
 
 # Project Description
 
-MSDN's SQL 2005 tool kit updated to 2008, 2012, 2014, 2016, 2017 and 2019 for detecting metadata in SQL Server, SSIS, SSRS and SSAS.
+MSDN's SQL 2005 tool kit updated to 2008, 2012, 2014, 2016, 2017, 2019 and 2022 for detecting metadata in SQL Server, SSIS, SSRS and SSAS.
 
 This project is an update on the project released on MSDN Code Gallery, which has been decommissioned by Microsoft. This link no longer works -> https://code.msdn.microsoft.com/SqlServerMetadata
 
-It has the ability to scan the following versions 2005, 2008, 2008 R2, 2012, 2014, 2016, 2017 and 2019...
+It has the ability to scan the following versions 2005, 2008, 2008 R2, 2012, 2014, 2016, 2017, 2019 and 2022...
 
 Please note that support for Transact SQL capabilities that have been introduced since isn't there.  If you encounter a T-SQL statement that doesn't parse, please post it as an [issue](https://github.com/keif888/SQLServerMetadata/issues).
 
@@ -17,6 +17,8 @@ It can scan SSIS, SSAS, SQL Server Databases, and Reporting Services.
 It has an "Executor", which allows the user to use a GUI to run the various analysers.  If you hover over the buttons at the bottom, the actual command will be shown in the status bar, and you can then copy that command if you so desire...
 
 # Release Notes
+
+**Beta 29** This release adds SQL 2022 capabilities.
 
 **Beta 28** Fixes issues #35, #37. This release adds SQL 2019 capabilities, and ODBC call handling to the Parser.
 

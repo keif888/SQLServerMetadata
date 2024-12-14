@@ -63,5 +63,8 @@
     <PackageVersion Include="System.Text.Json" Version="9.0.0" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.0" />
     <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
+    <PackageVersion Include="WixToolset.UI.wixext">
+      <Version>5.0.2</Version>
+    </PackageVersion>
   </ItemGroup>
 </Project>
