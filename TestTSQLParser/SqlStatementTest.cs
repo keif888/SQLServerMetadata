@@ -263,7 +263,7 @@ DATEADD(day, CAST(SUBSTRING(UX002_ExtractId, 5, 3) AS INT) - 1, DATEADD(year, CA
             target.ParseString(sqlString);
             actual = target.parseErrors;
             Assert.AreEqual(1, actual.Count);
-            Assert.AreEqual("Parsing Warning Number: 46010\r\nMessage: Incorrect syntax near select.\r\nLine: 1\r\nOffset: 25", actual[0]);
+            Assert.AreEqual("Parsing Warning Number: 46010\r\nMessage: Incorrect syntax near 'select'.\r\nLine: 1\r\nOffset: 25", actual[0]);
         }
 
 

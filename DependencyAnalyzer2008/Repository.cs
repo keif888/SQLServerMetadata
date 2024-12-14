@@ -41,6 +41,9 @@ namespace Microsoft.Samples.DependencyAnalyzer
 #if SQL2019
         public const string OLEDBGuid = "{14977E8C-BABD-438F-9C71-C57206CDE422}";
 #endif
+#if SQL2022
+        public const string OLEDBGuid = "{2556BC6F-C438-4894-B899-76BFC2E75CDB}"; // HKEY_CLASSES_ROOT\DTS.ConnectionManagerOleDb.8
+#endif
 
 
         internal class Domains

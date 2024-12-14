@@ -62,9 +62,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=2.0.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AnalysisServices, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\References\SQL2012DLLs\Microsoft.AnalysisServices.dll</HintPath>
     </Reference>
@@ -204,4 +201,7 @@
   <PropertyGroup>
     <PreBuildEvent>"$(DevEnvDir)texttransform.exe" "$(ProjectDir)\Properties\AssemblyInfoVersion.tt"</PreBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="log4net" />
+  </ItemGroup>
 </Project>
